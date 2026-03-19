@@ -1,21 +1,24 @@
 #pragma once
 
 #include "utils.hpp"
+#include "err.hpp"
 
 namespace nem
 {
 	template<typename Derived, typename T, size_t N>
 	struct BaseVector
 	{
-		constexpr Derived& ImplRW() { return (Derived&)*this; }
-		constexpr const Derived& ImplR() const { return (const Derived&)*this; }
+		static_assert(N > 0 && "Not Enough Math: Vector N must be greater than 0");
+
+		constexpr Derived& _impl_rw() { return (Derived&)*this; }
+		constexpr const Derived& _impl_r() const { return (const Derived&)*this; }
 
 		Derived operator+(const Derived& other)
 		{
 			Derived result;
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = CompR(i) + other.CompR(i);
+				result[i] = comp_r(i) + other.comp_r(i);
 			}
 			return result;
 		}
@@ -23,9 +26,9 @@ namespace nem
 		Derived operator-(const Derived& other)
 		{
 			Derived result;
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = CompR(i) - other.CompR(i);
+				result[i] = comp_r(i) - other.comp_r(i);
 			}
 			return result;
 		}
@@ -33,9 +36,9 @@ namespace nem
 		Derived operator*(T scalar)
 		{
 			Derived result{};
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = CompR(i) * scalar;
+				result[i] = comp_r(i) * scalar;
 			}
 			return result;
 		}
@@ -43,28 +46,28 @@ namespace nem
 		Derived operator*(Derived other)
 		{
 			Derived result{};
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = CompR(i) * other.CompR(i);
+				result[i] = comp_r(i) * other.comp_r(i);
 			}
 			return result;
 		}
 
 		Derived& operator*=(const Derived& other)
 		{
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				ImplRW()[i] *= other.CompR(i);
+				_impl_rw()[i] *= other.comp_r(i);
 			}
-			return ImplRW();
+			return _impl_rw();
 		}
 
 		Derived operator/(T scalar)
 		{
 			Derived result{};
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = CompR(i) / scalar;
+				result[i] = comp_r(i) / scalar;
 			}
 			return result;
 		}
@@ -72,69 +75,57 @@ namespace nem
 		Derived operator/(Derived other)
 		{
 			Derived result{};
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = CompR(i) / other.CompR(i);
+				result[i] = comp_r(i) / other.comp_r(i);
 			}
 			return result;
 		}
 
-		inline constexpr T& CompRW(size_t index)
-		{
-			return ImplRW().data[index];
-		}
+		inline constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
+		inline constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
+		const T& operator[](size_t index) const { return comp_r(index); }
+		T& operator[](size_t index) { return comp_rw(index); }
 
-		inline constexpr const T& CompR(size_t index) const
-		{
-			return ImplR().data[index];
-		}
-
-		const T& operator[](size_t index) const
-		{
-			return CompR(index);
-		}
-
-		T& operator[](size_t index)
-		{
-			return CompRW(index);
-		}
-
-		Derived Lerped(const Derived& b, float t)
+		template <typename TT = T>
+		static Derived lerp(const Derived& a, const Derived& b, TT t)
 		{
 			Derived result;
-			for (size_t i = 0; i < N; i++)
+			for (size_t i = 0; i < N; ++i)
 			{
-				result.CompRW(i) = (T)nem::lerp(CompR(i), b.CompR(i), (T)t);
+				result.comp_rw(i) = (T)nem::lerp(comp_r(i), b.comp_r(i), (TT)t);
 			}
 			return result;
 		}
 
-		static Derived Lerp(Derived a, const Derived& b, float t)
-		{
-			return a.Lerped(b, t);
-		}
-
-		T LengthSquared() const
+		T sqrLength() const
 		{
 			T sum = T{};
 			for (size_t i = 0; i < N; ++i)
-				sum += CompR(i) * CompR(i);
-
+			{
+				sum += comp_r(i) * comp_r(i);
+			}
 			return sum;
 		}
 
-		T Length() const
-		{
-			return nem::sqrt(LengthSquared());
-		}
+		inline T length() const { return nem::sqrt(sqrLength()); }
 
-		void Normalize()
+		Derived normalize()
 		{
-			T len = Length();
-			if (len == T{}) return;
+			Derived result;
+			T len = length();
+
+			if (nem::is_nearly_zero(len))
+			{
+				return nem::error::invalid_result<Derived>();
+			}
 
 			for (size_t i = 0; i < N; ++i)
-				CompRW(i) /= len;
+			{
+				result.comp_rw(i) /= len;
+			}
+
+			return result;
 		}
 	};
 
@@ -191,6 +182,8 @@ namespace nem
 	};
 
 	using int2 = BaseVector2<int>;
+	using int3 = BaseVector3<int>;
+	using int4 = BaseVector4<int>;
 	using float2 = BaseVector2<float>;
 	using float3 = BaseVector3<float>;
 	using float4 = BaseVector4<float>;
@@ -207,13 +200,13 @@ namespace nem
 		static inline float4 transparent(float3 rgb) { return float4(rgb.r, rgb.g, rgb.b, ALPHA_TRANSPARENT); }
 		static inline float4 transparent(float4 rgba) { return float4(rgba.r, rgba.g, rgba.b, ALPHA_TRANSPARENT); }
 
-		static inline float4 clear = rgba(0.f, 0.f, 0.f, ALPHA_TRANSPARENT);
-		static inline float4 white = rgba(1.f, 1.f, 1.f, ALPHA_OPAQUE);
-		static inline float4 black = rgba(0.f, 0.f, 0.f, ALPHA_OPAQUE);
-		static inline float4 red = rgb(1.f, 0.f, 0.f);
-		static inline float4 green = rgb(0.f, 1.f, 0.f);
-		static inline float4 blue = rgb(0.f, 0.f, 1.f);
-		static inline float4 cyan = rgb(0.f, 1.f, 1.f);
+		static inline float4 clear  = rgba(0.f, 0.f, 0.f, ALPHA_TRANSPARENT);
+		static inline float4 white  = rgba(1.f, 1.f, 1.f, ALPHA_OPAQUE);
+		static inline float4 black  = rgba(0.f, 0.f, 0.f, ALPHA_OPAQUE);
+		static inline float4 red    = rgb(1.f, 0.f, 0.f);
+		static inline float4 green  = rgb(0.f, 1.f, 0.f);
+		static inline float4 blue   = rgb(0.f, 0.f, 1.f);
+		static inline float4 cyan   = rgb(0.f, 1.f, 1.f);
 		static inline float4 yellow = rgb(1.f, 1.f, 0.f);
 	};
 }

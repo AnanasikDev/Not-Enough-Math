@@ -1,16 +1,41 @@
 {
-  "version": 3,
-  "configurePresets": [
-    {
-      "name": "vs2022-windows",
-      "displayName": "Windows x64 Debug",
-      "generator": "Visual Studio 17 2022",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "architecture": { "value": "x64", "strategy": "external" },
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "cl.exe",
-        "CMAKE_CXX_COMPILER": "cl.exe"
-      }
-    }
-  ]
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "windows-debug-log",
+            "displayName": "Debug Log",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ANEM_ERR_LOG": "ON",
+                "ANEM_ERR_THROW": "OFF",
+                "ANEM_ERR_USE_NAN": "ON"
+            }
+        },
+        {
+            "name": "windows-debug-throw",
+            "displayName": "Debug Throw",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "ANEM_ERR_LOG": "ON",
+                "ANEM_ERR_THROW": "ON",
+                "ANEM_ERR_USE_NAN": "ON"
+            }
+        },
+        {
+            "name": "windows-release-fast",
+            "displayName": "Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "ANEM_ERR_LOG": "OFF",
+                "ANEM_ERR_THROW": "OFF",
+                "ANEM_ERR_USE_NAN": "OFF"
+            }
+        }
+    ]
 }
