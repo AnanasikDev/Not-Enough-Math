@@ -8,7 +8,13 @@ namespace nem
     template<typename Derived, typename T, size_t N>
     inline bool is_nearly_zero(const BaseVectorT<Derived, T, N>& v)
     {
-        for (size_t c = 0; c < N; ++c) if (!nem::is_nearly_zero(v.comp_r(c))) return false;
+        for (size_t c = 0; c < N; ++c)
+        {
+            if (!nem::is_nearly_zero(v.comp_r(c)))
+            {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -37,7 +43,10 @@ namespace nem
     inline T comp_sum(const BaseVectorT<Derived, T, N>& v)
     {
         T result = (T)0.0;
-        for (size_t c = 0; c < N; ++c) result += v.comp_r(c);
+        for (size_t c = 0; c < N; ++c)
+        {
+            result += v.comp_r(c);
+        }
         return result;
     }
 
@@ -45,7 +54,10 @@ namespace nem
     inline T comp_mul(const BaseVectorT<Derived, T, N>& v)
     {
         T result = (T)1.0;
-        for (size_t c = 0; c < N; ++c) result *= v.comp_r(c);
+        for (size_t c = 0; c < N; ++c)
+        {
+            result *= v.comp_r(c);
+        }
         return result;
     }
 
@@ -65,9 +77,14 @@ namespace nem
         }
 
         if (abs(vector.z) < 0.999f)
+        {
             b1 = normalize(cross(vector, BaseVector3<T>(0, 0, 1)));
+        }
         else
+        {
             b1 = normalize(cross(vector, BaseVector3<T>(1, 0, 0)));
+        }
+
         b2 = cross(vector, b1);
 
         return true;
