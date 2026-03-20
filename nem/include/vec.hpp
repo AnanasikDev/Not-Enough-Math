@@ -6,7 +6,7 @@
 namespace nem
 {
 	template<typename Derived, typename T, size_t N>
-	struct BaseVector
+	struct BaseVectorT
 	{
 		static_assert(N > 0 && "Not Enough Math: Vector N must be greater than 0");
 
@@ -84,11 +84,11 @@ namespace nem
 
 		inline constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
 		inline constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
-		const T& operator[](size_t index) const { return comp_r(index); }
-		T& operator[](size_t index) { return comp_rw(index); }
+		constexpr const T& operator[](size_t index) const { return comp_r(index); }
+		constexpr T& operator[](size_t index) { return comp_rw(index); }
 
 		template <typename TT = T>
-		static Derived lerp(const Derived& a, const Derived& b, TT t)
+		static constexpr Derived lerp(const Derived& a, const Derived& b, TT t)
 		{
 			Derived result;
 			for (size_t i = 0; i < N; ++i)
@@ -98,7 +98,7 @@ namespace nem
 			return result;
 		}
 
-		T sqrLength() const
+		constexpr T sqrLength() const
 		{
 			T sum = T{};
 			for (size_t i = 0; i < N; ++i)
@@ -108,7 +108,7 @@ namespace nem
 			return sum;
 		}
 
-		inline T length() const { return nem::sqrt(sqrLength()); }
+		constexpr inline T length() const { return nem::sqrt(sqrLength()); }
 
 		Derived normalize()
 		{
@@ -122,7 +122,7 @@ namespace nem
 
 			for (size_t i = 0; i < N; ++i)
 			{
-				result.comp_rw(i) /= len;
+				result.comp_rw(i) = comp_r(i) / len;
 			}
 
 			return result;
@@ -130,7 +130,7 @@ namespace nem
 	};
 
 	template <typename T>
-	struct BaseVector2 : public BaseVector<BaseVector2<T>, T, 2>
+	struct BaseVector2 : public BaseVectorT<BaseVector2<T>, T, 2>
 	{
 		static constexpr size_t N = 2;
 		union
@@ -143,13 +143,13 @@ namespace nem
 			struct { T width, height; };
 		};
 
-		BaseVector2() : x(T{}), y(T{}) {}
-		BaseVector2(T _x, T _y) : x(_x), y(_y) {}
-		BaseVector2(T _scalar) : x(_scalar), y(_scalar) {}
+		constexpr BaseVector2() : x(T{}), y(T{}) {}
+		constexpr BaseVector2(T _x, T _y) : x(_x), y(_y) {}
+		constexpr BaseVector2(T _scalar) : x(_scalar), y(_scalar) {}
 	};
 
 	template <typename T>
-	struct BaseVector3 : public BaseVector<BaseVector3<T>, T, 3>
+	struct BaseVector3 : public BaseVectorT<BaseVector3<T>, T, 3>
 	{
 		static constexpr size_t N = 3;
 		union
@@ -159,13 +159,13 @@ namespace nem
 			struct { T r, g, b; };
 		};
 
-		BaseVector3() : x(T{}), y(T{}), z(T{}) {}
-		BaseVector3(T _scalar) : x(_scalar), y(_scalar), z(_scalar) {}
-		BaseVector3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+		constexpr BaseVector3() : x(T{}), y(T{}), z(T{}) {}
+		constexpr BaseVector3(T _scalar) : x(_scalar), y(_scalar), z(_scalar) {}
+		constexpr BaseVector3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
 	};
 
 	template <typename T>
-	struct BaseVector4 : public BaseVector<BaseVector4<T>, T, 4>
+	struct BaseVector4 : public BaseVectorT<BaseVector4<T>, T, 4>
 	{
 		static constexpr size_t N = 4;
 		union
@@ -176,9 +176,24 @@ namespace nem
 			struct { T min1, min2, max1, max2; };
 		};
 
-		BaseVector4() : x(T{}), y(T{}), z(T{}), w(T{}) {}
-		BaseVector4(T _scalar) : x(_scalar), y(_scalar), z(_scalar), w(_scalar) {}
-		BaseVector4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
+		constexpr BaseVector4() : x(T{}), y(T{}), z(T{}), w(T{}) {}
+		constexpr BaseVector4(T _scalar) : x(_scalar), y(_scalar), z(_scalar), w(_scalar) {}
+		constexpr BaseVector4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
+	};
+
+	template <typename T, size_t N>
+	struct BaseVector : public BaseVectorT<BaseVector<T, N>, T, N>
+	{
+		T data[N]{ (T)0 };
+
+		constexpr BaseVector() : data{} {}
+		constexpr BaseVector(T _scalar) : data{}
+		{
+			for (size_t i = 0; i < N; ++i)
+			{
+				data[i] = _scalar;
+			}
+		}
 	};
 
 	using int2 = BaseVector2<int>;

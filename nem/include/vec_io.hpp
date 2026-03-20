@@ -12,7 +12,7 @@ namespace nem
     static inline constexpr const char* VECTOR_R_BRACE = ")";
 
     template<typename Derived, typename T, size_t N>
-    std::ostream& operator<<(std::ostream& os, const BaseVector<Derived, T, N>& vec)
+    std::ostream& operator<<(std::ostream& os, const BaseVectorT<Derived, T, N>& vec)
     {
         os << VECTOR_L_BRACE;
         for (size_t i = 0; i < N; ++i)
@@ -24,7 +24,7 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    std::istream& operator>>(std::istream& is, BaseVector<Derived, T, N>& vec)
+    std::istream& operator>>(std::istream& is, BaseVectorT<Derived, T, N>& vec)
     {
         for (size_t i = 0; i < N; ++i)
         {
