@@ -6,10 +6,10 @@
 
 namespace nem
 {
-	static inline constexpr const char* MATRIX_COLUMN_SEPARATOR = ", ";
-	static inline constexpr const char* MATRIX_ROW_SEPARATOR = "\n";
-	static inline constexpr const char* MATRIX_L_BRACE = "[";
-	static inline constexpr const char* MATRIX_R_BRACE = "]";
+	static constexpr const char* MATRIX_COLUMN_SEPARATOR = ", ";
+	static constexpr const char* MATRIX_ROW_SEPARATOR = "\n";
+	static constexpr const char* MATRIX_L_BRACE = "[";
+	static constexpr const char* MATRIX_R_BRACE = "]";
 
 	template<typename T, size_t R, size_t C>
 	std::string tostr(const mat_base<T, R, C>& matrix)

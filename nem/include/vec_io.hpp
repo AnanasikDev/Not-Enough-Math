@@ -8,9 +8,9 @@
 
 namespace nem
 {
-    static inline constexpr const char* VECTOR_SEPARATOR = ", ";
-    static inline constexpr const char* VECTOR_L_BRACE = "(";
-    static inline constexpr const char* VECTOR_R_BRACE = ")";
+    static constexpr const char* VECTOR_SEPARATOR = ", ";
+    static constexpr const char* VECTOR_L_BRACE = "(";
+    static constexpr const char* VECTOR_R_BRACE = ")";
 
     template<typename Derived, typename T, size_t N>
     std::ostream& operator<<(std::ostream& os, const BaseVectorT<Derived, T, N>& vec)

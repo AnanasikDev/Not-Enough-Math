@@ -82,8 +82,8 @@ namespace nem
 			return result;
 		}
 
-		inline constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
-		inline constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
+		constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
+		constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
 		constexpr const T& operator[](size_t index) const { return comp_r(index); }
 		constexpr T& operator[](size_t index) { return comp_rw(index); }
 
@@ -108,7 +108,7 @@ namespace nem
 			return sum;
 		}
 
-		constexpr inline T length() const { return nem::sqrt(sqrLength()); }
+		constexpr T length() const { return nem::sqrt(sqrLength()); }
 
 		Derived normalize()
 		{
