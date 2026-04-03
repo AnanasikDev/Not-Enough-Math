@@ -110,7 +110,7 @@ namespace nem
 
 		constexpr T length() const { return nem::sqrt(sqrLength()); }
 
-		Derived normalize()
+		Derived normalized() const
 		{
 			Derived result;
 			T len = length();

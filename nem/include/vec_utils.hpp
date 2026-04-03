@@ -67,6 +67,12 @@ namespace nem
         return vector - (T)2.0 * dot(vector, normal) * normal;
     }
 
+    template<typename Derived, typename T, size_t N>
+    inline Derived normalize(const BaseVectorT<Derived, T, N>& v)
+    {
+        return v.normalized();
+    }
+
     template<typename T>
     bool orthogonal_3d_basis(const BaseVector3<T>& vector, BaseVector3<T>& b1, BaseVector3<T>& b2)
     {

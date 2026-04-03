@@ -3,6 +3,8 @@
 
 namespace nem_tests
 {
+    // vectors
+
     TEST_CASE("Addition", "[math]")
     {
         REQUIRE(2 + 2 == 4);

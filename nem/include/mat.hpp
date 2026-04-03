@@ -113,6 +113,23 @@ namespace nem
 			}
 			return result;
 		}
+
+		template <size_t R1, size_t C1>
+		mat_base<T, R, C1> operator*(const mat_base<T, R1, C1>& other)
+		{
+			return mul(*this, other);
+		}
+
+		template <size_t R1, size_t C1>
+		mat_base& operator*=(const mat_base<T, R1, C1>& other)
+		{
+			static_assert(R == C1, "Cannot perform such matrix multiplication: rows and column do not align");
+			if (other != *this)
+			{
+				*this = mul(*this, other);
+			}
+			return *this;
+		}
 	};
 
 	template <typename T, size_t R, size_t C>
@@ -149,6 +166,12 @@ namespace nem
 				result.data[i * N + i] = (T)1;
 			}
 			return result;
+		}
+
+		static constexpr mat transpose(mat matrix)
+		{
+			matrix.transpose_in_place();
+			return matrix;
 		}
 
 		constexpr void transpose_in_place()

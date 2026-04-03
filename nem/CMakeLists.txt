@@ -8,6 +8,7 @@ add_library(nem STATIC
     include/vec.hpp
     include/vec_io.hpp
     include/vec_utils.hpp
+    include/sys.hpp
 )
 
 target_include_directories(nem PUBLIC include)

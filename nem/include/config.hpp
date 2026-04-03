@@ -4,7 +4,6 @@
 
 namespace nem
 {
-
 #if defined(NEM_ERR_THROW) 
     constexpr bool ERR_THROW = true;
 #else

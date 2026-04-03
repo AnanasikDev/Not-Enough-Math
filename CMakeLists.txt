@@ -17,6 +17,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
+if (MSVC)
+    add_compile_options(/Zc:__cplusplus)
+endif()
+
 add_subdirectory(nem)
 add_subdirectory(tests)
 add_subdirectory(demo)
