@@ -8,14 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 include(CTest) # Enables the 'ctest' command and VS Test Explorer integration
-include(FetchContent)
-
-FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG v3.4.0
-)
-FetchContent_MakeAvailable(Catch2)
 
 if (MSVC)
     add_compile_options(/Zc:__cplusplus)

@@ -3,7 +3,7 @@
 #include "vec_utils.hpp"
 #include "mat.hpp"
 #include "mat_io.hpp"
-#include "mat_alg.hpp"
+#include "mat_utils.hpp"
 //#include "sys.hpp"
 #include <iostream>
 
@@ -30,8 +30,9 @@ int main()
 
     mat2 m0;
     m0 | [m0](size_t r, size_t c, float v) { return m0.index(r, c); };
-
     mat2 m1{ 8, 2, 3, 1 };
+    m0 = m1;
+
     mat3 m2{
         { 6, 9, 0 },
         { 5, 5, 4 },

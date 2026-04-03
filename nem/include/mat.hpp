@@ -23,7 +23,7 @@ namespace nem
 
 		T data[size] = { 0 };
 
-		constexpr mat_base() = default;
+		constexpr mat_base() : data{} {};
 		constexpr mat_base(T _scalar) : data{}
 		{
 			for (size_t i = 0; i < size; ++i)
@@ -63,6 +63,7 @@ namespace nem
 		}
 
 		T* operator[](size_t r) { return &data[r * C]; }
+		const T* operator[](size_t r) const { return &data[r * C]; }
 
 		constexpr size_t index(size_t row, size_t column) const { return row * C + column; }
 
@@ -74,32 +75,12 @@ namespace nem
 
 		constexpr T& at_rw(size_t index) { return data[index]; }
 		constexpr T& at_rw(size_t row, size_t column) { return data[index(row, column)]; }
-		
-		static mat_base add(const mat_base& lhs, const mat_base& rhs)
-		{
-			mat_base result = lhs;
-			for (size_t i = 0; i < size; ++i)
-			{
-				result.at_rw(i) = lhs.at(i) + rhs.at(i);
-			}
-			return result;
-		}
-
-		static mat_base sub(const mat_base& lhs, const mat_base& rhs)
-		{
-			mat_base result = lhs;
-			for (size_t i = 0; i < size; ++i)
-			{
-				result.at_rw(i) = lhs.at(i) - rhs.at(i);
-			}
-			return result;
-		}
 
 		template <size_t R1, size_t C1>
-		static mat_base<T, R, C1> mul(const mat_base<T, R, C>& lhs, const mat_base<T, R1, C1>& rhs)
+		friend mat_base<T, R, C1> operator*(const mat_base<T, R, C>& lhs, const mat_base<T, R1, C1>& rhs)
 		{
-			constexpr size_t N = C;
 			static_assert((C == R1) && "Matrix multiplication is only defined for matrices with C0 == R1");
+			constexpr size_t N = C;
 			mat_base<T, R, C1> result;
 			for (size_t r = 0; r < R; ++r)
 			{
@@ -114,21 +95,32 @@ namespace nem
 			return result;
 		}
 
-		template <size_t R1, size_t C1>
-		mat_base<T, R, C1> operator*(const mat_base<T, R1, C1>& other)
+		mat_base& operator+=(const mat_base& other)
 		{
-			return mul(*this, other);
-		}
-
-		template <size_t R1, size_t C1>
-		mat_base& operator*=(const mat_base<T, R1, C1>& other)
-		{
-			static_assert(R == C1, "Cannot perform such matrix multiplication: rows and column do not align");
-			if (other != *this)
+			for (size_t i = 0; i < size; ++i)
 			{
-				*this = mul(*this, other);
+				this->at_rw(i) += other.at_r(i);
 			}
 			return *this;
+		}
+
+		friend mat_base operator+(mat_base lhs, const mat_base& rhs)
+		{
+			lhs += rhs;
+			return lhs;
+		}
+
+		mat_base<T, C, R> transpose()
+		{
+			mat_base<T, C, R> result;
+			for (size_t r = 0; r < R; ++r)
+			{
+				for (size_t c = 0; c < C; ++c)
+				{
+					result.at_rw(c, r) = this->at_r(r, c);
+				}
+			}
+			return result;
 		}
 	};
 
@@ -154,7 +146,7 @@ namespace nem
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				this->data[i * N + i] = (T)1;
+				this->data[i * N + i] = T{1};
 			}
 		}
 
@@ -163,15 +155,9 @@ namespace nem
 			mat result((T)0.0);
 			for (size_t i = 0; i < N; ++i)
 			{
-				result.data[i * N + i] = (T)1;
+				result.data[i * N + i] = T{1};
 			}
 			return result;
-		}
-
-		static constexpr mat transpose(mat matrix)
-		{
-			matrix.transpose_in_place();
-			return matrix;
 		}
 
 		constexpr void transpose_in_place()
@@ -180,7 +166,7 @@ namespace nem
 			{
 				for (size_t c = 0; c < N; ++c)
 				{
-					this->at_rw(c, r) = this->at_r(r, c);
+					std::swap(this->at_rw(c, r), this->at_rw(r, c));
 				}
 			}
 		}

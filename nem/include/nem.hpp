@@ -8,4 +8,4 @@
 #include "vec.hpp"
 #include "vec_utils.hpp"
 #include "mat.hpp"
-#include "mat_alg.hpp"
+#include "mat_utils.hpp"
