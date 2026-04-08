@@ -2,6 +2,8 @@
 #include <string>
 #include <sstream>
 #include <array>
+#include <vector>
+#include <cassert>
 
 namespace nem
 {
@@ -277,4 +279,77 @@ namespace nem
 		}
 	};
 
+	struct alignas(32) fbuffer
+	{
+		fbuffer() = default;
+		fbuffer(std::initializer_list<float> list)
+		{
+			for (auto v : list)
+			{
+				m_data.push_back(v);
+			}
+		}
+
+		inline void add_scalar(float value) { m_data.push_back(value); }
+		inline void add_vector(float* values, size_t length)
+		{
+			m_data.insert(m_data.end(), values, values + length);
+		}
+		inline void remove_at(size_t index, size_t count = 1)
+		{
+			const size_t length = get_length();
+			assert((index < length && index >= 0) && "Index out of range");
+			assert((count >= length - index) && "Count out of range");
+			//if (count < length - index) count = length - index;
+			m_data.erase(m_data.begin() + index, m_data.begin() + index + count);
+		}
+
+		inline float* data() { return m_data.data(); }
+		inline const float* data() const { return m_data.data(); }
+		inline size_t get_length() const { return m_data.size(); }
+		inline size_t get_size_bytes() const { return sizeof(float) * get_length(); }
+
+		inline bool is_item_vectorizable(size_t index) const { return index <= get_length() - 8; }
+		inline size_t get_vectors_count() const { return get_length() / 8; }
+		inline size_t get_non_vectors_count() const { return get_length() % 8; }
+		inline size_t get_total_vectors_count() const
+		{
+			if (get_non_vectors_count() == 0) return get_vectors_count();
+			else return get_vectors_count() + 1;
+		}
+		inline float8_simd get_vector_or_fill_zeros(size_t index) const
+		{
+			const size_t access_index = index * 8;
+			if (is_item_vectorizable(access_index))
+			{
+				return float8_simd(_mm256_load_ps(&m_data[access_index]));
+			}
+			else
+			{
+				const size_t non_vectors_count = get_non_vectors_count();
+				float reg[8];
+				memcpy(reg, &m_data[access_index], non_vectors_count * sizeof(float));
+				for (size_t i = non_vectors_count; i < 8; ++i)
+				{
+					reg[i] = 0.f;
+				}
+				return float8_simd(_mm256_loadu_ps(reg));
+			}
+		}
+
+		friend fbuffer& operator*(fbuffer& lhs, const fbuffer& rhs)
+		{
+			for (size_t i = 0; i < lhs.get_total_vectors_count(); ++i)
+			{
+				float8_simd s1 = lhs.get_vector_or_fill_zeros(i);
+				float8_simd s2 = rhs.get_vector_or_fill_zeros(i);
+				s1 *= s2;
+				s1.Store(lhs.data() + i * 8);
+			}
+			return lhs;
+		}
+
+	private:
+		std::vector<float> m_data;
+	};
 }
