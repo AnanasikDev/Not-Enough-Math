@@ -32,11 +32,11 @@ namespace nem
 #include <string>
     using nem_string = std::string;
     constexpr bool USE_C_STRING = false;
-    const char* GET_C_STRING(nem_string str) { return str.c_str(); }
+    inline const char* GET_C_STRING(nem_string str) { return str.c_str(); }
 #else
     using nem_string = const char*;
     constexpr bool USE_C_STRING = true;
-    const char* GET_C_STRING(nem_string str) { return str; }
+    inline const char* GET_C_STRING(nem_string str) { return str; }
 #endif
 
 #if defined(NEM_USE_DOUBLE_PRECISION)

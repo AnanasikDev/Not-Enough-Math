@@ -19,6 +19,19 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
+    inline bool is_nearly_zero(const BaseVectorT<Derived, T, N>&& v)
+    {
+        for (size_t c = 0; c < N; ++c)
+        {
+            if (!nem::is_nearly_zero(v.comp_r(c)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    template<typename Derived, typename T, size_t N>
     inline T dot(const BaseVectorT<Derived, T, N>& a, const BaseVectorT<Derived, T, N>& b)
     {
         T result = (T)0.0;

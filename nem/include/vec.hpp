@@ -93,7 +93,7 @@ namespace nem
 			Derived result;
 			for (size_t i = 0; i < N; ++i)
 			{
-				result.comp_rw(i) = (T)nem::lerp(comp_r(i), b.comp_r(i), (TT)t);
+				result.comp_rw(i) = (T)nem::lerp(a.comp_r(i), b.comp_r(i), TT{ t });
 			}
 			return result;
 		}

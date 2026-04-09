@@ -1,23 +1,27 @@
 #pragma once
 
 #include <concepts>
+#include <type_traits>
 #include <cassert>
 
 #include "config.hpp"
 
 namespace nem
 {
+	template <typename T>
+	concept TScalar = std::integral<T> || std::floating_point<T>;
+
 	// limits
 	template <std::totally_ordered T> constexpr T clamp(T value, T minIncl, T maxIncl) { if (value > maxIncl) return maxIncl; else if (value < minIncl) return minIncl; else return value; }
 	template <std::totally_ordered T> constexpr T clamp01(T value) { return nem::clamp(value, 0.0F, 1.0F); }
-	template <typename T> constexpr T abs(T value) { return (T)(value >= 0 ? value : -value); }
+	template <typename T> constexpr T abs(T value) { return T{ value >= 0 ? value : -value }; }
 
 	// powers
-	template <typename T> constexpr T sqr(T value) { return (T)(value * value); }
-	template <typename T> constexpr T cube(T value) { return (T)(value * value * value); }
-	template <typename T> constexpr T pow2(T value) { return (T)(nem::sqr(nem::sqr(value))); }
-	template <typename T> constexpr T pow3(T value) { return (T)(nem::sqr(nem::sqr(value))); }
-	template <typename T> constexpr T pow4(T value) { return (T)(nem::sqr(nem::sqr(value))); }
+	template <typename T> constexpr T pow2(T value) { return T{ value * value }; }
+	template <typename T> constexpr T pow3(T value) { return T{ value * value * value }; }
+	template <typename T> constexpr T pow4(T value) { return T{ nem::pow2(nem::pow2(value)) }; }
+	template <typename T> constexpr T sqr (T value) { return T{ value * value }; }
+	template <typename T> constexpr T cube(T value) { return T{ value * value * value }; }
 
 	template <typename T, int Precision = 20>
 	constexpr T sqrt(T value)
@@ -47,7 +51,7 @@ namespace nem
 		return x * x * ((T)3.0 - (T)2.0 * x);
 	}
 	template <typename T> constexpr T lerp(T a, T b, T t) { return b * t + a * ((T)1.0 - t); }
-	template <typename T> constexpr T is_nearly_zero(T a, const T eps = (T)1e-6) { return nem::abs(a - (T)0.0) < eps; }
+	template <TScalar T> constexpr bool is_nearly_zero(T a, const T eps = (T)1e-6) { return nem::abs(a) < eps; }
 
 	// consts
 

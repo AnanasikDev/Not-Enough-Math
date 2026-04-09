@@ -21,7 +21,7 @@ namespace nem
         namespace internal
         {
             template <typename T>
-            T invalid_result_base()
+            inline T invalid_result_base()
             {
 #ifdef NEM_ERR_USE_NAN
                 return T(NAN);
@@ -30,17 +30,17 @@ namespace nem
 #endif
             }
 
-            void push_log(nem_string msg)
+            inline void push_log(nem_string msg)
             {
                 printf("%s\n", GET_C_STRING(msg));
             }
 
-            void push_log_prefix(nem_string prefix, nem_string msg)
+            inline void push_log_prefix(nem_string prefix, nem_string msg)
             {
                 printf("%s %s\n", GET_C_STRING(prefix), GET_C_STRING(msg));
             }
 
-            void force_log(nem_string msg, nem::error::Type type = Type::RuntimeError)
+            inline void force_log(nem_string msg, nem::error::Type type = Type::RuntimeError)
             {
                 switch (type)
                 {
@@ -51,7 +51,7 @@ namespace nem
                 }
             }
 
-            bool force_throw(nem_string msg, nem::error::Type type = Type::RuntimeError)
+            inline bool force_throw(nem_string msg, nem::error::Type type = Type::RuntimeError)
             {
 #ifdef _STDEXCEPT_
                 switch (type)
@@ -80,7 +80,7 @@ namespace nem
             }
         }
 
-        void report(nem_string msg, nem::error::Type type = Type::RuntimeError)
+        inline void report(nem_string msg, nem::error::Type type = Type::RuntimeError)
         {
 #ifdef NEM_ERR_THROW
             internal::force_throw(msg, type);
@@ -90,7 +90,7 @@ namespace nem
 #endif
         }
 
-        void report_invalid(nem::error::Type type = Type::RuntimeError)
+        inline void report_invalid(nem::error::Type type = Type::RuntimeError)
         {
             const char* msg = "Inavlid result";
 #ifdef NEM_ERR_THROW
@@ -102,7 +102,7 @@ namespace nem
         }
 
         template <typename T>
-        T invalid_result(nem::error::Type type = Type::RuntimeError)
+        inline T invalid_result(nem::error::Type type = Type::RuntimeError)
         {
             report_invalid(type);
             return internal::invalid_result_base<T>();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include "utils.hpp"
 
 namespace nem
 {
@@ -77,7 +78,7 @@ namespace nem
 		constexpr T& at_rw(size_t row, size_t column) { return data[index(row, column)]; }
 
 		template <size_t R1, size_t C1>
-		friend mat_base<T, R, C1> operator*(const mat_base<T, R, C>& lhs, const mat_base<T, R1, C1>& rhs)
+		constexpr friend mat_base<T, R, C1> operator*(const mat_base<T, R, C>& lhs, const mat_base<T, R1, C1>& rhs)
 		{
 			static_assert((C == R1) && "Matrix multiplication is only defined for matrices with C0 == R1");
 			constexpr size_t N = C;
@@ -95,7 +96,7 @@ namespace nem
 			return result;
 		}
 
-		mat_base& operator+=(const mat_base& other)
+		constexpr mat_base& operator+=(const mat_base& other)
 		{
 			for (size_t i = 0; i < size; ++i)
 			{
@@ -104,13 +105,13 @@ namespace nem
 			return *this;
 		}
 
-		friend mat_base operator+(mat_base lhs, const mat_base& rhs)
+		constexpr friend mat_base operator+(mat_base lhs, const mat_base& rhs)
 		{
 			lhs += rhs;
 			return lhs;
 		}
 
-		mat_base<T, C, R> transpose()
+		constexpr mat_base<T, C, R> transpose() const
 		{
 			mat_base<T, C, R> result;
 			for (size_t r = 0; r < R; ++r)
@@ -121,6 +122,23 @@ namespace nem
 				}
 			}
 			return result;
+		}
+
+		constexpr bool operator==(const mat_base& other) const
+		{
+			for (size_t i = 0; i < size; ++i)
+			{
+				if (!nem::is_nearly_zero(data[i] - other.data[i]))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		constexpr bool operator!=(const mat_base& other) const
+		{
+			return !(*this == other);
 		}
 	};
 
@@ -135,13 +153,6 @@ namespace nem
 	{
 		using mat_base<T, N, N>::mat_base;
 
-		constexpr mat(T _scalar)
-		{
-			for (size_t i = 0; i < mat::size; ++i)
-			{
-				this->data[i] = _scalar;
-			}
-		}
 		constexpr mat()
 		{
 			for (size_t i = 0; i < N; ++i)
@@ -164,7 +175,7 @@ namespace nem
 		{
 			for (size_t r = 0; r < N; ++r)
 			{
-				for (size_t c = 0; c < N; ++c)
+				for (size_t c = r + 1; c < N; ++c)
 				{
 					std::swap(this->at_rw(c, r), this->at_rw(r, c));
 				}

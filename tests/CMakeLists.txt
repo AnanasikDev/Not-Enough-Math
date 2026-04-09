@@ -1,7 +1,10 @@
 include(FetchContent)
 
-add_executable(tests 
-    tests_main.cpp
+add_executable(tests
+    tests_vector.cpp
+    tests_scalar.cpp
+    common.h
+    common.cpp
 )
 
 FetchContent_Declare(
