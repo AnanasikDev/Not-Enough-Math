@@ -17,7 +17,7 @@ using Catch::Matchers::WithinRel;
 namespace nem_tests
 {
 
-    // Defined in common.cpp — one definition, no ODR conflicts.
+    // Defined in common.cpp - one definition, no ODR conflicts.
     extern const float  kEps;
     extern const double kEpsD;
 
