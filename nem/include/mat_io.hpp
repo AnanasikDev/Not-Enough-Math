@@ -12,7 +12,7 @@ namespace nem
 	static constexpr const char* MATRIX_R_BRACE = "]";
 
 	template<typename T, size_t R, size_t C>
-	std::string tostr(const mat_base<T, R, C>& matrix)
+	std::string tostr(const mat<T, R, C>& matrix)
 	{
 		std::stringstream ss;
 		for (size_t r = 0; r < R; ++r)
@@ -29,7 +29,7 @@ namespace nem
 	}
 
 	template<typename T, size_t R, size_t C>
-    std::ostream& operator<<(std::ostream& os, const mat_base<T, R, C>& matrix)
+    std::ostream& operator<<(std::ostream& os, const mat<T, R, C>& matrix)
     {
 		for (size_t r = 0; r < R; ++r)
 		{
@@ -45,7 +45,7 @@ namespace nem
     }
 
 	template<typename T, size_t R, size_t C>
-    std::istream& operator>>(std::istream& is, mat_base<T, R, C>& matrix)
+    std::istream& operator>>(std::istream& is, mat<T, R, C>& matrix)
     {
 		for (size_t r = 0; r < R; ++r)
 		{

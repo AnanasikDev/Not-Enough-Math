@@ -6,9 +6,12 @@
 namespace nem
 {
 	template <typename T, size_t R, size_t C>
-	struct mat_base
+	struct mat
 	{
-		static constexpr size_t size{ R * C };
+		static constexpr size_t Size{ R * C };
+		static constexpr size_t Rows = R;
+		static constexpr size_t Columns = C;
+		using Type = T;
 
 		///
 		///            C
@@ -22,20 +25,20 @@ namespace nem
 		///	    Cl0 Cl1 Cl2 Cl3
 		///
 
-		T data[size] = { 0 };
+		T data[Size] = { 0 };
 
-		constexpr mat_base() : data{} {};
-		constexpr mat_base(T _scalar) : data{}
+		constexpr mat() : data{} {};
+		constexpr mat(T _scalar) : data{}
 		{
-			for (size_t i = 0; i < size; ++i)
+			for (size_t i = 0; i < Size; ++i)
 			{
 				data[i] = _scalar;
 			}
 		}
 
-		constexpr mat_base(std::initializer_list<T> list) : data{}
+		constexpr mat(std::initializer_list<T> list) : data{}
 		{
-			assert(list.size() == size && "Matrix must be initialized with exactly R * C elements");
+			assert(list.size() == Size && "Matrix must be initialized with exactly R * C elements");
 
 			size_t i = 0;
 			for (const auto& val : list)
@@ -44,7 +47,7 @@ namespace nem
 			}
 		}
 
-		constexpr mat_base(std::initializer_list<std::initializer_list<T>> rows) : data{}
+		constexpr mat(std::initializer_list<std::initializer_list<T>> rows) : data{}
 		{
 			assert(rows.size() == R && "Matrix row count mismatch!");
 
@@ -68,9 +71,6 @@ namespace nem
 
 		constexpr size_t index(size_t row, size_t column) const { return row * C + column; }
 
-		constexpr T at(size_t index) const { return data[index]; }
-		constexpr T at(size_t row, size_t column) const { return data[index(row, column)]; }
-
 		constexpr const T& at_r(size_t index) const { return data[index]; }
 		constexpr const T& at_r(size_t row, size_t column) const { return data[index(row, column)]; }
 
@@ -78,11 +78,11 @@ namespace nem
 		constexpr T& at_rw(size_t row, size_t column) { return data[index(row, column)]; }
 
 		template <size_t R1, size_t C1>
-		constexpr friend mat_base<T, R, C1> operator*(const mat_base<T, R, C>& lhs, const mat_base<T, R1, C1>& rhs)
+		constexpr friend mat<T, R, C1> operator*(const mat<T, R, C>& lhs, const mat<T, R1, C1>& rhs)
 		{
 			static_assert((C == R1) && "Matrix multiplication is only defined for matrices with C0 == R1");
 			constexpr size_t N = C;
-			mat_base<T, R, C1> result;
+			mat<T, R, C1> result;
 			for (size_t r = 0; r < R; ++r)
 			{
 				for (size_t c = 0; c < C1; ++c)
@@ -96,39 +96,26 @@ namespace nem
 			return result;
 		}
 
-		constexpr mat_base& operator+=(const mat_base& other)
+		constexpr mat& operator+=(const mat& other)
 		{
-			for (size_t i = 0; i < size; ++i)
+			for (size_t i = 0; i < Size; ++i)
 			{
 				this->at_rw(i) += other.at_r(i);
 			}
 			return *this;
 		}
 
-		constexpr friend mat_base operator+(mat_base lhs, const mat_base& rhs)
+		constexpr friend mat operator+(mat lhs, const mat& rhs)
 		{
 			lhs += rhs;
 			return lhs;
 		}
 
-		constexpr mat_base<T, C, R> transpose() const
+		constexpr friend bool operator==(const mat& lhs, const mat& rhs)
 		{
-			mat_base<T, C, R> result;
-			for (size_t r = 0; r < R; ++r)
+			for (size_t i = 0; i < lhs.Size; ++i)
 			{
-				for (size_t c = 0; c < C; ++c)
-				{
-					result.at_rw(c, r) = this->at_r(r, c);
-				}
-			}
-			return result;
-		}
-
-		constexpr bool operator==(const mat_base& other) const
-		{
-			for (size_t i = 0; i < size; ++i)
-			{
-				if (!nem::is_nearly_zero(data[i] - other.data[i]))
+				if (!nem::is_nearly_zero(lhs.data[i] - rhs.data[i]))
 				{
 					return false;
 				}
@@ -136,50 +123,9 @@ namespace nem
 			return true;
 		}
 
-		constexpr bool operator!=(const mat_base& other) const
+		constexpr friend bool operator!=(const mat& lhs, const mat& rhs)
 		{
-			return !(*this == other);
-		}
-	};
-
-	template <typename T, size_t R, size_t C>
-	struct mat : public mat_base<T, R, C>
-	{
-		using mat_base<T, R, C>::mat_base;
-	};
-
-	template <typename T, size_t N>
-	struct mat<T, N, N> : public mat_base<T, N, N>
-	{
-		using mat_base<T, N, N>::mat_base;
-
-		constexpr mat()
-		{
-			for (size_t i = 0; i < N; ++i)
-			{
-				this->data[i * N + i] = T{1};
-			}
-		}
-
-		static constexpr mat identity()
-		{
-			mat result((T)0.0);
-			for (size_t i = 0; i < N; ++i)
-			{
-				result.data[i * N + i] = T{1};
-			}
-			return result;
-		}
-
-		constexpr void transpose_in_place()
-		{
-			for (size_t r = 0; r < N; ++r)
-			{
-				for (size_t c = r + 1; c < N; ++c)
-				{
-					std::swap(this->at_rw(c, r), this->at_rw(r, c));
-				}
-			}
+			return !(lhs == rhs);
 		}
 	};
 
