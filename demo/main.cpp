@@ -25,7 +25,6 @@ int main()
     std::cout << dot(a, b) << std::endl;
     std::cout << v2 << std::endl;
     float3 v3;
-    std::cout << v3.normalized() << std::endl;
     std::cout << normalize(v3) << std::endl;
 
     mat2 m0;

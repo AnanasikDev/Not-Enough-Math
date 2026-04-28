@@ -3,129 +3,159 @@
 #include "utils.hpp"
 #include "err.hpp"
 
+#include <type_traits>
+#include <cstddef>
+
+#define TEST_VEC_TRAITS(VecType, Scalar) \
+    static_assert(sizeof(VecType) == sizeof(Scalar) * VecType::Comps, \
+        #VecType " size mismatch! Possible unexpected padding."); \
+    static_assert(std::is_standard_layout_v<VecType>, \
+        #VecType " is not Standard Layout. This breaks C-compatibility/offsetof."); \
+    \
+    static_assert(std::is_trivially_copyable_v<VecType>, \
+        #VecType " is not trivially copyable. This hurts pass-by-value performance."); \
+    static_assert(std::is_trivially_destructible_v<VecType>, \
+        #VecType " has a non-trivial destructor. This prevents it from being in a union."); \
+    \
+    static_assert(alignof(VecType) >= alignof(Scalar), \
+        #VecType " alignment is weaker than its scalar component."); \
+    \
+    static_assert(std::is_default_constructible_v<VecType>, \
+        #VecType " should be default constructible for array allocations."); \
+    static_assert(std::is_trivially_copy_constructible_v<VecType>, \
+        #VecType " copy constructor is not trivial."); \
+    static_assert(std::is_trivially_move_constructible_v<VecType>, \
+        #VecType " move constructor is not trivial (math types should be POD-like).");
+
+#define TEST_VEC_CLASS(ClassName) \
+    TEST_VEC_TRAITS(ClassName<double>, double); \
+    TEST_VEC_TRAITS(ClassName<float>, float); \
+    TEST_VEC_TRAITS(ClassName<unsigned long long int>, unsigned long long int); \
+    TEST_VEC_TRAITS(ClassName<long long int>, long long int); \
+    TEST_VEC_TRAITS(ClassName<long int>, long int); \
+    TEST_VEC_TRAITS(ClassName<unsigned long int>, unsigned long int); \
+    TEST_VEC_TRAITS(ClassName<short>, short); \
+    TEST_VEC_TRAITS(ClassName<unsigned short>, unsigned short); \
+    TEST_VEC_TRAITS(ClassName<char>, char); \
+    TEST_VEC_TRAITS(ClassName<unsigned char>, unsigned char);
+
 namespace nem
 {
 	template<typename Derived, typename T, size_t N>
 	struct BaseVectorT
 	{
+		using Type = T;
+		static constexpr size_t Comps = N;
+
 		static_assert(N > 0 && "Not Enough Math: Vector N must be greater than 0");
 
 		constexpr Derived& _impl_rw() { return (Derived&)*this; }
 		constexpr const Derived& _impl_r() const { return (const Derived&)*this; }
+		constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
+		constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
+		constexpr T& operator[](size_t index) { return comp_rw(index); }
+		constexpr const T& operator[](size_t index) const { return comp_r(index); }
 
-		Derived operator+(const Derived& other)
-		{
-			Derived result;
-			for (size_t i = 0; i < N; ++i)
-			{
-				result[i] = comp_r(i) + other.comp_r(i);
-			}
-			return result;
-		}
-
-		Derived operator-(const Derived& other)
-		{
-			Derived result;
-			for (size_t i = 0; i < N; ++i)
-			{
-				result[i] = comp_r(i) - other.comp_r(i);
-			}
-			return result;
-		}
-
-		Derived operator*(T scalar)
-		{
-			Derived result{};
-			for (size_t i = 0; i < N; ++i)
-			{
-				result[i] = comp_r(i) * scalar;
-			}
-			return result;
-		}
-
-		Derived operator*(Derived other)
-		{
-			Derived result{};
-			for (size_t i = 0; i < N; ++i)
-			{
-				result[i] = comp_r(i) * other.comp_r(i);
-			}
-			return result;
-		}
-
-		Derived& operator*=(const Derived& other)
+		Derived& operator+=(const Derived& rhs)
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				_impl_rw()[i] *= other.comp_r(i);
+				(*this)[i] = this->comp_r(i) + rhs.comp_r(i);
 			}
 			return _impl_rw();
 		}
 
-		Derived operator/(T scalar)
+		Derived& operator-=(const Derived& rhs)
 		{
-			Derived result{};
 			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = comp_r(i) / scalar;
+				(*this)[i] = this->comp_r(i) - rhs.comp_r(i);
 			}
-			return result;
+			return _impl_rw();
 		}
 
-		Derived operator/(Derived other)
+		Derived& operator*=(const Derived& rhs)
 		{
-			Derived result{};
 			for (size_t i = 0; i < N; ++i)
 			{
-				result[i] = comp_r(i) / other.comp_r(i);
+				(*this)[i] = this->comp_r(i) * rhs.comp_r(i);
 			}
-			return result;
+			return _impl_rw();
 		}
 
-		constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
-		constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
-		constexpr const T& operator[](size_t index) const { return comp_r(index); }
-		constexpr T& operator[](size_t index) { return comp_rw(index); }
-
-		template <typename TT = T>
-		static constexpr Derived lerp(const Derived& a, const Derived& b, TT t)
+		Derived& operator*=(T scalar)
 		{
-			Derived result;
 			for (size_t i = 0; i < N; ++i)
 			{
-				result.comp_rw(i) = (T)nem::lerp(a.comp_r(i), b.comp_r(i), TT{ t });
+				(*this)[i] = this->comp_r(i) * scalar;
 			}
-			return result;
+			return _impl_rw();
 		}
 
-		constexpr T sqrLength() const
+		Derived& operator/=(const Derived& rhs)
 		{
-			T sum = T{};
 			for (size_t i = 0; i < N; ++i)
 			{
-				sum += comp_r(i) * comp_r(i);
+				(*this)[i] = this->comp_r(i) / rhs.comp_r(i);
 			}
-			return sum;
+			return _impl_rw();
 		}
 
-		constexpr T length() const { return nem::sqrt(sqrLength()); }
-
-		Derived normalized() const
+		Derived& operator/=(T scalar)
 		{
-			Derived result;
-			T len = length();
-
-			if (nem::is_nearly_zero(len))
-			{
-				return nem::error::invalid_result<Derived>();
-			}
-
 			for (size_t i = 0; i < N; ++i)
 			{
-				result.comp_rw(i) = comp_r(i) / len;
+				(*this)[i] = this->comp_r(i) / scalar;
 			}
+			return _impl_rw();
+		}
 
-			return result;
+		friend Derived operator+(Derived lhs, const Derived& rhs)
+		{
+			lhs += rhs;
+			return lhs;
+		}
+
+		friend Derived operator-(Derived lhs, const Derived& rhs)
+		{
+			lhs -= rhs;
+			return lhs;
+		}
+
+		friend Derived operator*(Derived lhs, const Derived& rhs)
+		{
+			lhs *= rhs;
+			return lhs;
+		}
+
+		friend Derived operator*(Derived vec, T scalar)
+		{
+			vec *= scalar;
+			return vec;
+		}
+
+		friend Derived operator*(T scalar, Derived vec)
+		{
+			vec *= scalar;
+			return vec;
+		}
+
+		friend Derived operator/(Derived lhs, const Derived& rhs)
+		{
+			lhs /= rhs;
+			return lhs;
+		}
+
+		friend Derived operator/(Derived vec, T scalar)
+		{
+			vec /= scalar;
+			return vec;
+		}
+
+		friend Derived operator/(T scalar, Derived vec)
+		{
+			vec /= scalar;
+			return vec;
 		}
 	};
 
@@ -147,6 +177,7 @@ namespace nem
 		constexpr BaseVector2(T _x, T _y) : x(_x), y(_y) {}
 		constexpr BaseVector2(T _scalar) : x(_scalar), y(_scalar) {}
 	};
+	TEST_VEC_CLASS(BaseVector2)
 
 	template <typename T>
 	struct BaseVector3 : public BaseVectorT<BaseVector3<T>, T, 3>
@@ -163,6 +194,7 @@ namespace nem
 		constexpr BaseVector3(T _scalar) : x(_scalar), y(_scalar), z(_scalar) {}
 		constexpr BaseVector3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
 	};
+	TEST_VEC_CLASS(BaseVector3)
 
 	template <typename T>
 	struct BaseVector4 : public BaseVectorT<BaseVector4<T>, T, 4>
@@ -180,6 +212,7 @@ namespace nem
 		constexpr BaseVector4(T _scalar) : x(_scalar), y(_scalar), z(_scalar), w(_scalar) {}
 		constexpr BaseVector4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
 	};
+	TEST_VEC_CLASS(BaseVector4)
 
 	template <typename T, size_t N>
 	struct BaseVector : public BaseVectorT<BaseVector<T, N>, T, N>
@@ -225,3 +258,11 @@ namespace nem
 		static inline float4 yellow = rgb(1.f, 1.f, 0.f);
 	};
 }
+
+#ifdef TEST_VEC_CLASS
+#undef TEST_VEC_CLASS
+#endif
+
+#ifdef TEST_VEC_TRAITS
+#undef TEST_VEC_TRAITS
+#endif
