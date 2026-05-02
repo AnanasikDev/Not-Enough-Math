@@ -1,20 +1,19 @@
 include(FetchContent)
 
 add_executable(tests
-    tests_vector.cpp
     tests_scalar.cpp
+    tests_vector.cpp
     tests_quat.cpp
-    common.h
+    
 )
 
+include(GoogleTest)
 FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG v3.4.0
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.15.2
 )
-FetchContent_MakeAvailable(Catch2)
-include(Catch) # makes tests show up in Visual Studio's Test Explorer
-catch_discover_tests(tests)
+FetchContent_MakeAvailable(googletest)
 
 FetchContent_Declare(
     glm
@@ -26,8 +25,15 @@ FetchContent_MakeAvailable(glm)
 target_link_libraries(tests 
     PRIVATE 
         nem
-        Catch2::Catch2WithMain
+        gtest_main
         glm::glm
 )
-
 set_target_properties(tests PROPERTIES FOLDER "Tests")
+
+add_custom_target(run_tests
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure -C $<CONFIG>
+    DEPENDS tests
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Building and running all tests..."
+)
+gtest_discover_tests(tests)

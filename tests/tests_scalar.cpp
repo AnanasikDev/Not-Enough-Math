@@ -1,199 +1,202 @@
-#include "common.h"
+#include <gtest/gtest.h>
+#include <cmath>
+#include "nem.hpp"
 
-using namespace nem_tests;
+static constexpr float  kEps = 1e-4f;
+static constexpr double kEpsD = 1e-9;
 
 // ===========================================================================
 // clamp
 // ===========================================================================
 
-TEST_CASE("scalar::clamp::in-range value is unchanged", "[scalar][clamp]")
+TEST(ScalarClamp, InRangeValueIsUnchanged)
 {
     int value = 5;
 
     int result = nem::clamp(value, 0, 10);
 
-    REQUIRE(result == 5);
+    ASSERT_EQ(result, 5);
 }
 
-TEST_CASE("scalar::clamp::value below min becomes min", "[scalar][clamp]")
+TEST(ScalarClamp, ValueBelowMinBecomesMin)
 {
     int value = -1;
 
     int result = nem::clamp(value, 0, 10);
 
-    REQUIRE(result == 0);
+    ASSERT_EQ(result, 0);
 }
 
-TEST_CASE("scalar::clamp::value above max becomes max", "[scalar][clamp]")
+TEST(ScalarClamp, ValueAboveMaxBecomesMax)
 {
     int value = 11;
 
     int result = nem::clamp(value, 0, 10);
 
-    REQUIRE(result == 10);
+    ASSERT_EQ(result, 10);
 }
 
-TEST_CASE("scalar::clamp::value at lower boundary is unchanged", "[scalar][clamp]")
+TEST(ScalarClamp, ValueAtLowerBoundaryIsUnchanged)
 {
     int value = 0;
 
     int result = nem::clamp(value, 0, 10);
 
-    REQUIRE(result == 0);
+    ASSERT_EQ(result, 0);
 }
 
-TEST_CASE("scalar::clamp::value at upper boundary is unchanged", "[scalar][clamp]")
+TEST(ScalarClamp, ValueAtUpperBoundaryIsUnchanged)
 {
     int value = 10;
 
     int result = nem::clamp(value, 0, 10);
 
-    REQUIRE(result == 10);
+    ASSERT_EQ(result, 10);
 }
 
 // ===========================================================================
 // abs
 // ===========================================================================
 
-TEST_CASE("scalar::abs::negative integer becomes positive", "[scalar][abs]")
+TEST(ScalarAbs, NegativeIntegerBecomesPositive)
 {
     int value = -7;
 
     int result = nem::abs(value);
 
-    REQUIRE(result == 7);
+    ASSERT_EQ(result, 7);
 }
 
-TEST_CASE("scalar::abs::positive integer is unchanged", "[scalar][abs]")
+TEST(ScalarAbs, PositiveIntegerIsUnchanged)
 {
     int value = 7;
 
     int result = nem::abs(value);
 
-    REQUIRE(result == 7);
+    ASSERT_EQ(result, 7);
 }
 
 // ===========================================================================
 // sqr
 // ===========================================================================
 
-TEST_CASE("scalar::sqr::positive integer", "[scalar][sqr]")
+TEST(ScalarSqr, PositiveInteger)
 {
     int value = 5;
 
     int result = nem::sqr(value);
 
-    REQUIRE(result == 25);
+    ASSERT_EQ(result, 25);
 }
 
-TEST_CASE("scalar::sqr::negative integer yields positive", "[scalar][sqr]")
+TEST(ScalarSqr, NegativeIntegerYieldsPositive)
 {
     int value = -5;
 
     int result = nem::sqr(value);
 
-    REQUIRE(result == 25);
+    ASSERT_EQ(result, 25);
 }
 
 // ===========================================================================
 // cube
 // ===========================================================================
 
-TEST_CASE("scalar::cube::positive integer", "[scalar][cube]")
+TEST(ScalarCube, PositiveInteger)
 {
     int value = 3;
 
     int result = nem::cube(value);
 
-    REQUIRE(result == 27);
+    ASSERT_EQ(result, 27);
 }
 
-TEST_CASE("scalar::cube::negative integer preserves sign", "[scalar][cube]")
+TEST(ScalarCube, NegativeIntegerPreservesSign)
 {
     int value = -2;
 
     int result = nem::cube(value);
 
-    REQUIRE(result == -8);
+    ASSERT_EQ(result, -8);
 }
 
 // ===========================================================================
 // sqrt (floating point)
 // ===========================================================================
 
-TEST_CASE("scalar::sqrt_float::perfect square converges exactly", "[scalar][sqrt]")
+TEST(ScalarSqrtFloat, PerfectSquareConvergesExactly)
 {
     double value = 4.0;
 
     double result = nem::sqrt(value);
 
-    REQUIRE_THAT(result, WithinAbs(2.0, kEpsD));
+    ASSERT_NEAR(result, 2.0, kEpsD);
 }
 
-TEST_CASE("scalar::sqrt_float::irrational result matches std", "[scalar][sqrt]")
+TEST(ScalarSqrtFloat, IrrationalResultMatchesStd)
 {
     double value = 2.0;
 
     double result = nem::sqrt(value);
 
-    REQUIRE_THAT(result, WithinAbs(std::sqrt(2.0), kEpsD));
+    ASSERT_NEAR(result, std::sqrt(2.0), kEpsD);
 }
 
-TEST_CASE("scalar::sqrt_float::zero returns zero", "[scalar][sqrt]")
+TEST(ScalarSqrtFloat, ZeroReturnsZero)
 {
     double value = 0.0;
 
     double result = nem::sqrt(value);
 
-    REQUIRE_THAT(result, WithinAbs(0.0, kEpsD));
+    ASSERT_NEAR(result, 0.0, kEpsD);
 }
 
-TEST_CASE("scalar::sqrt_float::negative input returns zero", "[scalar][sqrt]")
+TEST(ScalarSqrtFloat, NegativeInputReturnsZero)
 {
     double value = -1.0;
 
     double result = nem::sqrt(value);
 
-    REQUIRE_THAT(result, WithinAbs(0.0, kEpsD));
+    ASSERT_NEAR(result, 0.0, kEpsD);
 }
 
 // ===========================================================================
 // sqrt (integer)
 // ===========================================================================
 
-TEST_CASE("scalar::sqrt_int::zero returns zero", "[scalar][sqrt]")
+TEST(ScalarSqrtInt, ZeroReturnsZero)
 {
     int result = nem::sqrt(0);
 
-    REQUIRE(result == 0);
+    ASSERT_EQ(result, 0);
 }
 
-TEST_CASE("scalar::sqrt_int::4 returns 2", "[scalar][sqrt]")
+TEST(ScalarSqrtInt, FourReturnsTwo)
 {
     int result = nem::sqrt(4);
 
-    REQUIRE(result == 2);
+    ASSERT_EQ(result, 2);
 }
 
-TEST_CASE("scalar::sqrt_int::9 returns 3", "[scalar][sqrt]")
+TEST(ScalarSqrtInt, NineReturnsThree)
 {
     int result = nem::sqrt(9);
 
-    REQUIRE(result == 3);
+    ASSERT_EQ(result, 3);
 }
 
-TEST_CASE("scalar::sqrt_int::25 returns 5", "[scalar][sqrt]")
+TEST(ScalarSqrtInt, TwentyFiveReturnsFive)
 {
     int result = nem::sqrt(25);
 
-    REQUIRE(result == 5);
+    ASSERT_EQ(result, 5);
 }
 
 // ===========================================================================
 // lerp
 // ===========================================================================
 
-TEST_CASE("scalar::lerp::returns at 0", "[scalar][lerp]")
+TEST(ScalarLerp, ReturnsAAtZero)
 {
     double a = 0.0;
     double b = 10.0;
@@ -201,10 +204,10 @@ TEST_CASE("scalar::lerp::returns at 0", "[scalar][lerp]")
 
     double result = nem::lerp(a, b, t);
 
-    REQUIRE_THAT(result, WithinAbs(a, kEpsD));
+    ASSERT_NEAR(result, a, kEpsD);
 }
 
-TEST_CASE("scalar::lerp::returns b at 1", "[scalar][lerp]")
+TEST(ScalarLerp, ReturnsBAtOne)
 {
     double a = 0.0;
     double b = 10.0;
@@ -212,10 +215,10 @@ TEST_CASE("scalar::lerp::returns b at 1", "[scalar][lerp]")
 
     double result = nem::lerp(a, b, t);
 
-    REQUIRE_THAT(result, WithinAbs(b, kEpsD));
+    ASSERT_NEAR(result, b, kEpsD);
 }
 
-TEST_CASE("scalar::lerp::at t0.5 returns midpoint", "[scalar][lerp]")
+TEST(ScalarLerp, AtHalfReturnsMidpoint)
 {
     double a = 0.0;
     double b = 10.0;
@@ -223,10 +226,10 @@ TEST_CASE("scalar::lerp::at t0.5 returns midpoint", "[scalar][lerp]")
 
     double result = nem::lerp(a, b, t);
 
-    REQUIRE_THAT(result, WithinAbs(5.0, kEpsD));
+    ASSERT_NEAR(result, 5.0, kEpsD);
 }
 
-TEST_CASE("scalar::lerp::negative range midpoint is zero", "[scalar][lerp]")
+TEST(ScalarLerp, NegativeRangeMidpointIsZero)
 {
     double a = -4.0;
     double b = 4.0;
@@ -234,90 +237,90 @@ TEST_CASE("scalar::lerp::negative range midpoint is zero", "[scalar][lerp]")
 
     double result = nem::lerp(a, b, t);
 
-    REQUIRE_THAT(result, WithinAbs(0.0, kEpsD));
+    ASSERT_NEAR(result, 0.0, kEpsD);
 }
 
 // ===========================================================================
 // smoothstep
 // ===========================================================================
 
-TEST_CASE("scalar::smoothstep::returns 0 at edge0", "[scalar][smoothstep]")
+TEST(ScalarSmoothstep, ReturnsZeroAtEdge0)
 {
     double result = nem::smoothstep(0.0, 1.0, 0.0);
 
-    REQUIRE_THAT(result, WithinAbs(0.0, kEpsD));
+    ASSERT_NEAR(result, 0.0, kEpsD);
 }
 
-TEST_CASE("scalar::smoothstep::returns 1 at edge1", "[scalar][smoothstep]")
+TEST(ScalarSmoothstep, ReturnsOneAtEdge1)
 {
     double result = nem::smoothstep(0.0, 1.0, 1.0);
 
-    REQUIRE_THAT(result, WithinAbs(1.0, kEpsD));
+    ASSERT_NEAR(result, 1.0, kEpsD);
 }
 
-TEST_CASE("scalar::smoothstep::returns 0.5 at symmetric midpoint", "[scalar][smoothstep]")
+TEST(ScalarSmoothstep, ReturnsHalfAtSymmetricMidpoint)
 {
     double result = nem::smoothstep(0.0, 1.0, 0.5);
 
-    REQUIRE_THAT(result, WithinAbs(0.5, kEpsD));
+    ASSERT_NEAR(result, 0.5, kEpsD);
 }
 
-TEST_CASE("scalar::smoothstep::clamps below edge0", "[scalar][smoothstep]")
+TEST(ScalarSmoothstep, ClampsBelowEdge0)
 {
     double result = nem::smoothstep(0.0, 1.0, -1.0);
 
-    REQUIRE_THAT(result, WithinAbs(0.0, kEpsD));
+    ASSERT_NEAR(result, 0.0, kEpsD);
 }
 
-TEST_CASE("scalar::smoothstep::clamps above edge1", "[scalar][smoothstep]")
+TEST(ScalarSmoothstep, ClampsAboveEdge1)
 {
     double result = nem::smoothstep(0.0, 1.0, 2.0);
 
-    REQUIRE_THAT(result, WithinAbs(1.0, kEpsD));
+    ASSERT_NEAR(result, 1.0, kEpsD);
 }
 
 // ===========================================================================
 // is_nearly_zero
 // ===========================================================================
 
-TEST_CASE("scalar::is_nearly_zero::exact zero", "[scalar][is_nearly_zero]")
+TEST(ScalarIsNearlyZero, ExactZero)
 {
     bool result = nem::is_nearly_zero(0.0);
 
-    REQUIRE(result);
+    ASSERT_TRUE(result);
 }
 
-TEST_CASE("scalar::is_nearly_zero::within default epsilon", "[scalar][is_nearly_zero]")
+TEST(ScalarIsNearlyZero, WithinDefaultEpsilon)
 {
     bool result = nem::is_nearly_zero(1e-7);
 
-    REQUIRE(result);
+    ASSERT_TRUE(result);
 }
 
-TEST_CASE("scalar::is_nearly_zero::negative within default epsilon", "[scalar][is_nearly_zero]")
+TEST(ScalarIsNearlyZero, NegativeWithinDefaultEpsilon)
 {
     bool result = nem::is_nearly_zero(-1e-7);
 
-    REQUIRE(result);
+    ASSERT_TRUE(result);
 }
 
-TEST_CASE("scalar::is_nearly_zero::outside default epsilon", "[scalar][is_nearly_zero]")
+TEST(ScalarIsNearlyZero, OutsideDefaultEpsilon)
 {
     bool result = nem::is_nearly_zero(0.01);
 
-    REQUIRE_FALSE(result);
+    ASSERT_FALSE(result);
 }
 
-TEST_CASE("scalar::is_nearly_zero::within custom epsilon", "[scalar][is_nearly_zero]")
+TEST(ScalarIsNearlyZero, WithinCustomEpsilon)
 {
     bool result = nem::is_nearly_zero(0.05, 0.1);
 
-    REQUIRE(result);
+    ASSERT_TRUE(result);
 }
 
-TEST_CASE("scalar::is_nearly_zero::outside custom epsilon", "[scalar][is_nearly_zero]")
+TEST(ScalarIsNearlyZero, OutsideCustomEpsilon)
 {
     bool result = nem::is_nearly_zero(0.15, 0.1);
 
-    REQUIRE_FALSE(result);
+    ASSERT_FALSE(result);
 }

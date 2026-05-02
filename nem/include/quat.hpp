@@ -1,6 +1,8 @@
 #pragma once
 
 #include "config.hpp"
+#include "err.hpp"
+#include "utils.hpp"
 
 namespace nem
 {
@@ -12,10 +14,33 @@ namespace nem
 
         constexpr quat& operator*=(const quat& other)
         {
-            this->s = z * other.s + s * other.z + x * other.y - y * other.x;
-            this->x = z * other.x - s * other.y + x * other.z + y * other.s;
-            this->y = z * other.y + s * other.x - x * other.s + y * other.z;
-            this->z = z * other.z - s * other.s - x * other.x - y * other.y;
+            quat& q = *this;
+            const quat& p = other;
+            /* from wikipedia
+            a = a1a2 - b1b2 - c1c2 - d1d2
+            b = a1b2 + b1a2 + c1d2 - d1c2
+            c = a1c2 - b1d2 + c1a2 + d1b2
+            d = a1d2 + b1c2 - c1b2 + d1a2
+
+            s = s1s2 - x1x2 - y1y2 - z1z2
+            x = s1x2 + x1s2 + y1z2 - z1y2
+            y = s1y2 - x1z2 + y1s2 + z1x2
+            z = s1z2 + x1y2 - y1x2 + z1s2
+
+            s = q.s * p.s - q.x * p.x - q.y * p.y - q.z * p.z
+            x = q.s * p.x + q.x * p.s + q.y * p.z - q.z * p.y
+            y = q.s * p.y - q.x * p.z + q.y * p.s + q.z * p.x
+            z = q.s * p.z + q.x * p.y - q.y * p.x + q.z * p.s
+            */
+
+            decltype(q.s) s = q.s * p.s - q.x * p.x - q.y * p.y - q.z * p.z;
+            decltype(q.x) x = q.s * p.x + q.x * p.s + q.y * p.z - q.z * p.y;
+            decltype(q.y) y = q.s * p.y - q.x * p.z + q.y * p.s + q.z * p.x;
+            decltype(q.z) z = q.s * p.z + q.x * p.y - q.y * p.x + q.z * p.s;
+            this->s = s;
+            this->x = x;
+            this->y = y;
+            this->z = z;
             return *this;
         }
 
@@ -23,6 +48,53 @@ namespace nem
         {
             lhs *= rhs;
             return lhs;
+        }
+
+        constexpr quat& operator*=(T scalar)
+        {
+            this->s = s / scalar;
+            this->x = x / scalar;
+            this->y = y / scalar;
+            this->z = z / scalar;
+            return *this;
+        }
+
+        constexpr friend quat operator*(quat q, T scalar)
+        {
+            q *= scalar;
+            return q;
+        }
+
+        constexpr quat& operator/=(T scalar)
+        {
+            // TODO: add 0 division protection with nem::err
+            return (*this *= (T{ 1.0 } / scalar));
+        }
+
+        constexpr friend quat operator/(quat q, T scalar)
+        {
+            q /= scalar;
+            return q;
+        }
+
+        constexpr quat& operator+=(const quat& other)
+        {
+            this->s += other.s;
+            this->x += other.x;
+            this->y += other.y;
+            this->z += other.z;
+            return *this;
+        }
+
+        constexpr friend quat operator+(quat lhs, const quat& rhs)
+        {
+            lhs += rhs;
+            return lhs;
+        }
+
+        constexpr friend quat operator-(quat q)
+        {
+            return quat{ -q.s, -q.x, -q.y, -q.z };
         }
     };
 

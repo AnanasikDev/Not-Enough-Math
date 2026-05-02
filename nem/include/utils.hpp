@@ -3,6 +3,7 @@
 #include <concepts>
 #include <type_traits>
 #include <cassert>
+#include <cmath>
 
 #include "config.hpp"
 
@@ -23,8 +24,15 @@ namespace nem
 	template <typename T> constexpr T sqr (T value) { return T{ value * value }; }
 	template <typename T> constexpr T cube(T value) { return T{ value * value * value }; }
 
+	template <typename T>
+	inline T sqrt(T value)
+	{
+		if (value < nem::Eps<T>()) value = T{ 0 };
+		return static_cast<T>(std::sqrt(static_cast<double>(value)));
+	}
+
 	template <typename T, int Precision = 20>
-	constexpr T sqrt(T value)
+	constexpr T csqrt(T value)
 	{
 		constexpr T ZERO = (T)0.0;
 		if (value <= ZERO) return ZERO;
@@ -34,7 +42,7 @@ namespace nem
 	}
 
 	template <std::integral T, int Precision = 20>
-	constexpr T sqrt(T value)
+	constexpr T csqrt(T value)
 	{
 		constexpr T ZERO = (T)0;
 		if (value <= ZERO) return ZERO;
@@ -42,6 +50,10 @@ namespace nem
 		for (int i = 0; i < Precision; ++i) result = (nem::real)0.5 * (result + static_cast<nem::real>(value) / result);
 		return static_cast<T>(result);
 	}
+
+	// misc
+
+	template <typename T> constexpr T sign(T value) { return T >= 0 ? T{ 1 } : T{ -1 }; }
 
 	// interpolation
 
