@@ -3,8 +3,8 @@ include(FetchContent)
 add_executable(tests
     tests_vector.cpp
     tests_scalar.cpp
+    tests_quat.cpp
     common.h
-    common.cpp
 )
 
 FetchContent_Declare(

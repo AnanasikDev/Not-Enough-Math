@@ -17,13 +17,10 @@ using Catch::Matchers::WithinRel;
 namespace nem_tests
 {
 
-    // Defined in common.cpp - one definition, no ODR conflicts.
-    extern const float  kEps;
-    extern const double kEpsD;
+    inline constexpr float  kEps = 1e-4f;
+    inline constexpr double kEpsD = 1e-9;
 
-    // MatApprox must live in the header because it is a class template.
-    // Virtual functions in a template are safe here: the compiler emits
-    // the vtable as a weak/comdat symbol and the linker deduplicates it.
+
     template <typename T, size_t R, size_t C>
     class MatApprox : public Catch::Matchers::MatcherBase<nem::mat<T, R, C>>
     {
@@ -51,4 +48,4 @@ namespace nem_tests
         return MatApprox<T, R, C>(expected, eps);
     }
 
-} // namespace nem_tests
+}

@@ -6,15 +6,17 @@
 #include "mat_utils.hpp"
 //#include "sys.hpp"
 #include <iostream>
+#include "quat_utils.hpp"
+#include "quat_io.hpp"
 
 using namespace nem;
 
 int main()
 {
-    mat2 m0 = identity<float, 2>();
-    mat3 m1 = identity<mat3>();
-    std::cout << m0 << "\n\n";
-    std::cout << m1 << "\n\n";
+    quatr q0 = make_quat<real>(1, 0.5f, 1, 2);
+    quatr q1 = make_quat<real>(2, 3, 4, 2.5f);
+    std::cout << q0 << " * " << q1 << " = " << q0 * q1 << "\n";
+    std::cout << q1 << " * " << q0 << " = " << q1 * q0 << "\n";
     int _;
     std::cin >> _;
     return 0;
