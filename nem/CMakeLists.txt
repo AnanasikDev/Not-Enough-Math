@@ -1,7 +1,15 @@
+include(../cmake/CompilerWarnings.cmake)
+include(../cmake/StaticAnalyzers.cmake)
+
 add_library(nem INTERFACE)
 target_include_directories(nem INTERFACE include)
 set_target_properties(nem PROPERTIES FOLDER "Library")
 
+# compiler warnings
+option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
+option(ENABLE_STRICT_WARNINGS "Enable extra strict warnings" ON)
+
+# nem
 option(ANEM_ERR_THROW  "Throw C++ exceptions on errors" OFF)
 option(ANEM_ERR_LOG    "Print errors to console" ON)
 option(ANEM_ERR_SAFE_FALLBACK   "Safely fallback to a valid, but possibly logically incorrect value" OFF)
@@ -26,3 +34,6 @@ endif()
 if(ANEM_HIGH_PRECISION)
     target_compile_definitions(nem INTERFACE NEM_USE_DOUBLE_PRECISION)
 endif()
+
+# warnings
+set_project_warnings(nem)

@@ -10,7 +10,9 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "ANEM_ERR_LOG": "ON",
                 "ANEM_ERR_THROW": "OFF",
-                "ANEM_ERR_USE_NAN": "ON"
+                "ANEM_ERR_USE_NAN": "ON",
+                "ENABLE_WARNINGS_AS_ERRORS": "OFF",
+                "ENABLE_STRICT_WARNINGS" : "ON"
             }
         },
         {

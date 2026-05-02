@@ -53,7 +53,7 @@ namespace nem
 
 	// misc
 
-	template <typename T> constexpr T sign(T value) { return T >= 0 ? T{ 1 } : T{ -1 }; }
+	template <typename T> constexpr T sign(T value) { return value >= 0 ? T{ 1 } : T{ -1 }; }
 
 	// interpolation
 
