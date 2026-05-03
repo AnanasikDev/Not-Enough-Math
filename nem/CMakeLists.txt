@@ -1,12 +1,12 @@
 include(../cmake/CompilerWarnings.cmake)
-include(../cmake/StaticAnalyzers.cmake)
+include(../cmake/ClangTidy.cmake)
 
 add_library(nem INTERFACE)
 target_include_directories(nem INTERFACE include)
 set_target_properties(nem PROPERTIES FOLDER "Library")
 
 # compiler warnings
-option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
+option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 option(ENABLE_STRICT_WARNINGS "Enable extra strict warnings" ON)
 
 # nem

@@ -4,7 +4,6 @@ add_executable(tests
     tests_scalar.cpp
     tests_vector.cpp
     tests_quat.cpp
-    
 )
 
 include(GoogleTest)

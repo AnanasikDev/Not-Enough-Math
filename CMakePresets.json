@@ -5,21 +5,21 @@
             "name": "windows-debug-log",
             "displayName": "Debug Log",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "ANEM_ERR_LOG": "ON",
                 "ANEM_ERR_THROW": "OFF",
-                "ANEM_ERR_USE_NAN": "ON",
-                "ENABLE_WARNINGS_AS_ERRORS": "OFF",
-                "ENABLE_STRICT_WARNINGS" : "ON"
+                "ANEM_ERR_USE_NAN": "ON"
             }
         },
         {
             "name": "windows-debug-throw",
             "displayName": "Debug Throw",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "ANEM_ERR_LOG": "ON",
@@ -31,12 +31,13 @@
             "name": "windows-release-fast",
             "displayName": "Release",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "ANEM_ERR_LOG": "OFF",
                 "ANEM_ERR_THROW": "OFF",
-                "ANEM_ERR_USE_NAN": "OFF"
+                "ANEM_ERR_USE_NAN": "OFF",
+                "ENABLE_STRICT_WARNINGS": "OFF"
             }
         }
     ]

@@ -8,8 +8,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # This makes the sub-projects appear as folders in VS
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-include(CTest) # Enables the 'ctest' command and VS Test Explorer integration
-
 if (MSVC)
     add_compile_options(/Zc:__cplusplus)
 endif()
