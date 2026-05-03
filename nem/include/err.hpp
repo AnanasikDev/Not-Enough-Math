@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <cmath> // for NAN (quiet NaN)
 
 #include "config.hpp"
 #include "nan.hpp"
