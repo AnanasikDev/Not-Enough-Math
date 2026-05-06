@@ -42,6 +42,12 @@ namespace nem
         return nem::quat<T> { scalar, x, y, z };
     }
 
+    template<typename T = nem::real>
+    constexpr nem::quat<T> conjugate(const nem::quat<real>& q)
+    {
+        return nem::quat<T> { q.s, -q.x, -q.y, -q.z };
+    }
+
     template<typename Derived, typename T = nem::real>
     nem::quat<T> from_axis_angle(const nem::BaseVectorT<Derived, T, 3>& axis, T angle)
     {
@@ -86,17 +92,5 @@ namespace nem
         result[8] = 2 * (q0 * q0 + q3 * q3) - 1;
 
         return result;
-    }
-
-    template <typename T = nem::real>
-    nem::quat<T> rotation_matrix_to_quaternion(const nem::mat<T, 3, 3>& r)
-    {
-        // https://www.johndcook.com/blog/2025/05/07/quaternions-and-rotation-matrices/
-        T q0, q1, q2, q3;
-        q0 = T{ 0.5 } * T{ nem::sqrt(T{1} + r[0] + r[4] + r[8]) };
-        q1 = T{ 0.5 } * T{ nem::sqrt(T{1} + r[0] - r[4] - r[8]) } * nem::sign(r[7] - r[5]);
-        q2 = T{ 0.5 } * T{ nem::sqrt(T{1} - r[0] + r[4] - r[8]) } * nem::sign(r[2] - r[6]);
-        q3 = T{ 0.5 } *T{ nem::sqrt(T{1} - r[0] - r[4] + r[8]) } *nem::sign(r[3] - r[1]);
-        return nem::make_quat(q0, q1, q2, q3);
     }
 }

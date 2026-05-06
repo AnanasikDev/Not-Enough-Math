@@ -66,7 +66,14 @@ namespace nem
 			}
 		}
 
+		/// <summary>
+		/// Returns the r-th row as a pointer, no checks
+		/// </summary>
 		T* operator[](size_t r) { return &data[r * C]; }
+
+		/// <summary>
+		/// Returns the r-th row as a pointer, no checks
+		/// </summary>
 		const T* operator[](size_t r) const { return &data[r * C]; }
 
 		constexpr size_t index(size_t row, size_t column) const { return row * C + column; }
