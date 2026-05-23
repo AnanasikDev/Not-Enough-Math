@@ -22,13 +22,27 @@ namespace nem
 
         namespace internal
         {
-            template <typename T>
+            template <nem::scalar_type T>
             NEM_INLINE T invalid_result_base()
             {
 #ifdef NEM_ERR_USE_NAN
                 return std::numeric_limits<T>::quiet_NaN();
 #else
                 return (T)0.0;
+#endif
+            }
+
+            /// <summary>
+            /// For non-scalar objects
+            /// </summary>
+            template <typename T>
+            NEM_INLINE T invalid_result_base()
+            {
+#ifdef NEM_ERR_USE_NAN
+                //return T::NaN();
+                return 0;
+#else
+                return T{ };
 #endif
             }
 

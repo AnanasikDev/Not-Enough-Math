@@ -1,19 +1,4 @@
-#include <gtest/gtest.h>
-#include "nem.hpp"
-
-static constexpr float  kEps = 1e-4f;
-static constexpr double kEpsD = 1e-9;
-
-static bool IS_SAFE_INVALID(float scalar)
-{
-#ifdef NEM_ERR_USE_NAN
-    return std::isnan(scalar);
-#elif defined(NEM_ERR_SAFE_FALLBACK)
-    return nem::is_nearly_zero(scalar);
-#else
-    return nem::is_nearly_zero(scalar);
-#endif
-}
+#include "tests_common.hpp"
 
 // ===========================================================================
 // euclidean modulo
@@ -299,141 +284,77 @@ TEST(ScalarRepeat, ValueAboveOddBoundsIsRepeated)
 }
 
 // ===========================================================================
-// abs
+// pingpong
 // ===========================================================================
 
-TEST(ScalarAbs, NegativeIntegerBecomesPositive)
+TEST(PingPong, FloatPositiveWithinRange)
 {
-    int value = -7;
+    const float result = nem::pingpong(3.0f, 5.0f);
 
-    int result = nem::abs(value);
-
-    ASSERT_EQ(result, 7);
+    ASSERT_NEAR(result, 3.0f, kEps);
 }
 
-TEST(ScalarAbs, PositiveIntegerIsUnchanged)
+TEST(PingPong, FloatPositiveWithin2XRange)
 {
-    int value = 7;
+    const float result = nem::pingpong(6.0f, 5.0f);
 
-    int result = nem::abs(value);
-
-    ASSERT_EQ(result, 7);
+    ASSERT_NEAR(result, 4.0f, kEps);
 }
 
-// ===========================================================================
-// sqr
-// ===========================================================================
-
-TEST(ScalarSqr, PositiveInteger)
+TEST(PingPong, FloatPositiveWithin3XRange)
 {
-    int value = 5;
+    const float result = nem::pingpong(10.5f, 5.0f);
 
-    int result = nem::sqr(value);
-
-    ASSERT_EQ(result, 25);
+    ASSERT_NEAR(result, 0.5f, kEps);
 }
 
-TEST(ScalarSqr, NegativeIntegerYieldsPositive)
+TEST(PingPong, FloatNegativeBelowRange)
 {
-    int value = -5;
+    const float result = nem::pingpong(-3.0f, 5.0f);
 
-    int result = nem::sqr(value);
-
-    ASSERT_EQ(result, 25);
+    ASSERT_NEAR(result, 3.0f, kEps);
 }
 
-// ===========================================================================
-// cube
-// ===========================================================================
-
-TEST(ScalarCube, PositiveInteger)
+TEST(PingPong, FloatNegativeBelow2XRange)
 {
-    int value = 3;
+    const float result = nem::pingpong(-5.0f, 5.0f);
 
-    int result = nem::cube(value);
-
-    ASSERT_EQ(result, 27);
+    ASSERT_NEAR(result, 5.0f, kEps);
 }
 
-TEST(ScalarCube, NegativeIntegerPreservesSign)
+TEST(PingPong, FloatPositiveWithinMinMax)
 {
-    int value = -2;
+    const float result = nem::pingpong(4.0f, 3.0f, 5.0f);
 
-    int result = nem::cube(value);
-
-    ASSERT_EQ(result, -8);
+    ASSERT_NEAR(result, 4.0f, kEps);
 }
 
-// ===========================================================================
-// sqrt (floating point)
-// ===========================================================================
-
-TEST(ScalarSqrtFloat, PerfectSquareConvergesExactly)
+TEST(PingPong, FloatPositiveAboveMinMax)
 {
-    double value = 4.0;
+    const float result = nem::pingpong(5.5f, 3.0f, 5.0f);
 
-    double result = nem::sqrt(value);
-
-    ASSERT_NEAR(result, 2.0, kEpsD);
+    ASSERT_NEAR(result, 4.5f, kEps);
 }
 
-TEST(ScalarSqrtFloat, IrrationalResultMatchesStd)
+TEST(PingPong, FloatNegativeWithinMinMax)
 {
-    double value = 2.0;
+    const float result = nem::pingpong(-1.0f, -1.5f, -0.5f);
 
-    double result = nem::sqrt(value);
-
-    ASSERT_NEAR(result, std::sqrt(2.0), kEpsD);
+    ASSERT_NEAR(result, -1.f, kEps);
 }
 
-TEST(ScalarSqrtFloat, ZeroReturnsZero)
+TEST(PingPong, FloatNegativeBelowMinMax)
 {
-    double value = 0.0;
+    const float result = nem::pingpong(-1.2f, -1.0f, -0.5f);
 
-    double result = nem::sqrt(value);
-
-    ASSERT_NEAR(result, 0.0, kEpsD);
+    ASSERT_NEAR(result, -0.8f, kEps);
 }
 
-TEST(ScalarSqrtFloat, NegativeInputReturnsZero)
+TEST(PingPong, FloatNegativeBelow2MinMax)
 {
-    double value = -1.0;
+    const float result = nem::pingpong(-2.0f, -1.0f, -0.5f);
 
-    double result = nem::sqrt(value);
-
-    ASSERT_NEAR(result, 0.0, kEpsD);
-}
-
-// ===========================================================================
-// sqrt (integer)
-// ===========================================================================
-
-TEST(ScalarSqrtInt, ZeroReturnsZero)
-{
-    int result = nem::sqrt(0);
-
-    ASSERT_EQ(result, 0);
-}
-
-TEST(ScalarSqrtInt, FourReturnsTwo)
-{
-    int result = nem::sqrt(4);
-
-    ASSERT_EQ(result, 2);
-}
-
-TEST(ScalarSqrtInt, NineReturnsThree)
-{
-    int result = nem::sqrt(9);
-
-    ASSERT_EQ(result, 3);
-}
-
-TEST(ScalarSqrtInt, TwentyFiveReturnsFive)
-{
-    int result = nem::sqrt(25);
-
-    ASSERT_EQ(result, 5);
+    ASSERT_NEAR(result, -1.f, kEps);
 }
 
 // ===========================================================================
@@ -521,50 +442,4 @@ TEST(ScalarSmoothstep, ClampsAboveEdge1)
     double result = nem::smoothstep(0.0, 1.0, 2.0);
 
     ASSERT_NEAR(result, 1.0, kEpsD);
-}
-
-// ===========================================================================
-// is_nearly_zero
-// ===========================================================================
-
-TEST(ScalarIsNearlyZero, ExactZero)
-{
-    bool result = nem::is_nearly_zero(0.0);
-
-    ASSERT_TRUE(result);
-}
-
-TEST(ScalarIsNearlyZero, WithinDefaultEpsilon)
-{
-    bool result = nem::is_nearly_zero(1e-7);
-
-    ASSERT_TRUE(result);
-}
-
-TEST(ScalarIsNearlyZero, NegativeWithinDefaultEpsilon)
-{
-    bool result = nem::is_nearly_zero(-1e-7);
-
-    ASSERT_TRUE(result);
-}
-
-TEST(ScalarIsNearlyZero, OutsideDefaultEpsilon)
-{
-    bool result = nem::is_nearly_zero(0.01);
-
-    ASSERT_FALSE(result);
-}
-
-TEST(ScalarIsNearlyZero, WithinCustomEpsilon)
-{
-    bool result = nem::is_nearly_zero(0.05, 0.1);
-
-    ASSERT_TRUE(result);
-}
-
-TEST(ScalarIsNearlyZero, OutsideCustomEpsilon)
-{
-    bool result = nem::is_nearly_zero(0.15, 0.1);
-
-    ASSERT_FALSE(result);
 }

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include "nem.hpp"
-#include "exp/asmmath.hpp"
 
 void demo()
 {
@@ -18,10 +17,8 @@ void demo()
     v.push_back(3.3f);
     std::cout << "std::vector! " << v[0] << "\n";
 
-    //nem::experimental::asmmath::mul(4, 6);
-    //nem::experimental::asmmath::sin(nem::HALF_PI<float>());
+    std::cout << "Logarithm: " << ::log(nem::E<float>()) << std::endl;
 }
-
 
 int main()
 {

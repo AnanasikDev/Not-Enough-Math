@@ -80,7 +80,7 @@ namespace nem
     constexpr nem::mat<T, 3, 3> norm_quaterion_to_rotation_matrix(const nem::quat<T>& q)
     {
         // implies that q is normalized, hence s^2 + x^2 + y^2 + z^2 = 1, hence different notation
-        static_assert(nem::is_nearly_zero(nem::sqrLength(q), T{ 1 }));
+        static_assert(nem::is_zero(nem::sqrLength(q), T{ 1 }));
 
         // https://www.johndcook.com/blog/2025/05/07/quaternions-and-rotation-matrices/
         nem::mat<T, 3, 3> result{ 0 };

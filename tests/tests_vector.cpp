@@ -1,54 +1,11 @@
-#include <gtest/gtest.h>
+#include "tests_common.hpp"
+
 #include <cmath>
 #include <limits>
-#include "nem.hpp"
-
-static constexpr float  kEps = 1e-4f;
-static constexpr double kEpsD = 1e-9;
-
 
 using nem::float2;
 using nem::float3;
 using nem::float4;
-
-// ===========================================================================
-// Test helpers
-// ===========================================================================
-
-static constexpr float FNAN = std::numeric_limits<float>::quiet_NaN();
-static constexpr float FMAX = std::numeric_limits<float>::max();
-
-static bool IS_SAFE_INVALID(float scalar)
-{
-#ifdef NEM_ERR_USE_NAN
-    return std::isnan(scalar);
-#elif defined(NEM_ERR_SAFE_FALLBACK)
-    return nem::is_nearly_zero(scalar);
-#else
-    return nem::is_nearly_zero(scalar);
-#endif
-}
-
-template<typename Derived, typename T, size_t N>
-static bool IS_SAFE_INVALID(const nem::BaseVectorT<Derived, T, N>& vec)
-{
-    static_assert(std::is_same_v<T, float>,
-        "IS_SAFE_INVALID vector helper only supports floats");
-    for (size_t i = 0; i < N; i++)
-    {
-        if (IS_SAFE_INVALID(vec[i])) return true;
-    }
-    return false;
-}
-
-static void require_valid_basis(float3 n, float3 b1, float3 b2)
-{
-    EXPECT_NEAR(nem::length(b1), 1.f, kEps);
-    EXPECT_NEAR(nem::length(b2), 1.f, kEps);
-    EXPECT_NEAR(nem::dot(n, b1), 0.f, kEps);
-    EXPECT_NEAR(nem::dot(n, b2), 0.f, kEps);
-    EXPECT_NEAR(nem::dot(b1, b2), 0.f, kEps);
-}
 
 // ===========================================================================
 // sqrLength
@@ -148,6 +105,7 @@ TEST(VectorNormalize, ZeroVectorYieldsInvalidResult)
     float3 input;
 
     float3 result = nem::normalize(input);
+    std::cout << "Vector is : " << result << "\n";
 
     ASSERT_TRUE(IS_SAFE_INVALID(result));
 }
@@ -157,6 +115,7 @@ TEST(VectorNormalize, BelowEpsilonThresholdYieldsInvalidResult)
     float3 input(1e-7f, 0.f, 0.f);
 
     float3 result = nem::normalize(input);
+    std::cout << "Vector is : " << result << "\n";
 
     ASSERT_TRUE(IS_SAFE_INVALID(result));
 }
@@ -203,14 +162,14 @@ TEST(VectorNormalize, PreservesNegativeDirection)
 }
 
 // ===========================================================================
-// is_nearly_zero (vector)
+// is_zero (vector)
 // ===========================================================================
 
 TEST(VectorIsNearlyZero, JustBelowThresholdPasses)
 {
     float3 input(9.9e-7f, -9.9e-7f, 0.f);
 
-    bool result = nem::is_nearly_zero(input);
+    bool result = nem::is_zero(input);
 
     ASSERT_TRUE(result);
 }
@@ -219,7 +178,7 @@ TEST(VectorIsNearlyZero, AtThresholdFailsStrictLessThan)
 {
     float3 input(1e-6f, 0.f, 0.f);
 
-    bool result = nem::is_nearly_zero(input);
+    bool result = nem::is_zero(input);
 
     ASSERT_FALSE(result);
 }
@@ -228,7 +187,7 @@ TEST(VectorIsNearlyZero, JustAboveThresholdFails)
 {
     float3 input(1.1e-6f, 0.f, 0.f);
 
-    bool result = nem::is_nearly_zero(input);
+    bool result = nem::is_zero(input);
 
     ASSERT_FALSE(result);
 }
@@ -237,7 +196,7 @@ TEST(VectorIsNearlyZero, NaNIsNotNearZero)
 {
     float3 input(FNAN, 0.f, 0.f);
 
-    bool result = nem::is_nearly_zero(input);
+    bool result = nem::is_zero(input);
 
     ASSERT_FALSE(result);
 }
@@ -246,7 +205,7 @@ TEST(VectorIsNearlyZero, NegativeZeroPasses)
 {
     float3 input(-0.f, -0.f, -0.f);
 
-    bool result = nem::is_nearly_zero(input);
+    bool result = nem::is_zero(input);
 
     ASSERT_TRUE(result);
 }

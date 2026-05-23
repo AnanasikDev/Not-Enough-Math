@@ -12,6 +12,8 @@ namespace nem
         T s = 0,               // scalar
           x = 0, y = 0, z = 0; // vector
 
+        //static constexpr quat NaN() { quat{ std::numeric_limits<T>::quiet_NaN(), std::numeric_limits<T>::quiet_NaN(), std::numeric_limits<T>::quiet_NaN(), std::numeric_limits<T>::quiet_NaN() }; }
+
         constexpr quat& operator*=(const quat& other)
         {
             quat& q = *this;

@@ -14,6 +14,7 @@ CMakeFiles/
 CMakeSettings.json
 CMakeUserPresets.json
 install/
+_deps/
 
 # --- Compiled Binaries ---
 *.exe

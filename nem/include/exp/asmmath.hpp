@@ -23,7 +23,7 @@ namespace nem
                 /*float result;
                 asm("fsin"
                     : "=t" (result) 
-                    : "0" (t));1
+                    : "0" (t));
 
                 printf("sin(%f) = %f\n", t, result);*/
             }

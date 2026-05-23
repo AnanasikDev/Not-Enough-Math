@@ -5,6 +5,7 @@
 
 #include <type_traits>
 #include <cstddef>
+#include <limits>
 
 #define TEST_VEC_TRAITS(VecType, Scalar) \
     static_assert(sizeof(VecType) == sizeof(Scalar) * VecType::Comps, \
@@ -55,6 +56,8 @@ namespace nem
 		constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
 		constexpr T& operator[](size_t index) { return comp_rw(index); }
 		constexpr const T& operator[](size_t index) const { return comp_r(index); }
+
+		//static constexpr Derived NaN() { Derived(std::numeric_limits<T>::quiet_NaN()); }
 
 		Derived& operator+=(const Derived& rhs)
 		{
@@ -174,8 +177,8 @@ namespace nem
 		};
 
 		constexpr BaseVector2() : x(T{}), y(T{}) {}
-		constexpr BaseVector2(T _x, T _y) : x(_x), y(_y) {}
 		constexpr BaseVector2(T _scalar) : x(_scalar), y(_scalar) {}
+		constexpr BaseVector2(T _x, T _y) : x(_x), y(_y) {}
 	};
 	TEST_VEC_CLASS(BaseVector2)
 

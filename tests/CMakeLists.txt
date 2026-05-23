@@ -1,7 +1,10 @@
 include(FetchContent)
 
 add_executable(tests
-    tests_scalar.cpp
+    tests_common.hpp
+    tests_scalar_overflow.cpp
+    tests_scalar_comparisons.cpp
+    tests_scalar_arithm.cpp
     tests_vector.cpp
     tests_quat.cpp
     tests_mat.cpp

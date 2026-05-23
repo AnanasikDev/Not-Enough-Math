@@ -1,10 +1,7 @@
-#include <gtest/gtest.h>
+#include "tests_common.hpp"
+
 #include <cmath>
 #include <limits>
-#include "nem.hpp"
-
-static constexpr float  kEps = 1e-4f;
-static constexpr double kEpsD = 1e-9;
 
 using nem::float2;
 using nem::float3;
@@ -14,22 +11,6 @@ using nem::mat3;
 using nem::mat4;
 
 // ===========================================================================
-// Test helpers
-// ===========================================================================
-
-static constexpr float FNAN = std::numeric_limits<float>::quiet_NaN();
-static constexpr float FMAX = std::numeric_limits<float>::max();
-
-static bool IS_SAFE_INVALID(float scalar)
-{
-#ifdef NEM_ERR_USE_NAN
-    return std::isnan(scalar);
-#elif defined(NEM_ERR_SAFE_FALLBACK)
-    return nem::is_nearly_zero(scalar);
-#else
-    return nem::is_nearly_zero(scalar);
-#endif
-}
 
 TEST(MatrixIndex, ChainInitListThenAt)
 {

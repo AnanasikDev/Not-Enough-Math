@@ -1,27 +1,9 @@
-#include <gtest/gtest.h>
 #include <cmath>
 #include <limits>
 #define GLM_FORCE_QUAT_DATA_WXYZ
 #include <glm/gtx/quaternion.hpp>
-#include "nem.hpp"
-#include "quat.hpp"
-#include "quat_utils.hpp"
 
-static constexpr float kEps = 1e-4f;
-
-static constexpr float FNAN = std::numeric_limits<float>::quiet_NaN();
-static constexpr float FMAX = std::numeric_limits<float>::max();
-
-static bool IS_SAFE_INVALID(float scalar)
-{
-#ifdef NEM_ERR_USE_NAN
-    return std::isnan(scalar);
-#elif defined(NEM_ERR_SAFE_FALLBACK)
-    return nem::is_nearly_zero(scalar);
-#else
-    return nem::is_nearly_zero(scalar);
-#endif
-}
+#include "tests_common.hpp"
 
 // ===========================================================================
 // quat initialization

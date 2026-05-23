@@ -7,11 +7,11 @@
 namespace nem
 {
     template<typename Derived, typename T, size_t N>
-    NEM_INLINE bool is_nearly_zero(const nem::BaseVectorT<Derived, T, N>& v)
+    NEM_INLINE bool is_zero(const nem::BaseVectorT<Derived, T, N>& v)
     {
         for (size_t c = 0; c < N; ++c)
         {
-            if (!nem::is_nearly_zero(v.comp_r(c)))
+            if (!nem::is_zero(v.comp_r(c)))
             {
                 return false;
             }
@@ -20,11 +20,11 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    NEM_INLINE bool is_nearly_zero(const nem::BaseVectorT<Derived, T, N>&& v)
+    NEM_INLINE bool is_zero(const nem::BaseVectorT<Derived, T, N>&& v)
     {
         for (size_t c = 0; c < N; ++c)
         {
-            if (!nem::is_nearly_zero(v.comp_r(c)))
+            if (!nem::is_zero(v.comp_r(c)))
             {
                 return false;
             }
@@ -115,7 +115,7 @@ namespace nem
         Derived result;
         T len = nem::length(vec);
 
-        if (nem::is_nearly_zero(len))
+        if (nem::is_zero(len))
         {
             return nem::error::invalid_result<Derived>();
         }
@@ -131,7 +131,7 @@ namespace nem
     template<typename T>
     bool orthogonal_3d_basis(const nem::BaseVector3<T>& vector, nem::BaseVector3<T>& b1, nem::BaseVector3<T>& b2)
     {
-        if (nem::is_nearly_zero(vector))
+        if (nem::is_zero(vector))
         {
             nem::error::report_invalid(nem::error::Type::ZeroVector);
             return false;

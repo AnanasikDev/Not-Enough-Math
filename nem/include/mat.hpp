@@ -84,6 +84,8 @@ namespace nem
 		constexpr T& at_rw(size_t index) { return data[index]; }
 		constexpr T& at_rw(size_t row, size_t column) { return data[index(row, column)]; }
 
+		//static constexpr mat NaN() { mat(std::numeric_limits<T>::quiet_NaN()); }
+
 		template <size_t R1, size_t C1>
 		constexpr friend mat<T, R, C1> operator*(const mat<T, R, C>& lhs, const mat<T, R1, C1>& rhs)
 		{
@@ -122,7 +124,7 @@ namespace nem
 		{
 			for (size_t i = 0; i < lhs.Size; ++i)
 			{
-				if (!nem::is_nearly_zero(lhs.data[i] - rhs.data[i]))
+				if (!nem::is_zero(lhs.data[i] - rhs.data[i]))
 				{
 					return false;
 				}
