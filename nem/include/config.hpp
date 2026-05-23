@@ -54,8 +54,9 @@ namespace nem
     using real = float;
 #endif
 
-    constexpr float  kEps  = 1e-6f;
-    constexpr double kEpsD = 1e-9;
+    constexpr float  fEps  = 1e-6f;
+    constexpr double dEps = 1e-9;
+    constexpr long double ldEps = 1e-14;
 
     template <typename T>
     concept scalar_type = std::integral<T> || std::floating_point<T>;
@@ -63,16 +64,9 @@ namespace nem
     template <nem::scalar_type T>
     constexpr T Eps()
     {
-        if constexpr (std::is_same_v<T, float>)
-            return T{ nem::kEps };
-        else if constexpr (std::is_floating_point_v<T>)
-            return T{ nem::kEpsD };
-        else if constexpr (std::is_integral_v<T>)
-            return T{ 0 };
-        else
-        {
-            assert(false);
-            return T{ nem::kEpsD };
-        }
+        if      constexpr (std::is_same_v<T, float>) return T{ nem::fEps };
+        else if constexpr (std::is_same_v<T, double>) return T{ nem::dEps };
+        else if constexpr (std::is_same_v<T, long double>) return T{ nem::ldEps };
+        return (T)0;
     }
 }

@@ -42,8 +42,8 @@ TEST(ScalarPow, BothSignsFloatOddPower)
     const float result1 = nem::pow(value1, 3.0f);
     const float result2 = nem::pow(value2, 3.0f);
 
-    ASSERT_NEAR(result1, -27.0f, kEps);
-    ASSERT_NEAR(result2,  27.0f, kEps);
+    ASSERT_NEAR(result1, -27.0f, fEps);
+    ASSERT_NEAR(result2,  27.0f, fEps);
 }
 
 TEST(ScalarPow, ZeroPowerFloat)
@@ -54,8 +54,8 @@ TEST(ScalarPow, ZeroPowerFloat)
     const float result1 = nem::pow(value1, 0.0f);
     const float result2 = nem::pow(value2, 0.0f);
 
-    ASSERT_NEAR(result1, 1.0f, kEps);
-    ASSERT_NEAR(result2, 1.0f, kEps);
+    ASSERT_NEAR(result1, 1.0f, fEps);
+    ASSERT_NEAR(result2, 1.0f, fEps);
 }
 
 TEST(ScalarPow, ZeroBaseFloat)
@@ -64,7 +64,7 @@ TEST(ScalarPow, ZeroBaseFloat)
 
     const float result = nem::pow(value, 5.0f);
 
-    ASSERT_NEAR(result, value, kEps);
+    ASSERT_NEAR(result, value, fEps);
 }
 
 // ===========================================================================
@@ -121,7 +121,7 @@ TEST(ScalarSqrtFloat, PerfectSquareConvergesExactly)
 
     double result = nem::sqrt(value);
 
-    ASSERT_NEAR(result, 2.0, kEpsD);
+    ASSERT_NEAR(result, 2.0, dEps);
 }
 
 TEST(ScalarSqrtFloat, IrrationalResultMatchesStd)
@@ -130,7 +130,7 @@ TEST(ScalarSqrtFloat, IrrationalResultMatchesStd)
 
     double result = nem::sqrt(value);
 
-    ASSERT_NEAR(result, std::sqrt(2.0), kEpsD);
+    ASSERT_NEAR(result, std::sqrt(2.0), dEps);
 }
 
 TEST(ScalarSqrtFloat, ZeroReturnsZero)
@@ -139,7 +139,7 @@ TEST(ScalarSqrtFloat, ZeroReturnsZero)
 
     double result = nem::sqrt(value);
 
-    ASSERT_NEAR(result, 0.0, kEpsD);
+    ASSERT_NEAR(result, 0.0, dEps);
 }
 
 TEST(ScalarSqrtFloat, NegativeInputReturnsZero)
@@ -148,7 +148,7 @@ TEST(ScalarSqrtFloat, NegativeInputReturnsZero)
 
     double result = nem::sqrt(value);
 
-    ASSERT_NEAR(result, 0.0, kEpsD);
+    ASSERT_NEAR(result, 0.0, dEps);
 }
 
 // ===========================================================================
@@ -205,21 +205,21 @@ TEST(ScalarLog, FloatPositiveBase2)
 {
     const float result = nem::log(2.0f, 4.0f);
 
-    ASSERT_NEAR(result, 2.0f, kEps);
+    ASSERT_NEAR(result, 2.0f, fEps);
 }
 
 TEST(ScalarLog, FloatPositiveBase10)
 {
     const float result = nem::log(10.0f, 10000.0f);
 
-    ASSERT_NEAR(result, 4.0f, kEps);
+    ASSERT_NEAR(result, 4.0f, fEps);
 }
 
 TEST(ScalarLog, FloatBaseEqualsInput)
 {
     const float result = nem::log(7.0f, 7.0f);
 
-    ASSERT_NEAR(result, 1.0f, kEps);
+    ASSERT_NEAR(result, 1.0f, fEps);
 }
 
 TEST(ScalarLog, FloatInputNear0Valid)
@@ -229,7 +229,7 @@ TEST(ScalarLog, FloatInputNear0Valid)
     const float input = nem::pow(base, power);
     const float result = nem::log(base, input);
 
-    ASSERT_NEAR(result, power, kEps);
+    ASSERT_NEAR(result, power, fEps);
 }
 
 TEST(ScalarLog, FloatInputIs0Invalid)
@@ -267,7 +267,7 @@ TEST(ScalarLog, FloatPowLogChain)
     const float input = nem::pow(base, power);
     const float result = nem::log(base, input);
 
-    ASSERT_NEAR(result, power, kEps);
+    ASSERT_NEAR(result, power, fEps);
 }
 
 TEST(ScalarLog, FloatLnPowChain)
@@ -277,7 +277,7 @@ TEST(ScalarLog, FloatLnPowChain)
     const float input = nem::pow(base, power);
     const float result = nem::ln(input);
 
-    ASSERT_NEAR(result, power, kEps);
+    ASSERT_NEAR(result, power, fEps);
 }
 
 TEST(ScalarLog, FloatLnSameAsLogE)

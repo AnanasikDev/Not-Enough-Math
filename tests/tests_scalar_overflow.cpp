@@ -8,84 +8,84 @@ TEST(Mod, PosDividendPosDivisor)
 {
     float result = nem::mod(13, 5);
 
-    ASSERT_EQ(result, 3);
+    ASSERT_NEAR(result, 3, fEps);
 }
 
 TEST(Mod, PosDividendNegDivisor)
 {
     float result = nem::mod(13, -5);
 
-    ASSERT_EQ(result, 3);
+    ASSERT_NEAR(result, 3.0f, fEps);
 }
 
 TEST(Mod, NegDividendPosDivisor)
 {
     float result = nem::mod(-13, 5);
 
-    ASSERT_EQ(result, 2);
+    ASSERT_NEAR(result, 2, fEps);
 }
 
 TEST(Mod, NegDividendNegDivisor)
 {
     float result = nem::mod(-13, -5);
 
-    ASSERT_EQ(result, 2);
+    ASSERT_NEAR(result, 2, fEps);
 }
 
 TEST(Mod, WholeDivision)
 {
     float result = nem::mod(20, 4);
 
-    ASSERT_EQ(result, 0);
+    ASSERT_NEAR(result, 0, fEps);
 }
 
 TEST(Mod, DividendZero)
 {
-    float result = nem::mod(0, 4);
+    float result = nem::mod(0.0f, 4.0f);
 
-    ASSERT_EQ(result, IS_SAFE_INVALID(result));
+    ASSERT_NEAR(result, 0.0f, fEps);
 }
 
 TEST(Mod, FloatOddRange)
 {
     float result = nem::mod(3.0f, 1.2f);
 
-    ASSERT_NEAR(result, 0.6f, kEps);
+    ASSERT_NEAR(result, 0.6f, fEps);
 }
 
 TEST(Mod, FloatOddRangeLargeDivisor)
 {
     float result = nem::mod(1.123f, 2.0f);
 
-    ASSERT_NEAR(result, 1.123f, kEps);
+    ASSERT_NEAR(result, 1.123f, fEps);
 }
 
 TEST(Mod, FloatNegativeWholeRangeZeroRemainder)
 {
     float result = nem::mod(-4.0f, 2.0f);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(Mod, FloatNegativeWholeRange)
 {
     float result = nem::mod(-4.0f, 3.0f);
 
-    ASSERT_NEAR(result, 2.f, kEps);
+    ASSERT_NEAR(result, 2.f, fEps);
 }
 
 TEST(Mod, FloatNegativeOddRangeNoRemainder)
 {
     float result = nem::mod(-3.5f, -0.7f);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(Mod, FloatNegativeOddRange)
 {
     float result = nem::mod(-10.f, 3.f);
 
-    ASSERT_NEAR(result, 2.f, kEps);
+    ASSERT_NEAR(result, 2.f, fEps);
 }
 
 // ===========================================================================
@@ -96,35 +96,35 @@ TEST(Floor, FloatPositive)
 {
     float result = nem::floor(4.8f);
 
-    ASSERT_NEAR(result, 4.0f, kEps);
+    ASSERT_NEAR(result, 4.0f, fEps);
 }
 
 TEST(Floor, FloatPositiveWhole)
 {
     float result = nem::floor(3.0f);
 
-    ASSERT_NEAR(result, 3.0f, kEps);
+    ASSERT_NEAR(result, 3.0f, fEps);
 }
 
 TEST(Floor, FloatNegative)
 {
     float result = nem::floor(-3.2f);
 
-    ASSERT_NEAR(result, -4.0f, kEps);
+    ASSERT_NEAR(result, -4.0f, fEps);
 }
 
 TEST(Floor, FloatNegativeWhole)
 {
     float result = nem::floor(-8.0f);
 
-    ASSERT_NEAR(result, -8.0f, kEps);
+    ASSERT_NEAR(result, -8.0f, fEps);
 }
 
 TEST(Floor, FloatZero)
 {
     float result = nem::floor(0.0f);
 
-    ASSERT_NEAR(result, -0.0f, kEps);
+    ASSERT_NEAR(result, -0.0f, fEps);
 }
 
 
@@ -136,35 +136,35 @@ TEST(Ceil, FloatPositive)
 {
     float result = nem::ceil(4.8f);
 
-    ASSERT_NEAR(result, 5.0f, kEps);
+    ASSERT_NEAR(result, 5.0f, fEps);
 }
 
 TEST(Ceil, FloatPositiveWhole)
 {
     float result = nem::ceil(3.0f);
 
-    ASSERT_NEAR(result, 3.0f, kEps);
+    ASSERT_NEAR(result, 3.0f, fEps);
 }
 
 TEST(Ceil, FloatNegative)
 {
     float result = nem::ceil(-3.2f);
 
-    ASSERT_NEAR(result, -3.0f, kEps);
+    ASSERT_NEAR(result, -3.0f, fEps);
 }
 
 TEST(Ceil, FloatNegativeWhole)
 {
     float result = nem::ceil(-8.0f);
 
-    ASSERT_NEAR(result, -8.0f, kEps);
+    ASSERT_NEAR(result, -8.0f, fEps);
 }
 
 TEST(Ceil, FloatZero)
 {
     float result = nem::ceil(0.0f);
 
-    ASSERT_NEAR(result, -0.0f, kEps);
+    ASSERT_NEAR(result, -0.0f, fEps);
 }
 
 // ===========================================================================
@@ -291,70 +291,70 @@ TEST(PingPong, FloatPositiveWithinRange)
 {
     const float result = nem::pingpong(3.0f, 5.0f);
 
-    ASSERT_NEAR(result, 3.0f, kEps);
+    ASSERT_NEAR(result, 3.0f, fEps);
 }
 
 TEST(PingPong, FloatPositiveWithin2XRange)
 {
     const float result = nem::pingpong(6.0f, 5.0f);
 
-    ASSERT_NEAR(result, 4.0f, kEps);
+    ASSERT_NEAR(result, 4.0f, fEps);
 }
 
 TEST(PingPong, FloatPositiveWithin3XRange)
 {
     const float result = nem::pingpong(10.5f, 5.0f);
 
-    ASSERT_NEAR(result, 0.5f, kEps);
+    ASSERT_NEAR(result, 0.5f, fEps);
 }
 
 TEST(PingPong, FloatNegativeBelowRange)
 {
     const float result = nem::pingpong(-3.0f, 5.0f);
 
-    ASSERT_NEAR(result, 3.0f, kEps);
+    ASSERT_NEAR(result, 3.0f, fEps);
 }
 
 TEST(PingPong, FloatNegativeBelow2XRange)
 {
     const float result = nem::pingpong(-5.0f, 5.0f);
 
-    ASSERT_NEAR(result, 5.0f, kEps);
+    ASSERT_NEAR(result, 5.0f, fEps);
 }
 
 TEST(PingPong, FloatPositiveWithinMinMax)
 {
     const float result = nem::pingpong(4.0f, 3.0f, 5.0f);
 
-    ASSERT_NEAR(result, 4.0f, kEps);
+    ASSERT_NEAR(result, 4.0f, fEps);
 }
 
 TEST(PingPong, FloatPositiveAboveMinMax)
 {
     const float result = nem::pingpong(5.5f, 3.0f, 5.0f);
 
-    ASSERT_NEAR(result, 4.5f, kEps);
+    ASSERT_NEAR(result, 4.5f, fEps);
 }
 
 TEST(PingPong, FloatNegativeWithinMinMax)
 {
     const float result = nem::pingpong(-1.0f, -1.5f, -0.5f);
 
-    ASSERT_NEAR(result, -1.f, kEps);
+    ASSERT_NEAR(result, -1.f, fEps);
 }
 
 TEST(PingPong, FloatNegativeBelowMinMax)
 {
     const float result = nem::pingpong(-1.2f, -1.0f, -0.5f);
 
-    ASSERT_NEAR(result, -0.8f, kEps);
+    ASSERT_NEAR(result, -0.8f, fEps);
 }
 
 TEST(PingPong, FloatNegativeBelow2MinMax)
 {
     const float result = nem::pingpong(-2.0f, -1.0f, -0.5f);
 
-    ASSERT_NEAR(result, -1.f, kEps);
+    ASSERT_NEAR(result, -1.f, fEps);
 }
 
 // ===========================================================================
@@ -369,7 +369,7 @@ TEST(ScalarLerp, ReturnsAAtZero)
 
     double result = nem::lerp(a, b, t);
 
-    ASSERT_NEAR(result, a, kEpsD);
+    ASSERT_NEAR(result, a, dEps);
 }
 
 TEST(ScalarLerp, ReturnsBAtOne)
@@ -380,7 +380,7 @@ TEST(ScalarLerp, ReturnsBAtOne)
 
     double result = nem::lerp(a, b, t);
 
-    ASSERT_NEAR(result, b, kEpsD);
+    ASSERT_NEAR(result, b, dEps);
 }
 
 TEST(ScalarLerp, AtHalfReturnsMidpoint)
@@ -391,7 +391,7 @@ TEST(ScalarLerp, AtHalfReturnsMidpoint)
 
     double result = nem::lerp(a, b, t);
 
-    ASSERT_NEAR(result, 5.0, kEpsD);
+    ASSERT_NEAR(result, 5.0, dEps);
 }
 
 TEST(ScalarLerp, NegativeRangeMidpointIsZero)
@@ -402,7 +402,7 @@ TEST(ScalarLerp, NegativeRangeMidpointIsZero)
 
     double result = nem::lerp(a, b, t);
 
-    ASSERT_NEAR(result, 0.0, kEpsD);
+    ASSERT_NEAR(result, 0.0, dEps);
 }
 
 // ===========================================================================
@@ -413,33 +413,65 @@ TEST(ScalarSmoothstep, ReturnsZeroAtEdge0)
 {
     double result = nem::smoothstep(0.0, 1.0, 0.0);
 
-    ASSERT_NEAR(result, 0.0, kEpsD);
+    ASSERT_NEAR(result, 0.0, dEps);
 }
 
 TEST(ScalarSmoothstep, ReturnsOneAtEdge1)
 {
     double result = nem::smoothstep(0.0, 1.0, 1.0);
 
-    ASSERT_NEAR(result, 1.0, kEpsD);
+    ASSERT_NEAR(result, 1.0, dEps);
 }
 
 TEST(ScalarSmoothstep, ReturnsHalfAtSymmetricMidpoint)
 {
     double result = nem::smoothstep(0.0, 1.0, 0.5);
 
-    ASSERT_NEAR(result, 0.5, kEpsD);
+    ASSERT_NEAR(result, 0.5, dEps);
 }
 
 TEST(ScalarSmoothstep, ClampsBelowEdge0)
 {
     double result = nem::smoothstep(0.0, 1.0, -1.0);
 
-    ASSERT_NEAR(result, 0.0, kEpsD);
+    ASSERT_NEAR(result, 0.0, dEps);
 }
 
 TEST(ScalarSmoothstep, ClampsAboveEdge1)
 {
     double result = nem::smoothstep(0.0, 1.0, 2.0);
 
-    ASSERT_NEAR(result, 1.0, kEpsD);
+    ASSERT_NEAR(result, 1.0, dEps);
+}
+
+// ===========================================================================
+// remap
+// ===========================================================================
+
+TEST(Remap, FloatPositiveWithinRangeAmplify)
+{
+    const float result = nem::remap(0.5f, 0.0f, 1.0f, 10.0f, 100.0f);
+
+    ASSERT_NEAR(result, 55.f, fEps);
+}
+
+TEST(Remap, FloatPositiveWithinRangeReduce)
+{
+    const float result = nem::remap(18.0f, 10.0f, 20.0f, 1.0f, 2.0f);
+
+    ASSERT_NEAR(result, 1.8f, fEps);
+}
+
+TEST(Remap, FloatPositiveWithinRangeInvert)
+{
+    const float result = nem::remap(0.2f, 0.0f, 1.0f, 1.0f, 0.0f);
+
+    ASSERT_NEAR(result, 0.8f, fEps);
+}
+
+TEST(Remap, FloatNegativeWithinRangeInvert)
+{
+    const float result = nem::remap(-3.3f, -4.0f, -3.0f, 9.0f, 10.0f);
+
+    ASSERT_NEAR(result, 9.7f, fEps);
 }

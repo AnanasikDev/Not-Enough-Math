@@ -10,12 +10,11 @@ namespace nem
 {
     namespace error
     {
-        enum class Type : unsigned char
+        enum class Kind : unsigned char
         {
             RuntimeError = 0,
             OutOfRange,
             DivisionByZero,
-            ZeroModulo,
             InvalidArgument,
             ZeroVector,
         };
@@ -39,8 +38,7 @@ namespace nem
             NEM_INLINE T invalid_result_base()
             {
 #ifdef NEM_ERR_USE_NAN
-                //return T::NaN();
-                return 0;
+                return T::NaN();
 #else
                 return T{ };
 #endif
@@ -56,35 +54,35 @@ namespace nem
                 printf("%s %s\n", GET_C_STRING(prefix), GET_C_STRING(msg));
             }
 
-            NEM_INLINE void force_log(nem_string msg, nem::error::Type type = Type::RuntimeError)
+            NEM_INLINE void force_log(nem_string msg, nem::error::Kind type = Kind::RuntimeError)
             {
                 switch (type)
                 {
-                    case Type::InvalidArgument: push_log_prefix("Not Enough Math [Invalid Argument] Error: ", msg); break;
-                    case Type::DivisionByZero: push_log_prefix("Not Enough Math [Division By Zero] Error: ", msg); break;
-                    case Type::OutOfRange: push_log_prefix("Not Enough Math [Out Of Range] Error: ", msg); break;
+                    case Kind::InvalidArgument: push_log_prefix("Not Enough Math [Invalid Argument] Error: ", msg); break;
+                    case Kind::DivisionByZero: push_log_prefix("Not Enough Math [Division By Zero] Error: ", msg); break;
+                    case Kind::OutOfRange: push_log_prefix("Not Enough Math [Out Of Range] Error: ", msg); break;
                     default: push_log_prefix("Not Enough Math Error: ", msg); break;
                 }
             }
 
-            NEM_INLINE bool force_throw(nem_string msg, nem::error::Type type = Type::RuntimeError)
+            NEM_INLINE bool force_throw(nem_string msg, nem::error::Kind type = Kind::RuntimeError)
             {
 #ifdef _STDEXCEPT_
                 switch (type)
                 {
-                    case Type::OutOfRange:
+                    case Kind::OutOfRange:
                     {
                         throw std::out_of_range(msg);
                     } break;
-                    case Type::DivisionByZero:
+                    case Kind::DivisionByZero:
                     {
                         throw std::logic_error(msg);
                     } break;
-                    case Type::InvalidArgument:
+                    case Kind::InvalidArgument:
                     {
                         throw std::invalid_argument(msg);
                     } break;
-                    case Type::RuntimeError:
+                    case Kind::RuntimeError:
                     default:
                     {
                         throw std::runtime_error(msg);
@@ -96,7 +94,7 @@ namespace nem
             }
         }
 
-        NEM_INLINE void report(nem_string msg, nem::error::Type type = Type::RuntimeError)
+        NEM_INLINE void report(nem_string msg, nem::error::Kind type = Kind::RuntimeError)
         {
 #ifdef NEM_ERR_THROW
             internal::force_throw(msg, type);
@@ -106,20 +104,20 @@ namespace nem
 #endif
         }
 
-        NEM_INLINE void report_invalid(nem::error::Type type = Type::RuntimeError)
+        NEM_INLINE void report_invalid(nem::error::Kind kind = Kind::RuntimeError, const char* const msg = nullptr)
         {
 #ifdef NEM_ERR_THROW
-            internal::force_throw("Invalid result", type);
+            internal::force_throw(msg ? msg : "Invalid result", kind);
 #endif
 #ifdef NEM_ERR_LOG
-            internal::force_log("Invalid result", type);
+            internal::force_log(msg ? msg : "Invalid result", kind);
 #endif
         }
 
         template <typename T>
-        NEM_INLINE T invalid_result(nem::error::Type type = Type::RuntimeError)
+        NEM_INLINE T invalid_result(nem::error::Kind kind = Kind::RuntimeError, const char* const msg = nullptr)
         {
-            report_invalid(type);
+            report_invalid(kind, msg);
             return internal::invalid_result_base<T>();
         }
     }

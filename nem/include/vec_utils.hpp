@@ -133,7 +133,7 @@ namespace nem
     {
         if (nem::is_zero(vector))
         {
-            nem::error::report_invalid(nem::error::Type::ZeroVector);
+            nem::error::report_invalid(nem::error::Kind::ZeroVector);
             return false;
         }
 

@@ -32,20 +32,6 @@ TEST(ScalarIsNearlyZero, OutsideDefaultEpsilon)
     ASSERT_FALSE(result);
 }
 
-TEST(ScalarIsNearlyZero, WithinCustomEpsilon)
-{
-    bool result = nem::is_zero(0.05f, 0.1f);
-
-    ASSERT_TRUE(result);
-}
-
-TEST(ScalarIsNearlyZero, OutsideCustomEpsilon)
-{
-    bool result = nem::is_zero(0.15f, 0.1f);
-
-    ASSERT_FALSE(result);
-}
-
 // ===========================================================================
 // equal
 // ===========================================================================

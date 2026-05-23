@@ -17,14 +17,15 @@ namespace nem
 	/// <summary>
 	/// Is a nearly 0? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a| < eps
 	/// </summary>
-	template <nem::scalar_type T> constexpr bool is_zero(T a, T eps = Eps<T>()) { return nem::abs(a) <= eps; }
+	template <nem::scalar_type T> constexpr bool is_zero(T a) { return nem::abs(a) < Eps<T>(); }
+	template <std::integral T> constexpr bool is_zero(T a) { return a == 0; }
 	
-	template <nem::scalar_type T> constexpr bool is_zero_or_neg(T a, T eps = Eps<T>()) { return a <= eps; }
+	template <nem::scalar_type T> constexpr bool is_zero_or_neg(T a) { return a <= Eps<T>(); }
 
 	/// <summary>
 	/// Are a and b nearly equal? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a - b| < eps
 	/// </summary>
-	template <nem::scalar_type T> constexpr bool equal(T a, T b, T eps = Eps<T>()) { return nem::is_zero(a - b, eps); }
+	template <nem::scalar_type T> constexpr bool equal(T a, T b) { return nem::is_zero(a - b); }
 
 	// powers
 	template <typename T> constexpr T pow2(T value) { return T{ value * value }; }
@@ -140,13 +141,9 @@ namespace nem
 	/// </summary>
 	template <nem::scalar_type T> constexpr T mod(T a, T b)
 	{
-		if (nem::is_zero(a))
-		{
-			return nem::error::invalid_result<T>(nem::error::Type::ZeroModulo);
-		}
 		if (nem::is_zero(b))
 		{
-			return nem::error::invalid_result<T>(nem::error::Type::DivisionByZero);
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero);
 		}
 		const T v = a - nem::floor(a / b) * b;
 		return v < 0 ? v + nem::abs(b) : v;
@@ -195,4 +192,14 @@ namespace nem
 		return x * x * ((T)3.0 - (T)2.0 * x);
 	}
 	template <typename T> constexpr T lerp(T a, T b, T t) { return b * t + a * ((T)1.0 - t); }
+
+	template <nem::scalar_type T> constexpr T remap(T value, T fromMin, T fromMax, T toMin, T toMax)
+	{
+		const T fromLength = fromMax - fromMin;
+		if (nem::is_zero(fromLength))
+		{
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Remapping from length is zero");
+		}
+		return toMin + (toMax - toMin) * ((value - fromMin) / fromLength);
+	}
 }

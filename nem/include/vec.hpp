@@ -57,7 +57,7 @@ namespace nem
 		constexpr T& operator[](size_t index) { return comp_rw(index); }
 		constexpr const T& operator[](size_t index) const { return comp_r(index); }
 
-		//static constexpr Derived NaN() { Derived(std::numeric_limits<T>::quiet_NaN()); }
+		static constexpr Derived NaN() { return Derived(std::numeric_limits<T>::quiet_NaN()); }
 
 		Derived& operator+=(const Derived& rhs)
 		{

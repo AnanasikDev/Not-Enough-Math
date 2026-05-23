@@ -17,7 +17,7 @@ TEST(VectorSqrLength, ZeroVectorYieldsZero)
 
     float result = nem::sqrLength(input);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(VectorSqrLength, NegativeComponentsSquarePositive)
@@ -26,7 +26,7 @@ TEST(VectorSqrLength, NegativeComponentsSquarePositive)
 
     float result = nem::sqrLength(input);
 
-    ASSERT_NEAR(result, 25.f, kEps);
+    ASSERT_NEAR(result, 25.f, fEps);
 }
 
 TEST(VectorSqrLength, SingleAxisX)
@@ -35,7 +35,7 @@ TEST(VectorSqrLength, SingleAxisX)
 
     float result = nem::sqrLength(input);
 
-    ASSERT_NEAR(result, 49.f, kEps);
+    ASSERT_NEAR(result, 49.f, fEps);
 }
 
 TEST(VectorSqrLength, SingleAxisZNegative)
@@ -44,7 +44,7 @@ TEST(VectorSqrLength, SingleAxisZNegative)
 
     float result = nem::sqrLength(input);
 
-    ASSERT_NEAR(result, 25.f, kEps);
+    ASSERT_NEAR(result, 25.f, fEps);
 }
 
 TEST(VectorSqrLength, GeneralThreeComponent)
@@ -53,7 +53,7 @@ TEST(VectorSqrLength, GeneralThreeComponent)
 
     float result = nem::sqrLength(input);
 
-    ASSERT_NEAR(result, 6.f, kEps);
+    ASSERT_NEAR(result, 6.f, fEps);
 }
 
 TEST(VectorSqrLength, MixedSignThreeComponent)
@@ -62,7 +62,7 @@ TEST(VectorSqrLength, MixedSignThreeComponent)
 
     float result = nem::sqrLength(input);
 
-    ASSERT_NEAR(result, 6.f, kEps);
+    ASSERT_NEAR(result, 6.f, fEps);
 }
 
 // ===========================================================================
@@ -75,7 +75,7 @@ TEST(VectorLength, PythagoreanQuadruple3_4_12_13)
 
     float result = nem::length(input);
 
-    ASSERT_NEAR(result, 13.f, kEps);
+    ASSERT_NEAR(result, 13.f, fEps);
 }
 
 TEST(VectorLength, Float2Triangle3_4_5)
@@ -84,7 +84,7 @@ TEST(VectorLength, Float2Triangle3_4_5)
 
     float result = nem::length(input);
 
-    ASSERT_NEAR(result, 5.f, kEps);
+    ASSERT_NEAR(result, 5.f, fEps);
 }
 
 TEST(VectorLength, Float4SingleWComponent)
@@ -93,7 +93,7 @@ TEST(VectorLength, Float4SingleWComponent)
 
     float result = nem::length(input);
 
-    ASSERT_NEAR(result, 1.f, kEps);
+    ASSERT_NEAR(result, 1.f, fEps);
 }
 
 // ===========================================================================
@@ -126,9 +126,9 @@ TEST(VectorNormalize, AboveEpsilonThresholdYieldsUnitVector)
 
     float3 result = nem::normalize(input);
 
-    ASSERT_NEAR(result.x, 1.f, kEps);
-    ASSERT_NEAR(result.y, 0.f, kEps);
-    ASSERT_NEAR(result.z, 0.f, kEps);
+    ASSERT_NEAR(result.x, 1.f, fEps);
+    ASSERT_NEAR(result.y, 0.f, fEps);
+    ASSERT_NEAR(result.z, 0.f, fEps);
 }
 
 TEST(VectorNormalize, UnitVectorIsIdempotent)
@@ -137,7 +137,7 @@ TEST(VectorNormalize, UnitVectorIsIdempotent)
 
     float3 result = nem::normalize(input);
 
-    ASSERT_NEAR(result.x, 1.f, kEps);
+    ASSERT_NEAR(result.x, 1.f, fEps);
 }
 
 TEST(VectorNormalize, DoubleNormalizeIsStable)
@@ -147,9 +147,9 @@ TEST(VectorNormalize, DoubleNormalizeIsStable)
     float3 first = nem::normalize(input);
     float3 second = nem::normalize(first);
 
-    ASSERT_NEAR(first.x, second.x, kEps);
-    ASSERT_NEAR(first.y, second.y, kEps);
-    ASSERT_NEAR(first.z, second.z, kEps);
+    ASSERT_NEAR(first.x, second.x, fEps);
+    ASSERT_NEAR(first.y, second.y, fEps);
+    ASSERT_NEAR(first.z, second.z, fEps);
 }
 
 TEST(VectorNormalize, PreservesNegativeDirection)
@@ -158,7 +158,7 @@ TEST(VectorNormalize, PreservesNegativeDirection)
 
     float3 result = nem::normalize(input);
 
-    ASSERT_NEAR(result.x, -1.f, kEps);
+    ASSERT_NEAR(result.x, -1.f, fEps);
 }
 
 // ===========================================================================
@@ -342,7 +342,7 @@ TEST(VectorHorizontalSum, ZeroVectorYieldsZero)
 
     float result = nem::horizontal_sum(input);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(VectorHorizontalSum, Float4GeneralCase)
@@ -351,7 +351,7 @@ TEST(VectorHorizontalSum, Float4GeneralCase)
 
     float result = nem::horizontal_sum(input);
 
-    ASSERT_NEAR(result, 10.f, kEps);
+    ASSERT_NEAR(result, 10.f, fEps);
 }
 
 // ===========================================================================
@@ -364,7 +364,7 @@ TEST(VectorHorizontalMul, OneZeroComponentYieldsZero)
 
     float result = nem::horizontal_mul(input);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(VectorHorizontalMul, MiddleZeroComponentYieldsZero)
@@ -373,7 +373,7 @@ TEST(VectorHorizontalMul, MiddleZeroComponentYieldsZero)
 
     float result = nem::horizontal_mul(input);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(VectorHorizontalMul, AllOnesYieldsOne)
@@ -382,7 +382,7 @@ TEST(VectorHorizontalMul, AllOnesYieldsOne)
 
     float result = nem::horizontal_mul(input);
 
-    ASSERT_NEAR(result, 1.f, kEps);
+    ASSERT_NEAR(result, 1.f, fEps);
 }
 
 // ===========================================================================
@@ -395,7 +395,7 @@ TEST(VectorDot, SelfEqualsSqrLength)
 
     float result = nem::dot(v, v);
 
-    ASSERT_NEAR(result, nem::sqrLength(v), kEps);
+    ASSERT_NEAR(result, nem::sqrLength(v), fEps);
 }
 
 TEST(VectorDot, WithZeroVectorYieldsZero)
@@ -405,7 +405,7 @@ TEST(VectorDot, WithZeroVectorYieldsZero)
 
     float result = nem::dot(a, b);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(VectorDot, CommutativityHolds)
@@ -416,7 +416,7 @@ TEST(VectorDot, CommutativityHolds)
     float ab = nem::dot(a, b);
     float ba = nem::dot(b, a);
 
-    ASSERT_NEAR(ab, ba, kEps);
+    ASSERT_NEAR(ab, ba, fEps);
 }
 
 TEST(VectorDot, OrthogonalFloat2YieldsZero)
@@ -426,7 +426,7 @@ TEST(VectorDot, OrthogonalFloat2YieldsZero)
 
     float result = nem::dot(a, b);
 
-    ASSERT_NEAR(result, 0.f, kEps);
+    ASSERT_NEAR(result, 0.f, fEps);
 }
 
 TEST(VectorDot, AntiParallelFloat2YieldsNegativeOne)
@@ -436,7 +436,7 @@ TEST(VectorDot, AntiParallelFloat2YieldsNegativeOne)
 
     float result = nem::dot(a, b);
 
-    ASSERT_NEAR(result, -1.f, kEps);
+    ASSERT_NEAR(result, -1.f, fEps);
 }
 
 TEST(VectorDot, ParallelFloat2YieldsOne)
@@ -446,7 +446,7 @@ TEST(VectorDot, ParallelFloat2YieldsOne)
 
     float result = nem::dot(a, b);
 
-    ASSERT_NEAR(result, 1.f, kEps);
+    ASSERT_NEAR(result, 1.f, fEps);
 }
 
 // ===========================================================================
@@ -460,9 +460,9 @@ TEST(VectorCross, WithZeroVectorYieldsZero)
 
     float3 result = nem::cross(a, b);
 
-    ASSERT_NEAR(result.x, 0.f, kEps);
-    ASSERT_NEAR(result.y, 0.f, kEps);
-    ASSERT_NEAR(result.z, 0.f, kEps);
+    ASSERT_NEAR(result.x, 0.f, fEps);
+    ASSERT_NEAR(result.y, 0.f, fEps);
+    ASSERT_NEAR(result.z, 0.f, fEps);
 }
 
 TEST(VectorCross, BothZeroYieldsZero)
@@ -472,7 +472,7 @@ TEST(VectorCross, BothZeroYieldsZero)
 
     float3 result = nem::cross(a, b);
 
-    ASSERT_NEAR(nem::length(result), 0.f, kEps);
+    ASSERT_NEAR(nem::length(result), 0.f, fEps);
 }
 
 TEST(VectorCross, NearlyParallelVectorsYieldNearZeroMagnitude)
@@ -492,8 +492,8 @@ TEST(VectorCross, ResultIsPerpendicularToBothInputs)
 
     float3 result = nem::cross(a, b);
 
-    ASSERT_NEAR(nem::dot(result, a), 0.f, kEps);
-    ASSERT_NEAR(nem::dot(result, b), 0.f, kEps);
+    ASSERT_NEAR(nem::dot(result, a), 0.f, fEps);
+    ASSERT_NEAR(nem::dot(result, b), 0.f, fEps);
 }
 
 TEST(VectorCross, PerpendicularInputsHaveMagnitudeProduct)
@@ -505,7 +505,7 @@ TEST(VectorCross, PerpendicularInputsHaveMagnitudeProduct)
     float expected = nem::length(a) * nem::length(b);
     float actual = nem::length(result);
 
-    ASSERT_NEAR(actual, expected, kEps);
+    ASSERT_NEAR(actual, expected, fEps);
 }
 
 // ===========================================================================
@@ -520,7 +520,7 @@ TEST(VectorCompoundAssign, PlusEqualsReturnsReferenceToSelf)
     float3& ref = (a += b);
 
     ASSERT_EQ(&ref, &a);
-    ASSERT_NEAR(a.x, 11.f, kEps);
+    ASSERT_NEAR(a.x, 11.f, fEps);
 }
 
 TEST(VectorCompoundAssign, MinusEqualsSelfYieldsZero)
@@ -540,9 +540,9 @@ TEST(VectorCompoundAssign, DivEqualsSelfYieldsOnes)
 
     a /= a;
 
-    ASSERT_NEAR(a.x, 1.f, kEps);
-    ASSERT_NEAR(a.y, 1.f, kEps);
-    ASSERT_NEAR(a.z, 1.f, kEps);
+    ASSERT_NEAR(a.x, 1.f, fEps);
+    ASSERT_NEAR(a.y, 1.f, fEps);
+    ASSERT_NEAR(a.z, 1.f, fEps);
 }
 
 TEST(VectorCompoundAssign, MulEqualsReturnsReferenceToSelf)
@@ -566,9 +566,9 @@ TEST(VectorChain, AddThenSubtractRecoversOriginal)
 
     float3 result = (a + b) - b;
 
-    ASSERT_NEAR(result.x, a.x, kEps);
-    ASSERT_NEAR(result.y, a.y, kEps);
-    ASSERT_NEAR(result.z, a.z, kEps);
+    ASSERT_NEAR(result.x, a.x, fEps);
+    ASSERT_NEAR(result.y, a.y, fEps);
+    ASSERT_NEAR(result.z, a.z, fEps);
 }
 
 TEST(VectorChain, MultiplyThenDivideRecoversOriginal)
@@ -578,9 +578,9 @@ TEST(VectorChain, MultiplyThenDivideRecoversOriginal)
 
     float3 result = (a * b) / b;
 
-    ASSERT_NEAR(result.x, a.x, kEps);
-    ASSERT_NEAR(result.y, a.y, kEps);
-    ASSERT_NEAR(result.z, a.z, kEps);
+    ASSERT_NEAR(result.x, a.x, fEps);
+    ASSERT_NEAR(result.y, a.y, fEps);
+    ASSERT_NEAR(result.z, a.z, fEps);
 }
 
 TEST(VectorChain, DotOfNormalizedWithItselfYieldsOne)
@@ -590,7 +590,7 @@ TEST(VectorChain, DotOfNormalizedWithItselfYieldsOne)
     float3 n = nem::normalize(v);
     float result = nem::dot(n, n);
 
-    ASSERT_NEAR(result, 1.f, kEps);
+    ASSERT_NEAR(result, 1.f, fEps);
 }
 
 // ===========================================================================
@@ -603,9 +603,9 @@ TEST(VectorScalarBroadcast, MultiplicationScalesAllComponents)
 
     float3 result = v * float3(5.f);
 
-    ASSERT_NEAR(result.x, 10.f, kEps);
-    ASSERT_NEAR(result.y, 15.f, kEps);
-    ASSERT_NEAR(result.z, 20.f, kEps);
+    ASSERT_NEAR(result.x, 10.f, fEps);
+    ASSERT_NEAR(result.y, 15.f, fEps);
+    ASSERT_NEAR(result.z, 20.f, fEps);
 }
 
 TEST(VectorScalarBroadcast, DivisionScalesAllComponents)
@@ -614,7 +614,7 @@ TEST(VectorScalarBroadcast, DivisionScalesAllComponents)
 
     float3 result = v / float3(2.f);
 
-    ASSERT_NEAR(result.x, 1.f, kEps);
-    ASSERT_NEAR(result.y, 1.5f, kEps);
-    ASSERT_NEAR(result.z, 2.f, kEps);
+    ASSERT_NEAR(result.x, 1.f, fEps);
+    ASSERT_NEAR(result.y, 1.5f, fEps);
+    ASSERT_NEAR(result.z, 2.f, fEps);
 }

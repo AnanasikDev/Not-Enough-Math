@@ -3,8 +3,8 @@
 #include <gtest/gtest.h>
 #include "nem.hpp"
 
-static constexpr float  kEps = 1e-4f;
-static constexpr double kEpsD = 1e-9;
+static constexpr float  fEps = 1e-4f;
+static constexpr double dEps = 1e-9;
 
 static constexpr float FNAN = std::numeric_limits<float>::quiet_NaN();
 static constexpr float FMAX = std::numeric_limits<float>::max();
@@ -34,9 +34,9 @@ static bool IS_SAFE_INVALID(const nem::BaseVectorT<Derived, T, N>& vec)
 
 static void require_valid_basis(nem::float3 n, nem::float3 b1, nem::float3 b2)
 {
-    EXPECT_NEAR(nem::length(b1), 1.f, kEps);
-    EXPECT_NEAR(nem::length(b2), 1.f, kEps);
-    EXPECT_NEAR(nem::dot(n, b1), 0.f, kEps);
-    EXPECT_NEAR(nem::dot(n, b2), 0.f, kEps);
-    EXPECT_NEAR(nem::dot(b1, b2), 0.f, kEps);
+    EXPECT_NEAR(nem::length(b1), 1.f, fEps);
+    EXPECT_NEAR(nem::length(b2), 1.f, fEps);
+    EXPECT_NEAR(nem::dot(n, b1), 0.f, fEps);
+    EXPECT_NEAR(nem::dot(n, b2), 0.f, fEps);
+    EXPECT_NEAR(nem::dot(b1, b2), 0.f, fEps);
 }
