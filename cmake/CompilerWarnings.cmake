@@ -13,6 +13,10 @@ function(set_project_warnings target)
         -Wconversion
         -Wshadow
         -fdiagnostics-color=always
+
+        # (anonymous) unions of (anonymous) structs
+        -Wnested-anon-types
+        -Wgnu-anonymous-struct
     )
 
     if(ENABLE_WARNINGS_AS_ERRORS)

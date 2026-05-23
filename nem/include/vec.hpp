@@ -241,21 +241,21 @@ namespace nem
 		static constexpr float ALPHA_TRANSPARENT = 0.f;
 		static constexpr float ALPHA_OPAQUE = 1.f;
 
-		static inline float4 rgb(float r, float g, float b) { return float4(r, g, b, 1.f); }
-		static inline float4 rgba(float r, float g, float b, float a) { return float4(r, g, b, a); }
-		static inline float4 opaque(float3 rgb) { return float4(rgb.r, rgb.g, rgb.b, ALPHA_OPAQUE); }
-		static inline float4 opaque(float4 rgba) { return float4(rgba.r, rgba.g, rgba.b, ALPHA_OPAQUE); }
-		static inline float4 transparent(float3 rgb) { return float4(rgb.r, rgb.g, rgb.b, ALPHA_TRANSPARENT); }
-		static inline float4 transparent(float4 rgba) { return float4(rgba.r, rgba.g, rgba.b, ALPHA_TRANSPARENT); }
+		static NEM_INLINE float4 rgb(float r, float g, float b) { return float4(r, g, b, 1.f); }
+		static NEM_INLINE float4 rgba(float r, float g, float b, float a) { return float4(r, g, b, a); }
+		static NEM_INLINE float4 opaque(float3 rgb) { return float4(rgb.r, rgb.g, rgb.b, ALPHA_OPAQUE); }
+		static NEM_INLINE float4 opaque(float4 rgba) { return float4(rgba.r, rgba.g, rgba.b, ALPHA_OPAQUE); }
+		static NEM_INLINE float4 transparent(float3 rgb) { return float4(rgb.r, rgb.g, rgb.b, ALPHA_TRANSPARENT); }
+		static NEM_INLINE float4 transparent(float4 rgba) { return float4(rgba.r, rgba.g, rgba.b, ALPHA_TRANSPARENT); }
 
-		static inline float4 clear  = rgba(0.f, 0.f, 0.f, ALPHA_TRANSPARENT);
-		static inline float4 white  = rgba(1.f, 1.f, 1.f, ALPHA_OPAQUE);
-		static inline float4 black  = rgba(0.f, 0.f, 0.f, ALPHA_OPAQUE);
-		static inline float4 red    = rgb(1.f, 0.f, 0.f);
-		static inline float4 green  = rgb(0.f, 1.f, 0.f);
-		static inline float4 blue   = rgb(0.f, 0.f, 1.f);
-		static inline float4 cyan   = rgb(0.f, 1.f, 1.f);
-		static inline float4 yellow = rgb(1.f, 1.f, 0.f);
+		static NEM_INLINE float4 clear  = rgba(0.f, 0.f, 0.f, ALPHA_TRANSPARENT);
+		static NEM_INLINE float4 white  = rgba(1.f, 1.f, 1.f, ALPHA_OPAQUE);
+		static NEM_INLINE float4 black  = rgba(0.f, 0.f, 0.f, ALPHA_OPAQUE);
+		static NEM_INLINE float4 red    = rgb(1.f, 0.f, 0.f);
+		static NEM_INLINE float4 green  = rgb(0.f, 1.f, 0.f);
+		static NEM_INLINE float4 blue   = rgb(0.f, 0.f, 1.f);
+		static NEM_INLINE float4 cyan   = rgb(0.f, 1.f, 1.f);
+		static NEM_INLINE float4 yellow = rgb(1.f, 1.f, 0.f);
 	};
 }
 

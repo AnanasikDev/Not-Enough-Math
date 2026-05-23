@@ -15,6 +15,7 @@ option(ANEM_ERR_LOG    "Print errors to console" ON)
 option(ANEM_ERR_SAFE_FALLBACK   "Safely fallback to a valid, but possibly logically incorrect value" OFF)
 option(ANEM_ERR_USE_NAN   "Fallback to NANs explicitly" ON)
 option(ANEM_HIGH_PRECISION  "Use double instead of float" OFF)
+option(ANEM_NO_INLINE "Disable inlining" OFF)
 
 if(ANEM_ERR_THROW)
     target_compile_definitions(nem INTERFACE NEM_ERR_THROW)
@@ -33,6 +34,10 @@ endif()
 
 if(ANEM_HIGH_PRECISION)
     target_compile_definitions(nem INTERFACE NEM_USE_DOUBLE_PRECISION)
+endif()
+
+if(ANEM_NO_INLINE)
+    target_compile_definitions(nem INTERFACE NEM_NO_INLINE)
 endif()
 
 # warnings

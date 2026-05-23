@@ -63,4 +63,11 @@ namespace nem
         }
         return result;
     }
+
+    /*template<typename T, size_t N>
+    constexpr T determinant(const nem::mat<T, N, N>& m)
+    {
+        T result{ 0 };
+
+    }*/
 }

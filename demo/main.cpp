@@ -1,29 +1,31 @@
-#include "nem.hpp"
-#include "vec_io.hpp"
-#include "vec_utils.hpp"
-#include "mat.hpp"
-#include "mat_io.hpp"
-#include "mat_utils.hpp"
 #include <iostream>
-#include "quat_utils.hpp"
-#include "quat_io.hpp"
+#include <vector>
+#include "nem.hpp"
+#include "exp/asmmath.hpp"
 
-using namespace nem;
-
-#define MAIN_END int _; std::cin >> _; return 0;
-
-int main()
+void demo()
 {
-    quatr q0 = make_quat<real>(1, 0.5f, 1, 2);
-    quatr q1 = make_quat<real>(2, 3, 4, 2.5f);
+    nem::quatr q0 = nem::make_quat<nem::real>(1, 0.5f, 1, 2);
+    nem::quatr q1 = nem::make_quat<nem::real>(2, 3, 4, 2.5f);
     std::cout << q0 << " * " << q1 << " = " << q0 * q1 << "\n";
     std::cout << q1 << " * " << q0 << " = " << q1 * q0 << "\n";
 
-    mat2 src({ {3, 4}, {8, 9} });
-    mat3 dst = nem::upscale<float, 2, 2, 3, 3>(src);
+    nem::mat2 src({ {3, 4}, {8, 9} });
+    nem::mat3 dst = nem::upscale<float, 2, 2, 3, 3>(src);
     std::cout << "src: " << src << "\n" << "dst: " << dst << "\n";
 
+    std::vector<float> v;
+    v.push_back(3.3f);
+    std::cout << "std::vector! " << v[0] << "\n";
+
+    //nem::experimental::asmmath::mul(4, 6);
+    //nem::experimental::asmmath::sin(nem::HALF_PI<float>());
+}
 
 
-    MAIN_END
+int main()
+{
+    demo();
+
+    int _; std::cin >> _; return 0;
 }

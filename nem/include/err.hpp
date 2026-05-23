@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdexcept>
-#include <cmath> // for NAN (quiet NaN)
+#include <limits>
 
 #include "config.hpp"
 #include "nan.hpp"
@@ -15,6 +15,7 @@ namespace nem
             RuntimeError = 0,
             OutOfRange,
             DivisionByZero,
+            ZeroModulo,
             InvalidArgument,
             ZeroVector,
         };
@@ -22,26 +23,26 @@ namespace nem
         namespace internal
         {
             template <typename T>
-            inline T invalid_result_base()
+            NEM_INLINE T invalid_result_base()
             {
 #ifdef NEM_ERR_USE_NAN
-                return T(NAN);
+                return std::numeric_limits<T>::quiet_NaN();
 #else
-                return T(0.0);
+                return (T)0.0;
 #endif
             }
 
-            inline void push_log(nem_string msg)
+            NEM_INLINE void push_log(nem_string msg)
             {
                 printf("%s\n", GET_C_STRING(msg));
             }
 
-            inline void push_log_prefix(nem_string prefix, nem_string msg)
+            NEM_INLINE void push_log_prefix(nem_string prefix, nem_string msg)
             {
                 printf("%s %s\n", GET_C_STRING(prefix), GET_C_STRING(msg));
             }
 
-            inline void force_log(nem_string msg, nem::error::Type type = Type::RuntimeError)
+            NEM_INLINE void force_log(nem_string msg, nem::error::Type type = Type::RuntimeError)
             {
                 switch (type)
                 {
@@ -52,7 +53,7 @@ namespace nem
                 }
             }
 
-            inline bool force_throw(nem_string msg, nem::error::Type type = Type::RuntimeError)
+            NEM_INLINE bool force_throw(nem_string msg, nem::error::Type type = Type::RuntimeError)
             {
 #ifdef _STDEXCEPT_
                 switch (type)
@@ -81,7 +82,7 @@ namespace nem
             }
         }
 
-        inline void report(nem_string msg, nem::error::Type type = Type::RuntimeError)
+        NEM_INLINE void report(nem_string msg, nem::error::Type type = Type::RuntimeError)
         {
 #ifdef NEM_ERR_THROW
             internal::force_throw(msg, type);
@@ -91,19 +92,18 @@ namespace nem
 #endif
         }
 
-        inline void report_invalid(nem::error::Type type = Type::RuntimeError)
+        NEM_INLINE void report_invalid(nem::error::Type type = Type::RuntimeError)
         {
-            const char* msg = "Inavlid result";
 #ifdef NEM_ERR_THROW
-            internal::force_throw(msg, type);
+            internal::force_throw("Invalid result", type);
 #endif
 #ifdef NEM_ERR_LOG
-            internal::force_log(msg, type);
+            internal::force_log("Invalid result", type);
 #endif
         }
 
         template <typename T>
-        inline T invalid_result(nem::error::Type type = Type::RuntimeError)
+        NEM_INLINE T invalid_result(nem::error::Type type = Type::RuntimeError)
         {
             report_invalid(type);
             return internal::invalid_result_base<T>();

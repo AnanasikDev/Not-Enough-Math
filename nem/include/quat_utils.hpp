@@ -14,19 +14,16 @@ namespace nem
     }
 
     template <typename T = nem::real>
-    inline T length(const nem::quat<T>& q)
+    NEM_INLINE T length(const nem::quat<T>& q)
     {
         return nem::sqrt(nem::sqrLength(q));
     }
 
     template <typename T = nem::real>
-    inline quat<T> normalize(nem::quat<T> q)
+    NEM_INLINE nem::quat<T> normalize(nem::quat<T> q)
     {
         const T l = nem::length(q);
-        q.s /= l;
-        q.x /= l;
-        q.y /= l;
-        q.z /= l;
+        q /= l;
         return q;
     }
 
@@ -42,10 +39,19 @@ namespace nem
         return nem::quat<T> { scalar, x, y, z };
     }
 
+    /// <summary>
+    /// Conjugates the quaternion, yielding a quaternion with the same angle (scalar) but inverse axis (vector)
+    /// </summary>
     template<typename T = nem::real>
-    constexpr nem::quat<T> conjugate(const nem::quat<real>& q)
+    constexpr nem::quat<T> conjugate(const nem::quat<T>& q)
     {
         return nem::quat<T> { q.s, -q.x, -q.y, -q.z };
+    }
+
+    template<typename T = nem::real>
+    constexpr nem::quat<T> inverse(const nem::quat<T>& q)
+    {
+        return nem::conjugate(q) / nem::sqrLength(q);
     }
 
     template<typename Derived, typename T = nem::real>
@@ -53,7 +59,7 @@ namespace nem
     {
         const T half = angle * T{ 0.5 };
         const T s = T{ std::sin(half) };
-        return nem::quat(
+        return nem::make_quat<T>(
             axis.x * s, 
             axis.y * s, 
             axis.z * s, 

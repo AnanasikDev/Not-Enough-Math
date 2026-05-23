@@ -6,6 +6,7 @@
 static constexpr float  kEps = 1e-4f;
 static constexpr double kEpsD = 1e-9;
 
+
 using nem::float2;
 using nem::float3;
 using nem::float4;

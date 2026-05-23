@@ -1,13 +1,13 @@
 #pragma once
 
+#include "config.hpp"
 #include "utils.hpp"
 #include "vec.hpp"
-#include <cmath>
 
 namespace nem
 {
     template<typename Derived, typename T, size_t N>
-    inline bool is_nearly_zero(const BaseVectorT<Derived, T, N>& v)
+    NEM_INLINE bool is_nearly_zero(const nem::BaseVectorT<Derived, T, N>& v)
     {
         for (size_t c = 0; c < N; ++c)
         {
@@ -20,7 +20,7 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    inline bool is_nearly_zero(const BaseVectorT<Derived, T, N>&& v)
+    NEM_INLINE bool is_nearly_zero(const nem::BaseVectorT<Derived, T, N>&& v)
     {
         for (size_t c = 0; c < N; ++c)
         {
@@ -33,7 +33,7 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    inline T dot(const BaseVectorT<Derived, T, N>& a, const BaseVectorT<Derived, T, N>& b)
+    NEM_INLINE T dot(const nem::BaseVectorT<Derived, T, N>& a, const nem::BaseVectorT<Derived, T, N>& b)
     {
         T result = (T)0.0;
         for (size_t c = 0; c < N; ++c)
@@ -44,9 +44,9 @@ namespace nem
     }
 
     template <typename T>
-    inline BaseVector3<T> cross(const BaseVector3<T>& a, const BaseVector3<T>& b)
+    NEM_INLINE nem::BaseVector3<T> cross(const nem::BaseVector3<T>& a, const nem::BaseVector3<T>& b)
     {
-        return BaseVector3<T>(
+        return nem::BaseVector3<T>(
             a.y * b.z - a.z * b.y,
             a.z * b.x - a.x * b.z,
             a.x * b.y - a.y * b.x
@@ -54,7 +54,7 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    inline T horizontal_sum(const BaseVectorT<Derived, T, N>& v)
+    NEM_INLINE T horizontal_sum(const nem::BaseVectorT<Derived, T, N>& v)
     {
         T result = (T)0.0;
         for (size_t c = 0; c < N; ++c)
@@ -65,7 +65,7 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    inline T horizontal_mul(const BaseVectorT<Derived, T, N>& v)
+    NEM_INLINE T horizontal_mul(const nem::BaseVectorT<Derived, T, N>& v)
     {
         T result = (T)1.0;
         for (size_t c = 0; c < N; ++c)
@@ -76,13 +76,13 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    inline Derived reflect(const BaseVectorT<Derived, T, N>& vector, const BaseVectorT<Derived, T, N>& normal)
+    NEM_INLINE Derived reflect(const nem::BaseVectorT<Derived, T, N>& vector, const nem::BaseVectorT<Derived, T, N>& normal)
     {
         return vector - (T)2.0 * nem::dot(vector, normal) * normal;
     }
 
     template<typename Derived, typename T, size_t N>
-    static constexpr Derived lerp(const BaseVectorT<Derived, T, N>& a, const BaseVectorT<Derived, T, N>& b, float t)
+    static constexpr Derived lerp(const nem::BaseVectorT<Derived, T, N>& a, const nem::BaseVectorT<Derived, T, N>& b, float t)
     {
         Derived result;
         for (size_t i = 0; i < N; ++i)
@@ -93,7 +93,7 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    constexpr T sqrLength(const BaseVectorT<Derived, T, N>& vec)
+    constexpr T sqrLength(const nem::BaseVectorT<Derived, T, N>& vec)
     {
         T sum{};
         for (size_t i = 0; i < N; ++i)
@@ -104,13 +104,13 @@ namespace nem
     }
 
     template<typename Derived, typename T, size_t N>
-    T length(const BaseVectorT<Derived, T, N>& vec)
+    T length(const nem::BaseVectorT<Derived, T, N>& vec)
     {
         return std::sqrtf(nem::sqrLength(vec));
     }
 
     template<typename Derived, typename T, size_t N>
-    Derived normalize(const BaseVectorT<Derived, T, N>& vec)
+    Derived normalize(const nem::BaseVectorT<Derived, T, N>& vec)
     {
         Derived result;
         T len = nem::length(vec);
@@ -129,7 +129,7 @@ namespace nem
     }
 
     template<typename T>
-    bool orthogonal_3d_basis(const BaseVector3<T>& vector, BaseVector3<T>& b1, BaseVector3<T>& b2)
+    bool orthogonal_3d_basis(const nem::BaseVector3<T>& vector, nem::BaseVector3<T>& b1, nem::BaseVector3<T>& b2)
     {
         if (nem::is_nearly_zero(vector))
         {

@@ -5,6 +5,12 @@
 #include <concepts>
 #include <cassert>
 
+#ifdef NEM_NO_INLINE
+    #define NEM_INLINE
+#else
+    #define NEM_INLINE inline
+#endif
+
 namespace nem
 {
 #if defined(NEM_ERR_THROW) 
@@ -35,11 +41,11 @@ namespace nem
 #include <string>
     using nem_string = std::string;
     constexpr bool USE_C_STRING = false;
-    inline const char* GET_C_STRING(nem_string str) { return str.c_str(); }
+    NEM_INLINE const char* GET_C_STRING(nem_string str) { return str.c_str(); }
 #else
     using nem_string = const char*;
     constexpr bool USE_C_STRING = true;
-    inline const char* GET_C_STRING(nem_string str) { return str; }
+    NEM_INLINE const char* GET_C_STRING(nem_string str) { return str; }
 #endif
 
 #if defined(NEM_USE_DOUBLE_PRECISION)

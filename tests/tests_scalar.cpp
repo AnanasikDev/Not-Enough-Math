@@ -1,9 +1,186 @@
 #include <gtest/gtest.h>
-#include <cmath>
 #include "nem.hpp"
 
 static constexpr float  kEps = 1e-4f;
 static constexpr double kEpsD = 1e-9;
+
+static bool IS_SAFE_INVALID(float scalar)
+{
+#ifdef NEM_ERR_USE_NAN
+    return std::isnan(scalar);
+#elif defined(NEM_ERR_SAFE_FALLBACK)
+    return nem::is_nearly_zero(scalar);
+#else
+    return nem::is_nearly_zero(scalar);
+#endif
+}
+
+// ===========================================================================
+// euclidean modulo
+// ===========================================================================
+
+TEST(Mod, PosDividendPosDivisor)
+{
+    float result = nem::mod(13, 5);
+
+    ASSERT_EQ(result, 3);
+}
+
+TEST(Mod, PosDividendNegDivisor)
+{
+    float result = nem::mod(13, -5);
+
+    ASSERT_EQ(result, 3);
+}
+
+TEST(Mod, NegDividendPosDivisor)
+{
+    float result = nem::mod(-13, 5);
+
+    ASSERT_EQ(result, 2);
+}
+
+TEST(Mod, NegDividendNegDivisor)
+{
+    float result = nem::mod(-13, -5);
+
+    ASSERT_EQ(result, 2);
+}
+
+TEST(Mod, WholeDivision)
+{
+    float result = nem::mod(20, 4);
+
+    ASSERT_EQ(result, 0);
+}
+
+TEST(Mod, DividendZero)
+{
+    float result = nem::mod(0, 4);
+
+    ASSERT_EQ(result, IS_SAFE_INVALID(result));
+}
+
+TEST(Mod, FloatOddRange)
+{
+    float result = nem::mod(3.0f, 1.2f);
+
+    ASSERT_NEAR(result, 0.6f, kEps);
+}
+
+TEST(Mod, FloatOddRangeLargeDivisor)
+{
+    float result = nem::mod(1.123f, 2.0f);
+
+    ASSERT_NEAR(result, 1.123f, kEps);
+}
+
+TEST(Mod, FloatNegativeWholeRangeZeroRemainder)
+{
+    float result = nem::mod(-4.0f, 2.0f);
+
+    ASSERT_NEAR(result, 0.f, kEps);
+}
+
+TEST(Mod, FloatNegativeWholeRange)
+{
+    float result = nem::mod(-4.0f, 3.0f);
+
+    ASSERT_NEAR(result, 2.f, kEps);
+}
+
+TEST(Mod, FloatNegativeOddRangeNoRemainder)
+{
+    float result = nem::mod(-3.5f, -0.7f);
+
+    ASSERT_NEAR(result, 0.f, kEps);
+}
+
+TEST(Mod, FloatNegativeOddRange)
+{
+    float result = nem::mod(-10.f, 3.f);
+
+    ASSERT_NEAR(result, 2.f, kEps);
+}
+
+// ===========================================================================
+// floor
+// ===========================================================================
+
+TEST(Floor, FloatPositive)
+{
+    float result = nem::floor(4.8f);
+
+    ASSERT_NEAR(result, 4.0f, kEps);
+}
+
+TEST(Floor, FloatPositiveWhole)
+{
+    float result = nem::floor(3.0f);
+
+    ASSERT_NEAR(result, 3.0f, kEps);
+}
+
+TEST(Floor, FloatNegative)
+{
+    float result = nem::floor(-3.2f);
+
+    ASSERT_NEAR(result, -4.0f, kEps);
+}
+
+TEST(Floor, FloatNegativeWhole)
+{
+    float result = nem::floor(-8.0f);
+
+    ASSERT_NEAR(result, -8.0f, kEps);
+}
+
+TEST(Floor, FloatZero)
+{
+    float result = nem::floor(0.0f);
+
+    ASSERT_NEAR(result, -0.0f, kEps);
+}
+
+
+// ===========================================================================
+// ceil
+// ===========================================================================
+
+TEST(Ceil, FloatPositive)
+{
+    float result = nem::ceil(4.8f);
+
+    ASSERT_NEAR(result, 5.0f, kEps);
+}
+
+TEST(Ceil, FloatPositiveWhole)
+{
+    float result = nem::ceil(3.0f);
+
+    ASSERT_NEAR(result, 3.0f, kEps);
+}
+
+TEST(Ceil, FloatNegative)
+{
+    float result = nem::ceil(-3.2f);
+
+    ASSERT_NEAR(result, -3.0f, kEps);
+}
+
+TEST(Ceil, FloatNegativeWhole)
+{
+    float result = nem::ceil(-8.0f);
+
+    ASSERT_NEAR(result, -8.0f, kEps);
+}
+
+TEST(Ceil, FloatZero)
+{
+    float result = nem::ceil(0.0f);
+
+    ASSERT_NEAR(result, -0.0f, kEps);
+}
 
 // ===========================================================================
 // clamp
@@ -50,6 +227,73 @@ TEST(ScalarClamp, ValueAtUpperBoundaryIsUnchanged)
     int value = 10;
 
     int result = nem::clamp(value, 0, 10);
+
+    ASSERT_EQ(result, 10);
+}
+
+// ===========================================================================
+// repeat
+// ===========================================================================
+
+TEST(ScalarRepeat, ValueAtUpperBoundaryIsUnchanged)
+{
+    int value = 10;
+
+    int result = nem::repeat(value, 0, 10);
+
+    ASSERT_EQ(result, 0);
+}
+
+TEST(ScalarRepeat, ValueAtLowerBoundaryIsUnchanged)
+{
+    int value = 2;
+
+    int result = nem::repeat(value, 2, 10);
+
+    ASSERT_EQ(result, 2);
+}
+
+TEST(ScalarRepeat, ValueBetweenBoundsIsUnchanged)
+{
+    int value = 6;
+
+    int result = nem::repeat(value, 0, 10);
+
+    ASSERT_EQ(result, 6);
+}
+
+TEST(ScalarRepeat, ValueBetween2XBoundsIsRepeated)
+{
+    int value = 11;
+
+    int result = nem::repeat(value, 0, 10);
+
+    ASSERT_EQ(result, 1);
+}
+
+TEST(ScalarRepeat, ValueBetweenMinusBoundsIsRepeated)
+{
+    int value = -6;
+
+    int result = nem::repeat(value, 0, 10);
+
+    ASSERT_EQ(result, 4);
+}
+
+TEST(ScalarRepeat, ValueBelowOddBoundsIsRepeated)
+{
+    int value = 3;
+
+    int result = nem::repeat(value, 7, 13);
+
+    ASSERT_EQ(result, 9);
+}
+
+TEST(ScalarRepeat, ValueAboveOddBoundsIsRepeated)
+{
+    int value = 16;
+
+    int result = nem::repeat(value, 7, 13);
 
     ASSERT_EQ(result, 10);
 }

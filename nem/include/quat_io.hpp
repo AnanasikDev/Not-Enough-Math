@@ -13,7 +13,7 @@ namespace nem
     static constexpr const char* QUAT_R_BRACE = ")";
 
     template<typename T>
-    std::ostream& operator<<(std::ostream& os, const quat<T>& q)
+    std::ostream& operator<<(std::ostream& os, const nem::quat<T>& q)
     {
         os << QUAT_L_BRACE;
         os << q.s << QUAT_SEPARATOR;
@@ -35,7 +35,7 @@ namespace nem
     }
 
     template<typename T>
-    std::string to_str(const quat<T>& q)
+    std::string to_str(const nem::quat<T>& q)
     {
         std::stringstream ss;
         ss << QUAT_L_BRACE;

@@ -33,14 +33,14 @@ namespace nem
             z = q.s * p.z + q.x * p.y - q.y * p.x + q.z * p.s
             */
 
-            decltype(q.s) s = q.s * p.s - q.x * p.x - q.y * p.y - q.z * p.z;
-            decltype(q.x) x = q.s * p.x + q.x * p.s + q.y * p.z - q.z * p.y;
-            decltype(q.y) y = q.s * p.y - q.x * p.z + q.y * p.s + q.z * p.x;
-            decltype(q.z) z = q.s * p.z + q.x * p.y - q.y * p.x + q.z * p.s;
-            this->s = s;
-            this->x = x;
-            this->y = y;
-            this->z = z;
+            decltype(q.s) rs = q.s * p.s - q.x * p.x - q.y * p.y - q.z * p.z;
+            decltype(q.x) rx = q.s * p.x + q.x * p.s + q.y * p.z - q.z * p.y;
+            decltype(q.y) ry = q.s * p.y - q.x * p.z + q.y * p.s + q.z * p.x;
+            decltype(q.z) rz = q.s * p.z + q.x * p.y - q.y * p.x + q.z * p.s;
+            this->s = rs;
+            this->x = rx;
+            this->y = ry;
+            this->z = rz;
             return *this;
         }
 
