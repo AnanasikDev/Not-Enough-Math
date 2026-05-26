@@ -3,16 +3,19 @@
 #include <concepts>
 #include <type_traits>
 #include <cassert>
-#include <cmath>
 
 #include "consts.hpp"
 #include "err.hpp"
 #include "config.hpp"
 
+#include "intrinsics.hpp"
+
 namespace nem
 {
-	template <nem::scalar_type T> constexpr T sign(T value) { return value >= 0 ? T{ 1 } : T{ -1 }; }
+	template <nem::scalar_type T> constexpr T sign(T value) { return nem::_nem_copysign<T>((T)1.0, value); }
+
 	template <typename T> constexpr T abs(T value) { return T{ value >= 0 ? value : -value }; }
+	template <std::floating_point T> constexpr T abs(T value) { return nem::_nem_fabs(value); }
 
 	/// <summary>
 	/// Is a nearly 0? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a| < eps
@@ -77,27 +80,49 @@ namespace nem
 	template <typename T>
 	NEM_INLINE T sqrt(T value)
 	{
-		if (value < nem::Eps<T>()) value = T{ 0 };
-		return static_cast<T>(std::sqrt(static_cast<double>(value)));
+		if (nem::is_zero_or_neg(value))
+		{
+			 value = T{ 0 };
+		}
+		if constexpr (std::is_floating_point_v<T>)
+		{
+			return static_cast<T>(nem::_nem_sqrt(value));
+		}
+		else if constexpr (std::is_integral_v<T>)
+		{
+			return static_cast<T>(nem::_nem_sqrt(static_cast<double>(value)));
+		}
 	}
 
-	template <typename T, int Precision = 20>
+	template <std::floating_point T, int Precision = 20>
 	constexpr T csqrt(T value)
 	{
-		constexpr T ZERO = (T)0.0;
-		if (value <= ZERO) return ZERO;
+		if (nem::is_zero_or_neg(value))
+		{
+			return (T)0.0;
+		}
+
 		T result = value;
-		for (int i = 0; i < Precision; ++i) result = 0.5 * (result + value / result);
+		for (int i = 0; i < Precision; ++i)
+		{
+			result = 0.5 * (result + value / result);
+		}
 		return result;
 	}
 
 	template <std::integral T, int Precision = 20>
 	constexpr T csqrt(T value)
 	{
-		constexpr T ZERO = (T)0;
-		if (value <= ZERO) return ZERO;
+		if (nem::is_zero_or_neg(value))
+		{
+			return (T)0.0;
+		}
+
 		nem::real result = value;
-		for (int i = 0; i < Precision; ++i) result = (nem::real)0.5 * (result + static_cast<nem::real>(value) / result);
+		for (int i = 0; i < Precision; ++i)
+		{
+			result = (nem::real)0.5 * (result + static_cast<nem::real>(value) / result);
+		}
 		return static_cast<T>(result);
 	}
 
@@ -178,9 +203,10 @@ namespace nem
 
 
 	/// Copies the sign of {from} over to {to}. If the signs were the same, it doesn't change.
-	template <std::floating_point T> constexpr void copysign(T& to, T from)
+	template <std::floating_point T> constexpr T copysign(T to, T from)
 	{
-		to = static_cast<T>(__builtin_copysign(static_cast<double>(to), static_cast<double>(from)));
+		//to = static_cast<T>(__builtin_copysign(static_cast<double>(to), static_cast<double>(from)));
+		return nem::_nem_copysign(to, from);
 	}
 
 	/// <summary>
@@ -222,6 +248,11 @@ namespace nem
 
 	template <typename T> constexpr T smoothstep(T edge0, T edge1, T x)
 	{
+		const T length = edge1 - edge0;
+		if (nem::is_zero(length))
+		{
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Smoothstep edges are too closeby");
+		}
 		x = nem::clamp((x - edge0) / (edge1 - edge0), (T)0.0, (T)1.0);
 		return x * x * ((T)3.0 - (T)2.0 * x);
 	}

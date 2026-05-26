@@ -2,9 +2,11 @@
 
 #include "config.hpp"
 #include "utils.hpp"
-#include <cmath>
 
 #define NEM_FAST_TRIG
+#ifndef NEM_FAST_TRIG
+	#include <cmath>
+#endif
 
 namespace nem
 {

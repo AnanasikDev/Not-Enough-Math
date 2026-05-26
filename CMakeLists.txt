@@ -7,6 +7,12 @@ project(NotEnoughMath LANGUAGES CXX)
 
 set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/_deps" CACHE PATH "")
 
+if ($CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions(_DEBUG)
+elseif ($CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_compile_definitions(_RELEASE)
+endif()
+
 include(CTest)
 
 # This makes the sub-projects appear as folders in VS

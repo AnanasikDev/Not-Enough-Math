@@ -155,30 +155,30 @@ TEST(ScalarSqrtFloat, NegativeInputReturnsZero)
 // sqrt (integer)
 // ===========================================================================
 
-TEST(ScalarSqrtInt, ZeroReturnsZero)
+TEST(ScalarSqrt, IntZero)
 {
     int result = nem::sqrt(0);
 
     ASSERT_EQ(result, 0);
 }
 
-TEST(ScalarSqrtInt, FourReturnsTwo)
+TEST(ScalarSqrt, IntPositiveWhole)
 {
-    int result = nem::sqrt(4);
+    int result = nem::sqrt(81);
 
-    ASSERT_EQ(result, 2);
+    ASSERT_EQ(result, 9);
 }
 
-TEST(ScalarSqrtInt, NineReturnsThree)
+TEST(ScalarSqrt, IntNegative)
 {
-    int result = nem::sqrt(9);
+    int result = nem::sqrt(-25);
 
-    ASSERT_EQ(result, 3);
+    ASSERT_EQ(result, 0);
 }
 
-TEST(ScalarSqrtInt, TwentyFiveReturnsFive)
+TEST(ScalarSqrt, IntPositiveNonSquare)
 {
-    int result = nem::sqrt(25);
+    int result = nem::sqrt(30);
 
     ASSERT_EQ(result, 5);
 }
@@ -313,6 +313,73 @@ TEST(ScalarAbs, PositiveIntegerIsUnchanged)
 }
 
 // ===========================================================================
+// sign
+// ===========================================================================
+
+TEST(Sign, PositiveOne)
+{
+    float value = 1.0f;
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, 1.0f, fEps);
+}
+
+TEST(Sign, NegativeOne)
+{
+    float value = -1.0f;
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, -1.0f, fEps);
+}
+
+TEST(Sign, Zero)
+{
+    float value = 0.0f;
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, 1.0f, fEps);
+}
+
+TEST(Sign, NearZeroPos)
+{
+    float value = 0.0f + nem::Eps<float>();
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, 1.0f, fEps);
+}
+
+TEST(Sign, NearZeroNeg)
+{
+    float value = 0.0f - nem::Eps<float>();
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, -1.0f, fEps);
+}
+
+TEST(Sign, PositiveLarge)
+{
+    float value = 4234.0f;
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, 1.0f, fEps);
+}
+
+TEST(Sign, NegativeLarge)
+{
+    float value = -4234.0f;
+
+    float result = nem::sign(value);
+
+    ASSERT_NEAR(result, -1.0f, fEps);
+}
+
+// ===========================================================================
 // copysign
 // ===========================================================================
 
@@ -322,7 +389,7 @@ TEST(Copysign, PositiveToPositive)
     float value = orig;
     float comp = 9.0f;
 
-    nem::copysign(value, comp);
+    value = nem::copysign(value, comp);
 
     ASSERT_NEAR(value, orig, fEps);
 }
@@ -333,7 +400,7 @@ TEST(Copysign, PositiveToNegative)
     float value = orig;
     float comp = -9.0f;
 
-    nem::copysign(value, comp);
+    value = nem::copysign(value, comp);
 
     ASSERT_NEAR(value, -orig, fEps);
 }
@@ -344,7 +411,7 @@ TEST(Copysign, NegativeToNegative)
     float value = orig;
     float comp = -9.0f;
 
-    nem::copysign(value, comp);
+    value = nem::copysign(value, comp);
 
     ASSERT_NEAR(value, orig, fEps);
 }
@@ -355,7 +422,7 @@ TEST(Copysign, NegativeToPositive)
     float value = orig;
     float comp = 9.0f;
 
-    nem::copysign(value, comp);
+    value = nem::copysign(value, comp);
 
     ASSERT_NEAR(value, -orig, fEps);
 }

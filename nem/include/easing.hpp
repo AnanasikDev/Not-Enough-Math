@@ -36,7 +36,7 @@ namespace nem
 			constexpr T c1 = (T)1.70158;
 			constexpr T c2 = c1 + 1;
 
-			return 1 + c2 * nem::cube(v - 1) - c1 * nem::sqr(v - 1);
+			return 1 + c2 * nem::cube(v - 1) + c1 * nem::sqr(v - 1);
 		}
 
 		template <std::floating_point T> constexpr T in_sine(T v)

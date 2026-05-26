@@ -3,12 +3,8 @@
 #include "nem.hpp"
 #include "easing.hpp"
 
-#define DOSTH(function, namespac) namespac::function()
-
 void demo()
 {
-    std::cout << DOSTH(E<float>, nem) << " " << nem::ease::in_out_back(0.2f) << "\n";
-
     nem::quatr q0 = nem::make_quat<nem::real>(1, 0.5f, 1, 2);
     nem::quatr q1 = nem::make_quat<nem::real>(2, 3, 4, 2.5f);
     std::cout << q0 << " * " << q1 << " = " << q0 * q1 << "\n";
@@ -24,13 +20,11 @@ void demo()
 
     std::cout << "Logarithm: " << ::log(nem::E<float>()) << " sin: " << nem::sin(0.3f) << std::endl;
 
-    
-    float val = 9.009f;
-    float signval = -2.f;
-    std::cin >> val;
-    std::cin >> signval;
-    nem::copysign(val, signval);
-    std::cout << "val becomes 1: " << val << "\n";
+    #if defined(_DEBUG)
+    std::cout << "DEBUG!\n";
+    #elif defined(_RELEASE)
+    std::cout << "RELEASE!\n";
+    #endif
 }
 
 int main()

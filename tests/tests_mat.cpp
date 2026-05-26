@@ -1,6 +1,5 @@
 #include "tests_common.hpp"
 
-#include <cmath>
 #include <limits>
 
 using nem::float2;

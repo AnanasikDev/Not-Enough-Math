@@ -1,4 +1,3 @@
-#include <cmath>
 #include <limits>
 #define GLM_FORCE_QUAT_DATA_WXYZ
 #include <glm/gtx/quaternion.hpp>
