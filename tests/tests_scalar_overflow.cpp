@@ -168,6 +168,73 @@ TEST(Ceil, FloatZero)
 }
 
 // ===========================================================================
+// round
+// ===========================================================================
+
+TEST(Round, FloatPositiveDown)
+{
+    const float result = nem::round(4.1f);
+
+    ASSERT_NEAR(result, 4.0f, fEps);
+}
+
+TEST(Round, FloatPositiveMidUp)
+{
+    const float result = nem::round(4.5f);
+
+    ASSERT_NEAR(result, 5.0f, fEps);
+}
+
+TEST(Round, FloatPositiveMidDown)
+{
+    const float result = nem::round(4.5f - nem::Eps<float>());
+
+    ASSERT_NEAR(result, 4.0f, fEps);
+}
+
+TEST(Round, FloatPositiveWhole)
+{
+    const float result = nem::round(100.0f);
+
+    ASSERT_NEAR(result, 100.0f, fEps);
+}
+
+TEST(Round, FloatNegativeUp)
+{
+    const float result = nem::round(-4.1f);
+
+    ASSERT_NEAR(result, -4.0f, fEps);
+}
+
+TEST(Round, FloatNegativeMidUp)
+{
+    const float result = nem::round(-4.5f);
+
+    ASSERT_NEAR(result, -4.0f, fEps);
+}
+
+TEST(Round, FloatNegativeMidDown)
+{
+    const float result = nem::round(-4.5f - nem::Eps<float>());
+
+    ASSERT_NEAR(result, -5.0f, fEps);
+}
+
+TEST(Round, FloatNegativeWhole)
+{
+    const float result = nem::round(-100.0f);
+
+    ASSERT_NEAR(result, -100.0f, fEps);
+}
+
+TEST(Round, FloatZero)
+{
+    const float result = nem::round(0.0f);
+
+    ASSERT_NEAR(result, 0.0f, fEps);
+}
+
+// ===========================================================================
 // clamp
 // ===========================================================================
 
@@ -474,4 +541,51 @@ TEST(Remap, FloatNegativeWithinRangeInvert)
     const float result = nem::remap(-3.3f, -4.0f, -3.0f, 9.0f, 10.0f);
 
     ASSERT_NEAR(result, 9.7f, fEps);
+}
+
+
+// ===========================================================================
+// frac
+// ===========================================================================
+
+TEST(Frac, PositiveNearWhole)
+{
+    const float result = nem::frac(3.99f);
+
+    ASSERT_NEAR(result, 0.99f, fEps);
+}
+
+TEST(Frac, PositiveNonWhole)
+{
+    const float result = nem::frac(3.2f);
+
+    ASSERT_NEAR(result, 0.2f, fEps);
+}
+
+TEST(Frac, PositiveWhole)
+{
+    const float result = nem::frac(3.0f);
+
+    ASSERT_NEAR(result, 0.0f, fEps);
+}
+
+TEST(Frac, NegativeNearWhole)
+{
+    const float result = nem::frac(-3.99f);
+
+    ASSERT_NEAR(result, -0.99f, fEps);
+}
+
+TEST(Frac, NegativeNonWhole)
+{
+    const float result = nem::frac(-3.2f);
+
+    ASSERT_NEAR(result, -0.2f, fEps);
+}
+
+TEST(Frac, NegativeWhole)
+{
+    const float result = nem::frac(-3.0f);
+
+    ASSERT_NEAR(result, 0.0f, fEps);
 }

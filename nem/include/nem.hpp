@@ -17,3 +17,5 @@
 #include "quat.hpp"
 #include "quat_utils.hpp"
 #include "quat_io.hpp"
+
+#include "easing.hpp"

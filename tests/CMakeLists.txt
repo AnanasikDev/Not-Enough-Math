@@ -8,6 +8,7 @@ add_executable(tests
     tests_vector.cpp
     tests_quat.cpp
     tests_mat.cpp
+    tests_ease.cpp
 )
 
 include(GoogleTest)

@@ -2,7 +2,7 @@
     "version": 3,
     "configurePresets": [
         {
-            "name": "windows-debug-log",
+            "name": "debug-log",
             "displayName": "Debug Log",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
@@ -16,7 +16,7 @@
             }
         },
         {
-            "name": "windows-debug-throw",
+            "name": "debug-throw",
             "displayName": "Debug Throw",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
@@ -28,7 +28,7 @@
             }
         },
         {
-            "name": "windows-release-fast",
+            "name": "release",
             "displayName": "Release",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
@@ -39,6 +39,20 @@
                 "ANEM_ERR_USE_NAN": "OFF",
                 "ENABLE_STRICT_WARNINGS": "OFF"
             }
+        }
+    ],
+     "buildPresets": [
+        {
+            "name": "debug-log",
+            "configurePreset": "debug-log"
+        },
+        {
+            "name": "debug-throw",
+            "configurePreset": "debug-throw"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release"
         }
     ]
 }

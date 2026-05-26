@@ -23,3 +23,9 @@ _deps/
 *.pdb
 *.obj
 *.ilk
+
+.clangd
+.vscode/
+.cache/
+.temp/
+.buildstats

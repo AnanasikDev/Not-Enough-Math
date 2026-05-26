@@ -311,3 +311,51 @@ TEST(ScalarAbs, PositiveIntegerIsUnchanged)
 
     ASSERT_EQ(result, 7);
 }
+
+// ===========================================================================
+// copysign
+// ===========================================================================
+
+TEST(Copysign, PositiveToPositive)
+{
+    const float orig = 2.0f;
+    float value = orig;
+    float comp = 9.0f;
+
+    nem::copysign(value, comp);
+
+    ASSERT_NEAR(value, orig, fEps);
+}
+
+TEST(Copysign, PositiveToNegative)
+{
+    const float orig = 2.0f;
+    float value = orig;
+    float comp = -9.0f;
+
+    nem::copysign(value, comp);
+
+    ASSERT_NEAR(value, -orig, fEps);
+}
+
+TEST(Copysign, NegativeToNegative)
+{
+    const float orig = -2.0f;
+    float value = orig;
+    float comp = -9.0f;
+
+    nem::copysign(value, comp);
+
+    ASSERT_NEAR(value, orig, fEps);
+}
+
+TEST(Copysign, NegativeToPositive)
+{
+    const float orig = -2.0f;
+    float value = orig;
+    float comp = 9.0f;
+
+    nem::copysign(value, comp);
+
+    ASSERT_NEAR(value, -orig, fEps);
+}

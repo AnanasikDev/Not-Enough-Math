@@ -34,7 +34,7 @@ namespace nem
 	template <typename T> constexpr T sqr (T value) { return T{ value * value }; }
 	template <typename T> constexpr T cube(T value) { return T{ value * value * value }; }
 
-	template <typename T> NEM_INLINE T pow(T base, T power) { return ::pow(base, power); }
+	template <nem::scalar_type T> NEM_INLINE T pow(T base, T power) { return ::pow(base, power); }
 
 	/// <summary>
 	/// Natural logarithm. Input value is constrained to value > 0
@@ -147,6 +147,40 @@ namespace nem
 		}
 		const T v = a - nem::floor(a / b) * b;
 		return v < 0 ? v + nem::abs(b) : v;
+	}
+
+	/// <summary>
+	/// Returns the fractional part of the floating-point number, with respect to sign
+	/// 3.5 -> 0.5
+	/// 4.0 -> 0.0
+	/// -2.1 -> -0.1
+	/// </summary>
+	template <std::floating_point T> constexpr T frac(T value)
+	{
+		return value - nem::truncate(value);
+	}
+	
+	/// Rounds the floating-point number to the closest integer. |0.5| will round up, meaning:
+	/// 0.3 -> 0.0
+	/// 0.5 -> 1.0
+	/// -0.1 -> 0
+	/// -0.6 -> -1.0
+	/// -0.5 -> 0
+	template <std::floating_point T> constexpr T round(T value)
+	{
+		const T floored = nem::floor(value);
+		const T ceiled = floored + (floored < value); // ceil without extra floor
+		const T neg_dist = value - floored;
+		const T pos_dist = ceiled - value;
+		const bool up = pos_dist < neg_dist + nem::Eps<T>(); // 0.5 -> up
+		return ceiled * up + floored * !up; // branchless
+	}
+
+
+	/// Copies the sign of {from} over to {to}. If the signs were the same, it doesn't change.
+	template <std::floating_point T> constexpr void copysign(T& to, T from)
+	{
+		to = static_cast<T>(__builtin_copysign(static_cast<double>(to), static_cast<double>(from)));
 	}
 
 	/// <summary>
