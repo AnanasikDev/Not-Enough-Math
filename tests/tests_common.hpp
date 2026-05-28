@@ -40,3 +40,26 @@ static void require_valid_basis(nem::float3 n, nem::float3 b1, nem::float3 b2)
     EXPECT_NEAR(nem::dot(n, b2), 0.f, fEps);
     EXPECT_NEAR(nem::dot(b1, b2), 0.f, fEps);
 }
+
+static void range_accuracy_test(float min, float max, int iterations, float (*fun1)(float), float (*fun2)(float), float eps)
+{
+    float length = max - min;
+    float maxerr = 0;
+    float x = min;
+    float step = length / static_cast<float>(iterations);
+    float totalerror = 0;
+    for (int i = 0; i < iterations; i++)
+    {
+        const float nem_result = fun1(x);
+        const float std_result = fun2(x);
+        const float error = nem::abs(nem_result - std_result);
+        totalerror += error;
+        if (error > maxerr)
+        {
+            maxerr = error;
+        }
+        x += step;
+    }
+    printf("Max error: |%.6f|\nAverage error: |%.6f|", maxerr, totalerror / iterations);
+    ASSERT_NEAR(maxerr, 0.0f, eps);
+}

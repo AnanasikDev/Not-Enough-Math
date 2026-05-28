@@ -49,17 +49,33 @@
 
 namespace bm = benchmark;
 
-static void f64_sin(bm::State& state)
+static void f32_sin(bm::State& state)
 {
-    double argument = std::rand(), result = 0;
+    float argument = std::rand(), result = 0;
     for (auto _ : state)
-        bm::DoNotOptimize(result = std::sin(argument += 1.0));
+    {
+        argument += 1.0f;
+        result = std::sin(argument);
+        bm::DoNotOptimize(result);
+    }
 }
-BENCHMARK(f64_sin);
+BENCHMARK(f32_sin);
+
+static void f32_cos(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result = std::cos(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_cos);
 
 static void f64_sin_maclaurin(bm::State& state)
 {
-    double argument = std::rand(), result = 0;
+    float argument = std::rand(), result = 0;
     for (auto _ : state)
     {
         argument += 1.0;
@@ -71,7 +87,7 @@ BENCHMARK(f64_sin_maclaurin);
 
 static void f64_sin_maclaurin_powless(bm::State& state)
 {
-    double argument = std::rand(), result = 0;
+    float argument = std::rand(), result = 0;
     for (auto _ : state)
     {
         argument += 1.0;
@@ -81,6 +97,31 @@ static void f64_sin_maclaurin_powless(bm::State& state)
     }
 }
 BENCHMARK(f64_sin_maclaurin_powless);
+
+
+static void f32_nem_sin(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::sin(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sin);
+
+static void f32_nem_cos(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::cos(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_cos);
 
 //static void Bench_Add(benchmark::State& state)
 //{

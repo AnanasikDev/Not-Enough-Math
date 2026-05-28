@@ -15,3 +15,5 @@ FetchContent_MakeAvailable(benchmark)
 add_executable(bench bmain.cpp)
 target_link_libraries(bench PRIVATE nem benchmark::benchmark)
 set_target_properties(bench PROPERTIES FOLDER "Tests")
+
+add_compile_options(bench /O3)

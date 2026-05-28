@@ -235,6 +235,151 @@ TEST(Round, FloatZero)
 }
 
 // ===========================================================================
+// round with step
+// ===========================================================================
+
+TEST(RoundWithStep, FloatPositiveSecondDigitUp)
+{
+    const float result = nem::round(423.1634f, 0.1f);
+
+    ASSERT_NEAR(result, 423.2f, fEps);
+}
+
+TEST(RoundWithStep, FloatPositiveSecondDigitDown)
+{
+    const float result = nem::round(423.1134f, 0.1f);
+
+    ASSERT_NEAR(result, 423.1f, fEps);
+}
+
+TEST(RoundWithStep, FloatZero)
+{
+    const float result = nem::round(0.0f, 1.0f);
+
+    ASSERT_NEAR(result, 0.0f, fEps);
+}
+
+TEST(RoundWithStep, FloatNegativePositiveStep)
+{
+    const float result = nem::round(-9.2f, 0.25f);
+
+    ASSERT_NEAR(result, -9.25f, fEps);
+}
+
+TEST(RoundWithStep, FloatPositiveMid)
+{
+    const float result = nem::round(0.75f, 1.5f);
+
+    ASSERT_NEAR(result, 1.5f, fEps);
+}
+
+TEST(RoundWithStep, FloatPositiveNearMidBelow)
+{
+    const float result = nem::round(0.75f - 0.001f, 1.5f);
+
+    ASSERT_NEAR(result, 0, fEps);
+}
+
+TEST(RoundWithStep, FloatPositiveNearMidAbove)
+{
+    const float result = nem::round(0.75f + 0.001f, 1.5f);
+
+    ASSERT_NEAR(result, 1.5f, fEps);
+}
+
+TEST(RoundWithStep, FloatPositiveOddToEvenPositiveStep)
+{
+    const float result = nem::round(123.0f, 2.0f);
+
+    ASSERT_NEAR(result, 124.0f, fEps);
+}
+
+TEST(RoundWithStep, FloatNegativeOddToEvenPositiveStep)
+{
+    const float result = nem::round(-123.0f, 2.0f);
+
+    ASSERT_NEAR(result, -122.0f, fEps);
+}
+
+TEST(RoundWithStep, IntPositive)
+{
+    const int result = nem::round(123, 10);
+
+    ASSERT_EQ(result, 120);
+}
+
+TEST(RoundWithStep, IntNegative)
+{
+    const int result = nem::round(-123, 10);
+
+    ASSERT_EQ(result, -120);
+}
+
+TEST(RoundWithStep, IntPositiveOddToEvenPositiveStep)
+{
+    const int result = nem::round(123, 2);
+
+    ASSERT_EQ(result, 124);
+}
+
+TEST(RoundWithStep, IntNegativeOddToEvenPositiveStep)
+{
+    const int result = nem::round(-123, 2);
+
+    ASSERT_EQ(result, -122);
+}
+
+// ===========================================================================
+// floor with step
+// ===========================================================================
+
+TEST(FloorWithStep, FloatPositive)
+{
+    const float result = nem::floor(0.98f, 0.2f);
+
+    ASSERT_NEAR(result, 0.8f, fEps);
+}
+
+TEST(FloorWithStep, FloatNegative)
+{
+    const float result = nem::floor(-0.98f, 0.2f);
+
+    ASSERT_NEAR(result, -1.0f, fEps);
+}
+
+TEST(FloorWithStep, FloatLargeStep)
+{
+    const float result = nem::floor(19.4f, 8.0f);
+
+    ASSERT_NEAR(result, 16.0f, fEps);
+}
+
+// ===========================================================================
+// ceil with step
+// ===========================================================================
+
+TEST(CeilWithStep, FloatPositive)
+{
+    const float result = nem::ceil(0.98f, 0.2f);
+
+    ASSERT_NEAR(result, 1.0f, fEps);
+}
+
+TEST(CeilWithStep, FloatNegative)
+{
+    const float result = nem::ceil(-0.98f, 0.2f);
+
+    ASSERT_NEAR(result, -0.8f, fEps);
+}
+
+TEST(CeilWithStep, FloatLargeStep)
+{
+    const float result = nem::ceil(19.4f, 8.0f);
+
+    ASSERT_NEAR(result, 24.0f, fEps);
+}
+
+// ===========================================================================
 // clamp
 // ===========================================================================
 
