@@ -29,3 +29,8 @@ _deps/
 .cache/
 .temp/
 .buildstats
+.VSCodeCounter/
+
+docs/html/
+html/
+out/

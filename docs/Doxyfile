@@ -1,0 +1,71 @@
+# Doxyfile for Not Enough Math
+# Generated for GitHub Pages deployment
+
+#---------------------------------------------------------------------------
+# Project
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "Not Enough Math"
+PROJECT_BRIEF          = "A header-only C++20 math library"
+PROJECT_NUMBER         = ""
+
+#---------------------------------------------------------------------------
+# Input
+#---------------------------------------------------------------------------
+INPUT                  = ../nem/include
+RECURSIVE              = YES
+FILE_PATTERNS          = *.hpp
+EXCLUDE_PATTERNS       =
+
+#---------------------------------------------------------------------------
+# Output
+#---------------------------------------------------------------------------
+OUTPUT_DIRECTORY       = ../docs
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+GENERATE_XML           = NO
+GENERATE_MAN           = NO
+
+#---------------------------------------------------------------------------
+# Extraction
+#---------------------------------------------------------------------------
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+
+#---------------------------------------------------------------------------
+# Source browsing
+#---------------------------------------------------------------------------
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+VERBATIM_HEADERS       = YES
+
+#---------------------------------------------------------------------------
+# Preprocessor
+#---------------------------------------------------------------------------
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+PREDEFINED             = NEM_ERR_THROW \
+                         NEM_ERR_LOG \
+                         NEM_ERR_USE_NAN
+
+#---------------------------------------------------------------------------
+# HTML tweaks
+#---------------------------------------------------------------------------
+HTML_COLORSTYLE        = LIGHT
+SEARCHENGINE           = YES
+GENERATE_TREEVIEW      = YES
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+
+#---------------------------------------------------------------------------
+# Graphs (disabled – no Graphviz in CI by default)
+#---------------------------------------------------------------------------
+HAVE_DOT               = NO
+
+#---------------------------------------------------------------------------
+# Warnings
+#---------------------------------------------------------------------------
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO
