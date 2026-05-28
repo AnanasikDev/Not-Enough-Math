@@ -1,17 +1,14 @@
-# Doxyfile for Not Enough Math
-# Generated for GitHub Pages deployment
-
 #---------------------------------------------------------------------------
 # Project
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "Not Enough Math"
-PROJECT_BRIEF          = "A header-only C++20 math library"
+PROJECT_BRIEF          = "Lightweight zero-dependency C++ math library"
 PROJECT_NUMBER         = ""
 
 #---------------------------------------------------------------------------
 # Input
 #---------------------------------------------------------------------------
-INPUT                  = ../nem/include
+INPUT                  = ./nem/include
 RECURSIVE              = YES
 FILE_PATTERNS          = *.hpp
 EXCLUDE_PATTERNS       =
@@ -19,7 +16,7 @@ EXCLUDE_PATTERNS       =
 #---------------------------------------------------------------------------
 # Output
 #---------------------------------------------------------------------------
-OUTPUT_DIRECTORY       = ../docs
+OUTPUT_DIRECTORY       = ./docs
 HTML_OUTPUT            = html
 GENERATE_LATEX         = NO
 GENERATE_XML           = NO
@@ -60,7 +57,7 @@ DISABLE_INDEX          = NO
 FULL_SIDEBAR           = NO
 
 #---------------------------------------------------------------------------
-# Graphs (disabled – no Graphviz in CI by default)
+# Graphs
 #---------------------------------------------------------------------------
 HAVE_DOT               = NO
 
