@@ -4,7 +4,9 @@
 
 namespace nem
 {
-    #if defined(__clang__) || defined(__GNUC__)
+    namespace intr
+    {
+        #if defined(__clang__) || defined(__GNUC__)
 
         #define NEM_TRAP() __builtin_trap()
         #ifdef _DEBUG
@@ -87,4 +89,5 @@ namespace nem
     #else
         #error "Unsupported compiler"
     #endif
+    }
 }

@@ -4,7 +4,10 @@
 #include "nan.hpp"
 #include "err.hpp"
 
+#include "intrinsics.hpp"
+
 #include "utils.hpp"
+#include "trig.hpp"
 
 #include "vec.hpp"
 #include "vec_utils.hpp"

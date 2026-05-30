@@ -13,6 +13,17 @@
 namespace nem
 {
 	/// -------------------------------------------
+	/// Metadata
+	/// -------------------------------------------
+
+	template <std::floating_point T> constexpr T is_infinite(T value) noexcept { return !nem::intr::_nem_isfinite(value); }
+	template <std::floating_point T> constexpr T is_nan(T value) noexcept { return !nem::intr::_nem_isfinite(value); }
+
+	template <std::integral T> constexpr T is_infinite(T value) noexcept { return false; }
+	template <std::integral T> constexpr T is_nan(T value) noexcept { return false; }
+
+
+	/// -------------------------------------------
 	/// Sign operations
 	/// -------------------------------------------
 
@@ -20,12 +31,12 @@ namespace nem
 	template <std::floating_point T> constexpr T copysign(T to, T from) noexcept
 	{
 		//to = static_cast<T>(__builtin_copysign(static_cast<double>(to), static_cast<double>(from)));
-		return nem::_nem_copysign(to, from);
+		return nem::intr::_nem_copysign(to, from);
 	}
 	template <nem::scalar_type T> constexpr T sign(T value) noexcept { return nem::copysign<T>((T)1.0, value); }
 
 	template <typename T> constexpr T abs(T value) noexcept { return T{ value >= 0 ? value : -value }; }
-	template <std::floating_point T> constexpr T abs(T value) noexcept { return nem::_nem_fabs(value); }
+	template <std::floating_point T> constexpr T abs(T value) noexcept { return nem::intr::_nem_fabs(value); }
 
 	/// -------------------------------------------
 	/// Comparisons
@@ -44,13 +55,20 @@ namespace nem
 	/// </summary>
 	template <nem::scalar_type T> constexpr bool equal(T a, T b) noexcept { return nem::is_zero(a - b); }
 
+	template <nem::scalar_type T> constexpr bool max(T a, T b) noexcept { return (a > b) ? a : b; }
+
+	template <nem::scalar_type T> constexpr bool min(T a, T b) noexcept { return (a < b) ? a : b; }
+
+	template <nem::scalar_type T> constexpr bool average(T a, T b) noexcept { return (a + b) / (T)2.0; }
+
+
 	/// -------------------------------------------
 	/// Powers
 	/// -------------------------------------------
 
 	template <typename T> constexpr T pow2(T value) noexcept { return T{ value * value }; }
 	template <typename T> constexpr T pow3(T value) noexcept { return T{ value * value * value }; }
-	template <typename T> constexpr T pow4(T value) noexcept { return T{ nem::pow2(nem::pow2(value)) }; }
+	template <typename T> constexpr T pow4(T value) noexcept { return T{ value * value * value * value }; }
 	template <typename T> constexpr T sqr (T value) noexcept { return T{ value * value }; }
 	template <typename T> constexpr T cube(T value) noexcept { return T{ value * value * value }; }
 
@@ -339,11 +357,11 @@ namespace nem
 		}
 		if constexpr (std::is_floating_point_v<T>)
 		{
-			return static_cast<T>(nem::_nem_sqrt(value));
+			return static_cast<T>(nem::intr::_nem_sqrt(value));
 		}
 		else if constexpr (std::is_integral_v<T>)
 		{
-			return static_cast<T>(nem::_nem_sqrt(static_cast<double>(value)));
+			return static_cast<T>(nem::intr::_nem_sqrt(static_cast<double>(value)));
 		}
 	}
 

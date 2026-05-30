@@ -103,3 +103,141 @@ TEST(MatrixUpscale, ChainInitListThen2x2To3x3)
     EXPECT_NEAR(dst[2][1], 0, fEps);
     EXPECT_NEAR(dst[2][2], 0, fEps);
 }
+
+TEST(MatrixDeterminant, Simple2x2_Flip)
+{
+    mat2 m({ {1, 2}, {3, 4} });
+
+    float det = nem::determinant<float>(m);
+
+    EXPECT_NEAR(det, -2.0f, fEps);
+}
+
+TEST(MatrixDeterminant, Simple2x2)
+{
+    mat2 m({ {1, 1}, {-1, 1} });
+
+    float det = nem::determinant<float>(m);
+
+    EXPECT_NEAR(det, 2.0f, fEps);
+}
+
+TEST(MatrixRotate, Simple2x2)
+{
+    mat2 result = nem::rotate(90.0f);
+
+    EXPECT_NEAR(result[0][0], 0, fEps);
+    EXPECT_NEAR(result[0][1], -1, fEps);
+    EXPECT_NEAR(result[1][0], 1, fEps);
+    EXPECT_NEAR(result[1][1], 0, fEps);
+}
+
+TEST(MatrixRotate, Simple2x2_FullRevolution)
+{
+    mat2 ident({ {1, 0}, {0, 1} });
+
+    mat2 result = nem::rotate(360.0f);
+
+    EXPECT_NEAR(result[0][0], ident[0][0], fEps);
+    EXPECT_NEAR(result[0][1], ident[0][1], fEps);
+    EXPECT_NEAR(result[1][0], ident[1][0], fEps);
+    EXPECT_NEAR(result[1][1], ident[1][1], fEps);
+}
+
+TEST(MatrixRotate, Simple2x2_Chain)
+{
+    mat2 ident({ {1, 0}, {0, 1} });
+
+    mat2 result = nem::rotate(90.0f) * nem::rotate(90.0f);
+
+    EXPECT_NEAR(result[0][0], -ident[0][0], fEps);
+    EXPECT_NEAR(result[0][1], -ident[0][1], fEps);
+    EXPECT_NEAR(result[1][0], -ident[1][0], fEps);
+    EXPECT_NEAR(result[1][1], -ident[1][1], fEps);
+}
+
+TEST(MatrixScale, Simple2x2)
+{
+    mat2 result = nem::scale(nem::float2(0.1f, 0.2f));
+
+    EXPECT_NEAR(result[0][0], 0.1f, fEps);
+    EXPECT_NEAR(result[0][1], 0.0f, fEps);
+    EXPECT_NEAR(result[1][0], 0.0f, fEps);
+    EXPECT_NEAR(result[1][1], 0.2f, fEps);
+}
+
+TEST(MatrixScale, Simple3x3)
+{
+    mat3 result = nem::scale(nem::float3(3.0f, 0.0f, 2.0f));
+
+    EXPECT_NEAR(result[0][0], 3.0f, fEps);
+    EXPECT_NEAR(result[0][1], 0.0f, fEps);
+    EXPECT_NEAR(result[0][2], 0.0f, fEps);
+
+    EXPECT_NEAR(result[1][0], 0.0f, fEps);
+    EXPECT_NEAR(result[1][1], 0.0f, fEps);
+    EXPECT_NEAR(result[1][2], 0.0f, fEps);
+    
+    EXPECT_NEAR(result[2][0], 0.0f, fEps);
+    EXPECT_NEAR(result[2][1], 0.0f, fEps);
+    EXPECT_NEAR(result[2][2], 2.0f, fEps);
+}
+
+TEST(MatrixScale, Chain_3x3)
+{
+    mat3 result = nem::scale(nem::float3(3.0f, 0.0f, 2.0f)) * nem::scale(nem::float3(2.0f, 9.0f, 2.5f));
+
+    EXPECT_NEAR(result[0][0], 6.0f, fEps);
+    EXPECT_NEAR(result[0][1], 0.0f, fEps);
+    EXPECT_NEAR(result[0][2], 0.0f, fEps);
+
+    EXPECT_NEAR(result[1][0], 0.0f, fEps);
+    EXPECT_NEAR(result[1][1], 0.0f, fEps);
+    EXPECT_NEAR(result[1][2], 0.0f, fEps);
+    
+    EXPECT_NEAR(result[2][0], 0.0f, fEps);
+    EXPECT_NEAR(result[2][1], 0.0f, fEps);
+    EXPECT_NEAR(result[2][2], 5.0f, fEps);
+}
+
+TEST(MatrixTranslate, Simple3x3)
+{
+    mat4 result = nem::translate_3D(nem::float3(3.0f, 7.0f, 2.0f));
+
+    EXPECT_NEAR(result[0][0], 1.0f, fEps);
+    EXPECT_NEAR(result[0][1], 0.0f, fEps);
+    EXPECT_NEAR(result[0][2], 0.0f, fEps);
+    EXPECT_NEAR(result[0][3], 3.0f, fEps);
+
+    EXPECT_NEAR(result[1][0], 0.0f, fEps);
+    EXPECT_NEAR(result[1][1], 1.0f, fEps);
+    EXPECT_NEAR(result[1][2], 0.0f, fEps);
+    EXPECT_NEAR(result[1][3], 7.0f, fEps);
+
+    EXPECT_NEAR(result[2][0], 0.0f, fEps);
+    EXPECT_NEAR(result[2][1], 0.0f, fEps);
+    EXPECT_NEAR(result[2][2], 1.0f, fEps);
+    EXPECT_NEAR(result[2][3], 2.0f, fEps);
+
+    EXPECT_NEAR(result[3][0], 0.0f, fEps);
+    EXPECT_NEAR(result[3][1], 0.0f, fEps);
+    EXPECT_NEAR(result[3][2], 0.0f, fEps);
+    EXPECT_NEAR(result[3][3], 1.0f, fEps);
+}
+
+TEST(MatrixTranslate, Simple2x2)
+{
+    mat3 result = nem::translate_2D(nem::float2(9.0f, 2.0f));
+
+    EXPECT_NEAR(result[0][0], 1.0f, fEps);
+    EXPECT_NEAR(result[0][1], 0.0f, fEps);
+    EXPECT_NEAR(result[0][2], 9.0f, fEps);
+
+    EXPECT_NEAR(result[1][0], 0.0f, fEps);
+    EXPECT_NEAR(result[1][1], 1.0f, fEps);
+    EXPECT_NEAR(result[1][2], 2.0f, fEps);
+
+    EXPECT_NEAR(result[2][0], 0.0f, fEps);
+    EXPECT_NEAR(result[2][1], 0.0f, fEps);
+    EXPECT_NEAR(result[2][2], 1.0f, fEps);
+}

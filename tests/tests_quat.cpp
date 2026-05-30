@@ -92,3 +92,56 @@ TEST(QuatMul, MulSameAsGlm)
     ASSERT_NEAR(q1m2.y, q2m2.y, fEps);
     ASSERT_NEAR(q1m2.z, q2m2.z, fEps);
 }
+
+TEST(QuatExractVector, Simple)
+{
+    nem::quatr q = nem::make_quat(1.0f, 2.0f, 3.0f, 4.0f);
+    nem::float3 v = nem::extract_vector(q);
+
+    ASSERT_NEAR(v.x, 2, fEps);
+    ASSERT_NEAR(v.y, 3, fEps);
+    ASSERT_NEAR(v.z, 4, fEps);
+}
+
+TEST(QuatLength, SameAsGlm)
+{
+    const float s = 1, x = 2, y = 3, z = 4;
+    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    glm::quat q2(s, x, y, z);
+
+    float l1 = nem::length(q1);
+    float l2 = glm::length(q2);
+
+    ASSERT_NEAR(l1, l2, fEps);
+}
+
+TEST(QuatNormalize, SameAsGlm)
+{
+    const float s = 1, x = 2, y = 3, z = 4;
+    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    glm::quat q2(s, x, y, z);
+
+    auto q1n = nem::normalize(q1);
+    auto q2n = glm::normalize(q2);
+
+    ASSERT_NEAR(q1n.s, q2n.w, fEps);
+    ASSERT_NEAR(q1n.x, q2n.x, fEps);
+    ASSERT_NEAR(q1n.y, q2n.y, fEps);
+    ASSERT_NEAR(q1n.z, q2n.z, fEps);
+}
+
+TEST(QuatMulByVector, SameAsGlm)
+{
+    const nem::float3 v1(3.0f, -1.0f, 7.0f); 
+    const glm::vec3   v2(3.0f, -1.0f, 7.0f); 
+    const float s = 1, x = 2, y = 3, z = 4;
+    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    glm::quat q2(s, x, y, z);
+
+    nem::float3 v1r = q1 * v1;
+    glm::vec3 v2r = q2 * v2;
+
+    ASSERT_NEAR(v1r[0], v2r[0], fEps);
+    ASSERT_NEAR(v1r[1], v2r[1], fEps);
+    ASSERT_NEAR(v1r[2], v2r[2], fEps);
+}

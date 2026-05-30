@@ -99,4 +99,10 @@ namespace nem
 
         return result;
     }
+
+    template <typename T>
+    constexpr nem::BaseVector3<T> extract_vector(const nem::quat<T>& q)
+    {
+        return nem::BaseVector3(q.x, q.y, q.z);
+    }
 }

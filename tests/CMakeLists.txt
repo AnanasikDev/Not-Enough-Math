@@ -12,6 +12,8 @@ add_executable(tests
     tests_trig.cpp
 )
 
+target_compile_definitions(tests PRIVATE GLM_FORCE_QUAT_DATA_WXYZ)
+
 include(GoogleTest)
 FetchContent_Declare(
     googletest

@@ -12,6 +12,12 @@
 
 namespace nem
 {
+	template <nem::scalar_type T>
+	struct sincos
+	{
+		T sin;
+		T cos;
+	};
 
 	static constexpr int DEFAULT_TRIG_PRECISION = 1;
 	static constexpr float DEFAULT_TRIG_EPSILON = 0.01f;
@@ -89,6 +95,26 @@ namespace nem
 			case 3: return  ft_sin_q1<T, P>(r);
 		};
 		NEM_UNREACHABLE();
+	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr nem::sincos<T> get_sincos(T radians)
+	{
+		return nem::sincos<T> { nem::sin(radians), nem::cos(radians) };
+	}
+
+	/// Converts degrees to radians. Used to make units explicit.
+	template <nem::scalar_type T>
+	constexpr T degrees(T degrees) noexcept
+	{
+		return nem::DEG_TO_RAD<T> * degrees;
+	}
+
+	/// Converts radians to radians (passes the argument unchanged). Used to make units explicit.
+	template <nem::scalar_type T>
+	constexpr T radians(T radians) noexcept
+	{
+		return radians;
 	}
 
 #else
