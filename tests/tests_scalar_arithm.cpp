@@ -272,8 +272,8 @@ TEST(ScalarLog, FloatPowLogChain)
 
 TEST(ScalarLog, FloatLnPowChain)
 {
-    const float base = nem::E<float>();
-    const float power = nem::PI<float>();
+    const float base = nem::E<float>;
+    const float power = nem::PI<float>;
     const float input = nem::pow(base, power);
     const float result = nem::ln(input);
 
@@ -282,7 +282,7 @@ TEST(ScalarLog, FloatLnPowChain)
 
 TEST(ScalarLog, FloatLnSameAsLogE)
 {
-    const float base = nem::E<float>();
+    const float base = nem::E<float>;
     const float input = 12312.05f;
     const float a = nem::ln(input);
     const float b = nem::log(base, input);

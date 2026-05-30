@@ -99,29 +99,84 @@ static void f64_sin_maclaurin_powless(bm::State& state)
 BENCHMARK(f64_sin_maclaurin_powless);
 
 
-static void f32_nem_sin(bm::State& state)
-{
-    float argument = std::rand(), result = 0;
-    for (auto _ : state)
-    {
-        argument += 1.0;
-        result = nem::sin(argument);
-        bm::DoNotOptimize(result);
-    }
-}
-BENCHMARK(f32_nem_sin);
 
-static void f32_nem_cos(bm::State& state)
+
+
+
+
+static void f32_nem_sin_p3(bm::State& state)
 {
     float argument = std::rand(), result = 0;
     for (auto _ : state)
     {
         argument += 1.0;
-        result = nem::cos(argument);
+        result = nem::sin<float, 3>(argument);
         bm::DoNotOptimize(result);
     }
 }
-BENCHMARK(f32_nem_cos);
+BENCHMARK(f32_nem_sin_p3);
+
+static void f32_nem_sin_p2(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::sin<float, 2>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sin_p2);
+
+static void f32_nem_sin_p1(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::sin<float, 1>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sin_p1);
+
+
+
+static void f32_nem_cos_p3(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::cos<float, 3>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_cos_p3);
+
+static void f32_nem_cos_p2(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::cos<float, 2>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_cos_p2);
+
+static void f32_nem_cos_p1(bm::State& state)
+{
+    float argument = std::rand(), result = 0;
+    for (auto _ : state)
+    {
+        argument += 1.0;
+        result = nem::cos<float, 1>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_cos_p1);
 
 //static void Bench_Add(benchmark::State& state)
 //{
@@ -277,11 +332,11 @@ BENCHMARK_MAIN();
 //    v.push_back(3.3f);
 //    std::cout << "std::vector! " << v[0] << "\n";
 //
-//    std::cout << "LOGarithm: " << ::log(nem::E<float>()) << std::endl;
+//    std::cout << "LOGarithm: " << ::log(nem::E<float>) << std::endl;
 //
 //    //nem::experimental::asmmath::mul(4, 6);
-//    nem::experimental::asmmath::sin(nem::HALF_PI<float>());
-//    nem::experimental::asmmath::sin(nem::HALF_PI<float>() / 2.f);
+//    nem::experimental::asmmath::sin(nem::HALF_PI<float>);
+//    nem::experimental::asmmath::sin(nem::HALF_PI<float> / 2.f);
 //}
 //
 //

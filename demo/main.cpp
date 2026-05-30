@@ -18,7 +18,7 @@ void demo()
     v.push_back(3.3f);
     std::cout << "std::vector! " << v[0] << "\n";
 
-    std::cout << "Logarithm: " << ::log(nem::E<float>()) << " sin: " << nem::sin(0.3f) << std::endl;
+    std::cout << "Logarithm: " << ::log(nem::E<float>) << " sin: " << nem::sin(0.3f) << std::endl;
 
     #if defined(_DEBUG)
     std::cout << "DEBUG!\n";

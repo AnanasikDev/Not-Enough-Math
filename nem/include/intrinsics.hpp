@@ -47,8 +47,8 @@ namespace nem
             NEM_UNREACHABLE();
         }
 
-        template <std::floating_point T> constexpr bool  _nem_isnan(T x)    { return __builtin_isnan(x);    }
-        template <std::floating_point T> constexpr bool  _nem_isfinite(T x) { return __builtin_isfinite(x); }
+        template <std::floating_point T> constexpr bool  _nem_isnan(T x) noexcept    { return __builtin_isnan(x);    }
+        template <std::floating_point T> constexpr bool  _nem_isfinite(T x) noexcept { return __builtin_isfinite(x); }
 
         template <typename T> constexpr T _nem_copysign(T to, const T from) noexcept
         {
@@ -78,10 +78,10 @@ namespace nem
     #elif defined(_MSC_VER)
         #include <intrin.h>
         #include <math.h>
-        inline float _nem_sqrtf(float x)    { return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(x))); }
-        inline float _nem_fabsf(float x)    { return fabsf(x);    }
-        inline bool  _nem_isnan(float x)    { return x != x;      }
-        inline bool  _nem_isfinite(float x) { return (x == x) && (x - x == 0.0f); }
+        inline float _nem_sqrtf(float x)    noexcept { return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(x))); }
+        inline float _nem_fabsf(float x)    noexcept { return fabsf(x);    }
+        inline bool  _nem_isnan(float x)    noexcept { return x != x;      }
+        inline bool  _nem_isfinite(float x) noexcept { return (x == x) && (x - x == 0.0f); }
         #define NEM_TRAP() __debugbreak()
         #define NEM_UNREACHABLE() __assume(0)
     #else

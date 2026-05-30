@@ -41,17 +41,17 @@ namespace nem
 
 		template <std::floating_point T> constexpr T in_sine(T v)
 		{
-			return 1 - nem::cos(v * nem::PI<T>() * (T)0.5);
+			return 1 - nem::cos(v * nem::PI<T> * (T)0.5);
 		}
 
 		template <std::floating_point T> constexpr T out_sine(T v)
 		{
-			return nem::sin(v * nem::PI<T>() * (T)0.5);
+			return nem::sin(v * nem::PI<T> * (T)0.5);
 		}
 
 		template <std::floating_point T> constexpr T in_out_sine(T v)
 		{
-			return -(nem::cos(nem::PI<T>() * v) - 1) * (T)0.5;
+			return -(nem::cos(nem::PI<T> * v) - 1) * (T)0.5;
 		}
 
 		template <std::floating_point T> constexpr T in_bounce(T v)
@@ -109,7 +109,7 @@ namespace nem
 
 		NEM_INLINE template <std::floating_point T> T in_elastic(T v)
 		{
-			constexpr T c4 = (2 * nem::PI<T>()) / (T)3.0;
+			constexpr T c4 = (2 * nem::PI<T>) / (T)3.0;
 
 			return v == 0
 				? 0
@@ -120,7 +120,7 @@ namespace nem
 
 		NEM_INLINE template <std::floating_point T> T out_elastic(T v)
 		{
-			constexpr T c4 = (2 * nem::PI<T>()) / (T)3.0;
+			constexpr T c4 = (2 * nem::PI<T>) / (T)3.0;
 
 			return v == 0
 				? 0
@@ -131,7 +131,7 @@ namespace nem
 
 		NEM_INLINE template <std::floating_point T> T in_out_elastic(T v)
 		{
-			constexpr T c5 = (2 * nem::PI<T>()) / (T)4.5;
+			constexpr T c5 = (2 * nem::PI<T>) / (T)4.5;
 
 			return v == 0
 				? 0

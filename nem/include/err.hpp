@@ -44,6 +44,7 @@ namespace nem
 #endif
             }
 
+#if defined(NEM_ERR_LOG)
             NEM_INLINE void push_log(nem_string msg)
             {
                 printf("%s\n", GET_C_STRING(msg));
@@ -64,10 +65,11 @@ namespace nem
                     default: push_log_prefix("Not Enough Math Error: ", msg); break;
                 }
             }
+#endif
 
-            NEM_INLINE bool force_throw(nem_string msg, nem::error::Kind type = Kind::RuntimeError)
+#if defined(_STDEXCEPT_) && defined(NEM_ERR_THROW)
+            NEM_INLINE void force_throw(nem_string msg, nem::error::Kind type = Kind::RuntimeError)
             {
-#ifdef _STDEXCEPT_
                 switch (type)
                 {
                     case Kind::OutOfRange:
@@ -88,10 +90,8 @@ namespace nem
                         throw std::runtime_error(msg);
                     }
                 }
-                return true;
-#endif
-                return false;
             }
+#endif
         }
 
         NEM_INLINE void report(nem_string msg, nem::error::Kind type = Kind::RuntimeError)

@@ -106,7 +106,7 @@ namespace nem
     template<typename Derived, typename T, size_t N>
     T length(const nem::BaseVectorT<Derived, T, N>& vec)
     {
-        return std::sqrtf(nem::sqrLength(vec));
+        return nem::sqrt(nem::sqrLength(vec));
     }
 
     template<typename Derived, typename T, size_t N>

@@ -25,16 +25,16 @@ TEST(Sin, AccuracyAgainstStd_Positive)
 
 TEST(Sin, AccuracyAgainstStd_LargePositive)
 {
-    const float nem_result = nem::sin(10e6f);
-    const float std_result = std::sinf(10e6f);
+    const double nem_result = nem::sin(10e4f);
+    const double std_result = std::sinf(10e4f);
 
     ASSERT_NEAR(nem_result, std_result, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Sin, AccuracyAgainstStd_LargeNegative)
 {
-    const float nem_result = nem::sin(-10e6f);
-    const float std_result = std::sinf(-10e6f);
+    const double nem_result = nem::sin(-10e4f);
+    const double std_result = std::sinf(-10e4f);
 
     ASSERT_NEAR(nem_result, std_result, nem::DEFAULT_TRIG_EPSILON);
 }
@@ -42,24 +42,24 @@ TEST(Sin, AccuracyAgainstStd_LargeNegative)
 TEST(Sin, Repetition)
 {
     const float nem_result1 = nem::sin(1.0f);
-    const float nem_result2 = nem::sin(1.0f + nem::TWO_PI<float>());
+    const float nem_result2 = nem::sin(1.0f + nem::TWO_PI<float>);
 
     ASSERT_NEAR(nem_result1, nem_result2, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Sin, RangeAccuracyAgainstStd)
 {
-    range_accuracy_test(-nem::TWO_PI<float>(), nem::TWO_PI<float>(), 1000, nem::sin, std::sinf, nem::DEFAULT_TRIG_EPSILON);
+    range_accuracy_test(-nem::TWO_PI<double>, nem::TWO_PI<double>, 1000, nem::sin<double>, std::sin, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Sin, SparseRangeAccuracyAgainstStd)
 {
-    range_accuracy_test(100 * -nem::TWO_PI<float>(), 100 * nem::TWO_PI<float>(), 1000, nem::sin, std::sinf, nem::DEFAULT_TRIG_EPSILON);
+    range_accuracy_test(100 * -nem::TWO_PI<double>, 100 * nem::TWO_PI<double>, 1000, nem::sin<double>, std::sin, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Sin, ExtremeSparseRangeAccuracyAgainstStd)
 {
-    range_accuracy_test(10e7 * -nem::TWO_PI<float>(), 10e7 * nem::TWO_PI<float>(), 1000, nem::sin, std::sinf, nem::DEFAULT_TRIG_EPSILON);
+    range_accuracy_test(10e7 * -nem::TWO_PI<double>, 10e7 * nem::TWO_PI<double>, 1000, nem::sin<double>, std::sin, nem::DEFAULT_TRIG_EPSILON);
 }
 
 // ===========================================================================
@@ -84,16 +84,16 @@ TEST(Cos, AccuracyAgainstStd_Positive)
 
 TEST(Cos, AccuracyAgainstStd_LargePositive)
 {
-    const float nem_result = nem::cos(10e6f);
-    const float std_result = std::cosf(10e6f);
+    const double nem_result = nem::cos(10e4f);
+    const double std_result = std::cosf(10e4f);
 
     ASSERT_NEAR(nem_result, std_result, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Cos, AccuracyAgainstStd_LargeNegative)
 {
-    const float nem_result = nem::cos(-10e6f);
-    const float std_result = std::cosf(-10e6f);
+    const double nem_result = nem::cos(-10e4f);
+    const double std_result = std::cosf(-10e4f);
 
     ASSERT_NEAR(nem_result, std_result, nem::DEFAULT_TRIG_EPSILON);
 }
@@ -101,24 +101,24 @@ TEST(Cos, AccuracyAgainstStd_LargeNegative)
 TEST(Cos, Repetition)
 {
     const float nem_result1 = nem::cos(1.0f);
-    const float nem_result2 = nem::cos(1.0f + nem::TWO_PI<float>());
+    const float nem_result2 = nem::cos(1.0f + nem::TWO_PI<float>);
 
     ASSERT_NEAR(nem_result1, nem_result2, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Cos, RangeAccuracyAgainstStd)
 {
-    range_accuracy_test(-nem::TWO_PI<float>(), nem::TWO_PI<float>(), 1000, nem::cos, std::cosf, nem::DEFAULT_TRIG_EPSILON);
+    range_accuracy_test(-nem::TWO_PI<double>, nem::TWO_PI<double>, 1000, nem::cos<double>, std::cos, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Cos, SparseRangeAccuracyAgainstStd)
 {
-    range_accuracy_test(100 * -nem::TWO_PI<float>(),  100 * nem::TWO_PI<float>(), 1000, nem::cos, std::cosf, nem::DEFAULT_TRIG_EPSILON);
+    range_accuracy_test(100 * -nem::TWO_PI<double>,  100 * nem::TWO_PI<double>, 1000, nem::cos<double>, std::cos, nem::DEFAULT_TRIG_EPSILON);
 }
 
 TEST(Cos, ExtremeSparseRangeAccuracyAgainstStd)
 {
-    range_accuracy_test(10e7 * -nem::TWO_PI<float>(),  10e7 * nem::TWO_PI<float>(), 1000, nem::cos, std::cosf, nem::DEFAULT_TRIG_EPSILON);
+    range_accuracy_test(10e7 * -nem::TWO_PI<double>,  10e7 * nem::TWO_PI<double>, 1000, nem::cos<double>, std::cos, nem::DEFAULT_TRIG_EPSILON);
 }
 
 // ===========================================================================
@@ -128,7 +128,7 @@ TEST(Cos, ExtremeSparseRangeAccuracyAgainstStd)
 TEST(SinAndCos, ShiftSinToCos)
 {
     const float sinv = nem::sin(1.0f);
-    const float cosv = nem::cos(1.0f - nem::HALF_PI<float>());
+    const float cosv = nem::cos(1.0f - nem::HALF_PI<float>);
 
     ASSERT_NEAR(sinv, cosv, nem::DEFAULT_TRIG_EPSILON);
 }

@@ -17,15 +17,15 @@ namespace nem
 	/// -------------------------------------------
 
 	/// Copies the sign of {from} over to {to}. If the signs were the same, it doesn't change.
-	template <std::floating_point T> constexpr T copysign(T to, T from)
+	template <std::floating_point T> constexpr T copysign(T to, T from) noexcept
 	{
 		//to = static_cast<T>(__builtin_copysign(static_cast<double>(to), static_cast<double>(from)));
 		return nem::_nem_copysign(to, from);
 	}
-	template <nem::scalar_type T> constexpr T sign(T value) { return nem::copysign<T>((T)1.0, value); }
+	template <nem::scalar_type T> constexpr T sign(T value) noexcept { return nem::copysign<T>((T)1.0, value); }
 
-	template <typename T> constexpr T abs(T value) { return T{ value >= 0 ? value : -value }; }
-	template <std::floating_point T> constexpr T abs(T value) { return nem::_nem_fabs(value); }
+	template <typename T> constexpr T abs(T value) noexcept { return T{ value >= 0 ? value : -value }; }
+	template <std::floating_point T> constexpr T abs(T value) noexcept { return nem::_nem_fabs(value); }
 
 	/// -------------------------------------------
 	/// Comparisons
@@ -34,33 +34,33 @@ namespace nem
 	/// <summary>
 	/// Is a nearly 0? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a| < eps
 	/// </summary>
-	template <nem::scalar_type T> constexpr bool is_zero(T a) { return nem::abs(a) < Eps<T>(); }
-	template <std::integral T> constexpr bool is_zero(T a) { return a == 0; }
+	template <nem::scalar_type T> constexpr bool is_zero(T a) noexcept { return nem::abs(a) < Eps<T>(); }
+	template <std::integral T> constexpr bool is_zero(T a) noexcept { return a == 0; }
 	
-	template <nem::scalar_type T> constexpr bool is_zero_or_neg(T a) { return a <= Eps<T>(); }
+	template <nem::scalar_type T> constexpr bool is_zero_or_neg(T a) noexcept { return a <= Eps<T>(); }
 
 	/// <summary>
 	/// Are a and b nearly equal? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a - b| < eps
 	/// </summary>
-	template <nem::scalar_type T> constexpr bool equal(T a, T b) { return nem::is_zero(a - b); }
+	template <nem::scalar_type T> constexpr bool equal(T a, T b) noexcept { return nem::is_zero(a - b); }
 
 	/// -------------------------------------------
 	/// Powers
 	/// -------------------------------------------
 
-	template <typename T> constexpr T pow2(T value) { return T{ value * value }; }
-	template <typename T> constexpr T pow3(T value) { return T{ value * value * value }; }
-	template <typename T> constexpr T pow4(T value) { return T{ nem::pow2(nem::pow2(value)) }; }
-	template <typename T> constexpr T sqr (T value) { return T{ value * value }; }
-	template <typename T> constexpr T cube(T value) { return T{ value * value * value }; }
+	template <typename T> constexpr T pow2(T value) noexcept { return T{ value * value }; }
+	template <typename T> constexpr T pow3(T value) noexcept { return T{ value * value * value }; }
+	template <typename T> constexpr T pow4(T value) noexcept { return T{ nem::pow2(nem::pow2(value)) }; }
+	template <typename T> constexpr T sqr (T value) noexcept { return T{ value * value }; }
+	template <typename T> constexpr T cube(T value) noexcept { return T{ value * value * value }; }
 
-	template <nem::scalar_type T> NEM_INLINE T pow(T base, T power) { return ::pow(base, power); }
+	template <nem::scalar_type T> NEM_INLINE T pow(T base, T power) noexcept { return ::pow(base, power); }
 
 	/// --------------------------------------------------------------------------------------
 	/// Float truncation, fractional part, modulo (remainder), rounding, flooring, ceiling
 	/// --------------------------------------------------------------------------------------
 
-	template <nem::scalar_type T> constexpr T truncate(T value)
+	template <nem::scalar_type T> constexpr T truncate(T value) noexcept
 	{
 		return (T)(long long int)value;
 	}
@@ -68,7 +68,7 @@ namespace nem
 	/// <summary>
 	/// Floors always towards -infinity
 	/// </summary>
-	template <nem::scalar_type T> constexpr T floor(T value)
+	template <nem::scalar_type T> constexpr T floor(T value) noexcept
 	{	
 		const T trunc = nem::truncate(value);
 		return trunc - (trunc > value); // subtract 1 if truncation made the number bigger, which can happen only when the value is negative AND not-whole. If it is whole, then truncation never changes the number. If the number is positive and not-whole,
@@ -82,7 +82,7 @@ namespace nem
 	/// <summary>
 	/// Ceils always towards +infinity
 	/// </summary>
-	template <nem::scalar_type T> constexpr T ceil(T value)
+	template <nem::scalar_type T> constexpr T ceil(T value) noexcept
 	{
 		const T floored = nem::floor(value);
 		return floored + (floored < value);
@@ -114,7 +114,7 @@ namespace nem
 	/// 4.0 -> 0.0
 	/// -2.1 -> -0.1
 	/// </summary>
-	template <std::floating_point T> constexpr T frac(T value)
+	template <std::floating_point T> constexpr T frac(T value) noexcept
 	{
 		return value - nem::truncate(value);
 	}
@@ -125,7 +125,7 @@ namespace nem
 	/// -0.1 -> 0
 	/// -0.6 -> -1.0
 	/// -0.5 -> 0
-	template <std::floating_point T> constexpr T round(T value)
+	template <std::floating_point T> constexpr T round(T value) noexcept
 	{
 		const T floored = nem::floor(value);
 		const T ceiled = floored + (floored < value); // ceil without extra floor
@@ -158,7 +158,7 @@ namespace nem
 	/// Floors the value to a uniform linear grid with step {step}. Same as normal floor, when step = 1. Step has to always be positive.
 	/// (v = 5, s = 3) -> 3
 	/// (v = -4, s = 3) -> -6
-	template <std::integral T> constexpr T floor(T value, T step)
+	template <std::integral T> constexpr T floor(T value, T step) noexcept
 	{
 		return (T)(nem::floor<nem::real>(static_cast<nem::real>(value), static_cast<nem::real>(step)));
 	}
@@ -242,13 +242,16 @@ namespace nem
 		return minIncl + nem::pingpong(value - minIncl, maxExcl - minIncl);
 	}
 
-	template <std::totally_ordered T> constexpr T clamp(T value, T minIncl, T maxIncl)
+	template <std::totally_ordered T> constexpr T clamp(T value, T minIncl, T maxIncl) noexcept
 	{ 
 		if (value > maxIncl) return maxIncl;
 		else if (value < minIncl) return minIncl;
 		return value;
 	}
-	template <std::totally_ordered T> constexpr T clamp01(T value) { return nem::clamp(value, 0.0F, 1.0F); }
+	template <std::totally_ordered T> constexpr T clamp01(T value) noexcept
+	{
+		return nem::clamp(value, (T)0.0, (T)1.0);
+	}
 
 	/// -------------------------------------------
 	/// Interpolation
