@@ -8,7 +8,7 @@
 
 namespace nem
 {
-    template <typename T> struct quat
+    template <typename T> struct quat_t
     {
     T s = 0,                 // scalar
         x = 0, y = 0, z = 0; // vector
@@ -16,10 +16,10 @@ namespace nem
     // static constexpr quat NaN() { quat{ std::numeric_limits<T>::quiet_NaN(), std::numeric_limits<T>::quiet_NaN(),
     // std::numeric_limits<T>::quiet_NaN(), std::numeric_limits<T>::quiet_NaN() }; }
 
-    constexpr quat &operator*=(const quat &other)
+    constexpr quat_t &operator*=(const quat_t &other)
     {
-        quat &q = *this;
-        const quat &p = other;
+        quat_t &q = *this;
+        const quat_t &p = other;
         /* from wikipedia
         a = a1a2 - b1b2 - c1c2 - d1d2
         b = a1b2 + b1a2 + c1d2 - d1c2
@@ -48,13 +48,13 @@ namespace nem
         return *this;
     }
 
-    constexpr friend quat operator*(quat lhs, const quat &rhs)
+    constexpr friend quat_t operator*(quat_t lhs, const quat_t &rhs)
     {
         lhs *= rhs;
         return lhs;
     }
 
-    constexpr quat &operator*=(T scalar)
+    constexpr quat_t &operator*=(T scalar)
     {
         this->s = s * scalar;
         this->x = x * scalar;
@@ -63,25 +63,25 @@ namespace nem
         return *this;
     }
 
-    constexpr friend quat operator*(quat q, T scalar)
+    constexpr friend quat_t operator*(quat_t q, T scalar)
     {
         q *= scalar;
         return q;
     }
 
-    constexpr quat &operator/=(T scalar)
+    constexpr quat_t &operator/=(T scalar)
     {
         // TODO: add 0 division protection with nem::err
         return (*this *= (T{1.0} / scalar));
     }
 
-    constexpr friend quat operator/(quat q, T scalar)
+    constexpr friend quat_t operator/(quat_t q, T scalar)
     {
         q /= scalar;
         return q;
     }
 
-    constexpr quat &operator+=(const quat &other)
+    constexpr quat_t &operator+=(const quat_t &other)
     {
         this->s += other.s;
         this->x += other.x;
@@ -90,25 +90,25 @@ namespace nem
         return *this;
     }
 
-    constexpr friend quat operator+(quat lhs, const quat &rhs)
+    constexpr friend quat_t operator+(quat_t lhs, const quat_t &rhs)
     {
         lhs += rhs;
         return lhs;
     }
 
-    constexpr friend quat operator-(quat q)
+    constexpr friend quat_t operator-(quat_t q)
     {
-        return quat{-q.s, -q.x, -q.y, -q.z};
+        return quat_t{-q.s, -q.x, -q.y, -q.z};
     }
 
-    constexpr friend nem::BaseVector3<T> operator*(const quat& q, const nem::BaseVector3<T>& v)
+    constexpr friend nem::base_vector_3<T> operator*(const quat_t& q, const nem::base_vector_3<T>& v)
     {
-        const nem::BaseVector3<T> w(q.x, q.y, q.z);
+        const nem::base_vector_3<T> w(q.x, q.y, q.z);
         const T a = q.s;
         return (v + (T)2.0 * a * nem::cross(w, v) + (T)2.0 * (nem::cross(w, nem::cross(w, v))));
     }
 };
 
-    using quatr = quat<nem::real>;
+    using quat = quat_t<nem::real>;
 
 } // namespace nem

@@ -10,7 +10,7 @@
 
 TEST(QuatInit, DefaultSameAsGlm)
 {
-    nem::quatr q1;
+    nem::quat q1;
     glm::quat  q2(0, 0, 0, 0);
 
     ASSERT_NEAR(q1.s, q2.w, fEps);
@@ -22,7 +22,7 @@ TEST(QuatInit, DefaultSameAsGlm)
 TEST(QuatInit, ComponentsSameAsGlm)
 {
     float s = 1, x = 2, y = 3, z = 4;
-    nem::quatr q1 = nem::make_quat<float>(s, x, y, z);
+    nem::quat q1 = nem::make_quat<float>(s, x, y, z);
     glm::quat  q2(s, x, y, z);
 
     ASSERT_NEAR(q1.s, q2.w, fEps);
@@ -34,7 +34,7 @@ TEST(QuatInit, ComponentsSameAsGlm)
 TEST(QuatInit, MemoryOrderSameAsGlm)
 {
     float s = 1, x = 2, y = 3, z = 4;
-    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    nem::quat_t<float> q1 = nem::make_quat<float>(s, x, y, z);
     glm::quat  q2(s, x, y, z);
 
     float* q1p = reinterpret_cast<float*>(&q1);
@@ -51,10 +51,10 @@ TEST(QuatMul, Mul)
     float s1 = 1, x1 = 2, y1 = -3, z1 = 4;
     float s2 = 9, x2 = -7, y2 = 5, z2 = -11;
 
-    nem::quatr q11 = nem::make_quat<float>(s1, x1, y1, z1);
-    nem::quatr q12 = nem::make_quat<float>(s2, x2, y2, z2);
-    nem::quatr q1m1 = q11 * q12;
-    nem::quatr q1m2 = q12 * q11;
+    nem::quat q11 = nem::make_quat<float>(s1, x1, y1, z1);
+    nem::quat q12 = nem::make_quat<float>(s2, x2, y2, z2);
+    nem::quat q1m1 = q11 * q12;
+    nem::quat q1m2 = q12 * q11;
 
     ASSERT_NEAR(q1m1.s, 82,  fEps);
     ASSERT_NEAR(q1m1.x, 24,  fEps);
@@ -72,10 +72,10 @@ TEST(QuatMul, MulSameAsGlm)
     float s1 = 1, x1 = 2, y1 = 3, z1 = 4;
     float s2 = 0.5f, x2 = 7, y2 = 13, z2 = -5;
 
-    nem::quatr q11 = nem::make_quat<float>(s1, x1, y1, z1);
-    nem::quatr q12 = nem::make_quat<float>(s2, x2, y2, z2);
-    nem::quatr q1m1 = q11 * q12;
-    nem::quatr q1m2 = q12 * q11;
+    nem::quat q11 = nem::make_quat<float>(s1, x1, y1, z1);
+    nem::quat q12 = nem::make_quat<float>(s2, x2, y2, z2);
+    nem::quat q1m1 = q11 * q12;
+    nem::quat q1m2 = q12 * q11;
 
     glm::quat  q21(s1, x1, y1, z1);
     glm::quat  q22(s2, x2, y2, z2);
@@ -95,7 +95,7 @@ TEST(QuatMul, MulSameAsGlm)
 
 TEST(QuatExractVector, Simple)
 {
-    nem::quatr q = nem::make_quat(1.0f, 2.0f, 3.0f, 4.0f);
+    nem::quat q = nem::make_quat(1.0f, 2.0f, 3.0f, 4.0f);
     nem::float3 v = nem::extract_vector(q);
 
     ASSERT_NEAR(v.x, 2, fEps);
@@ -106,7 +106,7 @@ TEST(QuatExractVector, Simple)
 TEST(QuatLength, SameAsGlm)
 {
     const float s = 1, x = 2, y = 3, z = 4;
-    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    nem::quat_t<float> q1 = nem::make_quat<float>(s, x, y, z);
     glm::quat q2(s, x, y, z);
 
     float l1 = nem::length(q1);
@@ -118,7 +118,7 @@ TEST(QuatLength, SameAsGlm)
 TEST(QuatNormalize, SameAsGlm)
 {
     const float s = 1, x = 2, y = 3, z = 4;
-    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    nem::quat_t<float> q1 = nem::make_quat<float>(s, x, y, z);
     glm::quat q2(s, x, y, z);
 
     auto q1n = nem::normalize(q1);
@@ -135,7 +135,7 @@ TEST(QuatMulByVector, SameAsGlm)
     const nem::float3 v1(3.0f, -1.0f, 7.0f); 
     const glm::vec3   v2(3.0f, -1.0f, 7.0f); 
     const float s = 1, x = 2, y = 3, z = 4;
-    nem::quat<float> q1 = nem::make_quat<float>(s, x, y, z);
+    nem::quat_t<float> q1 = nem::make_quat<float>(s, x, y, z);
     glm::quat q2(s, x, y, z);
 
     nem::float3 v1r = q1 * v1;

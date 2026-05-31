@@ -37,7 +37,12 @@ namespace nem
 		}
 
 		constexpr mat(std::initializer_list<T> list) : data{}
-		{
+        {
+            if (list.size() == 0)
+            {
+                return;
+            }
+            
 			assert(list.size() == Size && "Matrix must be initialized with exactly R * C elements");
 
 			size_t i = 0;
@@ -65,24 +70,17 @@ namespace nem
 				r++;
 			}
 		}
-
-		/// <summary>
-		/// Returns the r-th row as a pointer, no checks
-		/// </summary>
-		T* operator[](size_t r) { return &data[r * C]; }
-
-		/// <summary>
-		/// Returns the r-th row as a pointer, no checks
-		/// </summary>
-		const T* operator[](size_t r) const { return &data[r * C]; }
+		
+		T& operator[](size_t element) { return data[element]; }
+		const T& operator[](size_t element) const { return data[element]; }
 
 		constexpr size_t index(size_t row, size_t column) const { return row * C + column; }
 
-		constexpr const T& at_r(size_t index) const { return data[index]; }
-		constexpr const T& at_r(size_t row, size_t column) const { return data[index(row, column)]; }
+		constexpr T& at(size_t row, size_t column) { return data[index(row, column)]; }
+        constexpr const T& at(size_t row, size_t column) const { return data[index(row, column)]; }
 
-		constexpr T& at_rw(size_t index) { return data[index]; }
-		constexpr T& at_rw(size_t row, size_t column) { return data[index(row, column)]; }
+        constexpr T* row(size_t index) { return &data[this->index(index, 0)]; }
+        constexpr const T* row(size_t index) const { return &data[this->index(index, 0)]; }
 
 		//static constexpr mat NaN() { mat(std::numeric_limits<T>::quiet_NaN()); }
 
@@ -98,7 +96,7 @@ namespace nem
 				{
 					for (size_t n = 0; n < N; ++n)
 					{
-						result.at_rw(r, c) += lhs.at_r(r, n) * rhs.at_r(n, c);
+						result.at(r, c) += lhs.at(r, n) * rhs.at(n, c);
 					}
 				}
 			}
@@ -109,7 +107,7 @@ namespace nem
 		{
 			for (size_t i = 0; i < Size; ++i)
 			{
-				this->at_rw(i) += other.at_r(i);
+				(*this)[i] += other[i];
 			}
 			return *this;
 		}

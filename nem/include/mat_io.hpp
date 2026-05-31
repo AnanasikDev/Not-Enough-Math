@@ -20,7 +20,7 @@ namespace nem
 			ss << MATRIX_L_BRACE;
 			for (size_t c = 0; c < C; ++c)
 			{
-				ss << matrix.at_r(r, c) << (c < C - 1 ? MATRIX_COLUMN_SEPARATOR : "");
+				ss << matrix.at(r, c) << (c < C - 1 ? MATRIX_COLUMN_SEPARATOR : "");
 			}
 			ss << MATRIX_R_BRACE;
 			ss << MATRIX_ROW_SEPARATOR;
@@ -36,7 +36,7 @@ namespace nem
 			os << MATRIX_L_BRACE;
 			for (size_t c = 0; c < C; ++c)
 			{
-				os << matrix.at_r(r, c) << (c < C - 1 ? MATRIX_COLUMN_SEPARATOR : "");
+				os << matrix.at(r, c) << (c < C - 1 ? MATRIX_COLUMN_SEPARATOR : "");
 			}
 			os << MATRIX_R_BRACE;
 			os << MATRIX_ROW_SEPARATOR;
@@ -51,7 +51,7 @@ namespace nem
 		{
 			for (size_t c = 0; c < C; ++c)
 			{
-				is >> matrix.at_rw(r, c);
+				is >> matrix.at(r, c);
 			}
 		}
 		return is;

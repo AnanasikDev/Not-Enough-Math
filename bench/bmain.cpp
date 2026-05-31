@@ -319,8 +319,8 @@ BENCHMARK_MAIN();
 
 //void demo()
 //{
-//    nem::quatr q0 = nem::make_quat<nem::real>(1, 0.5f, 1, 2);
-//    nem::quatr q1 = nem::make_quat<nem::real>(2, 3, 4, 2.5f);
+//    nem::quat q0 = nem::make_quat<nem::real>(1, 0.5f, 1, 2);
+//    nem::quat q1 = nem::make_quat<nem::real>(2, 3, 4, 2.5f);
 //    std::cout << q0 << " * " << q1 << " = " << q0 * q1 << "\n";
 //    std::cout << q1 << " * " << q0 << " = " << q1 * q0 << "\n";
 //

@@ -42,120 +42,130 @@
 
 namespace nem
 {
-	template<typename Derived, typename T, size_t N>
-	struct BaseVectorT
+	template<typename vec_derived_t, typename T, size_t N>
+	struct base_vector_t
 	{
 		using Type = T;
 		static constexpr size_t Comps = N;
 
 		static_assert(N > 0 && "Not Enough Math: Vector N must be greater than 0");
 
-		constexpr Derived& _impl_rw() { return (Derived&)*this; }
-		constexpr const Derived& _impl_r() const { return (const Derived&)*this; }
-		constexpr T& comp_rw(size_t index) { return _impl_rw().data[index]; }
-		constexpr const T& comp_r(size_t index) const { return _impl_r().data[index]; }
-		constexpr T& operator[](size_t index) { return comp_rw(index); }
-		constexpr const T& operator[](size_t index) const { return comp_r(index); }
+		constexpr vec_derived_t& _impl_rw() { return (vec_derived_t&)*this; }
+        constexpr const vec_derived_t& _impl_r() const { return (const vec_derived_t&)*this; }
+        
+		constexpr T& operator[](size_t index) { return _impl_rw().data[index]; }
+		constexpr const T& operator[](size_t index) const { return _impl_r().data[index]; }
 
-		static constexpr Derived NaN() { return Derived(std::numeric_limits<T>::quiet_NaN()); }
+		static constexpr vec_derived_t NaN() { return vec_derived_t(std::numeric_limits<T>::quiet_NaN()); }
 
-		Derived& operator+=(const Derived& rhs)
+		vec_derived_t& operator+=(const vec_derived_t& rhs)
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				(*this)[i] = this->comp_r(i) + rhs.comp_r(i);
+				(*this)[i] += rhs[i];
 			}
 			return _impl_rw();
 		}
 
-		Derived& operator-=(const Derived& rhs)
+		vec_derived_t& operator-=(const vec_derived_t& rhs)
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				(*this)[i] = this->comp_r(i) - rhs.comp_r(i);
+				(*this)[i] -= rhs[i];
 			}
 			return _impl_rw();
 		}
 
-		Derived& operator*=(const Derived& rhs)
+		vec_derived_t& operator*=(const vec_derived_t& rhs)
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				(*this)[i] = this->comp_r(i) * rhs.comp_r(i);
+				(*this)[i] *= rhs[i];
 			}
 			return _impl_rw();
 		}
 
-		Derived& operator*=(T scalar)
+		vec_derived_t& operator*=(T scalar)
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				(*this)[i] = this->comp_r(i) * scalar;
+				(*this)[i] *= scalar;
 			}
 			return _impl_rw();
 		}
 
-		Derived& operator/=(const Derived& rhs)
+		vec_derived_t& operator/=(const vec_derived_t& rhs)
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
-				(*this)[i] = this->comp_r(i) / rhs.comp_r(i);
+				(*this)[i] /= rhs[i];
 			}
 			return _impl_rw();
 		}
 
-		Derived& operator/=(T scalar)
+		vec_derived_t& operator/=(T scalar)
 		{
-			for (size_t i = 0; i < N; ++i)
-			{
-				(*this)[i] = this->comp_r(i) / scalar;
+			if constexpr (std::is_floating_point_v<T>)
+            {
+                const T fac = (T)1.0 / scalar;
+				for (size_t i = 0; i < N; ++i)
+				{
+					(*this)[i] *= fac;
+				}
+            }
+            else
+            {
+				for (size_t i = 0; i < N; ++i)
+				{
+					(*this)[i] /= scalar;
+				}
 			}
 			return _impl_rw();
 		}
 
-		friend Derived operator+(Derived lhs, const Derived& rhs)
+		friend vec_derived_t operator+(vec_derived_t lhs, const vec_derived_t& rhs)
 		{
 			lhs += rhs;
 			return lhs;
 		}
 
-		friend Derived operator-(Derived lhs, const Derived& rhs)
+		friend vec_derived_t operator-(vec_derived_t lhs, const vec_derived_t& rhs)
 		{
 			lhs -= rhs;
 			return lhs;
 		}
 
-		friend Derived operator*(Derived lhs, const Derived& rhs)
+		friend vec_derived_t operator*(vec_derived_t lhs, const vec_derived_t& rhs)
 		{
 			lhs *= rhs;
 			return lhs;
 		}
 
-		friend Derived operator*(Derived vec, T scalar)
+		friend vec_derived_t operator*(vec_derived_t vec, T scalar)
 		{
 			vec *= scalar;
 			return vec;
 		}
 
-		friend Derived operator*(T scalar, Derived vec)
+		friend vec_derived_t operator*(T scalar, vec_derived_t vec)
 		{
 			vec *= scalar;
 			return vec;
 		}
 
-		friend Derived operator/(Derived lhs, const Derived& rhs)
+		friend vec_derived_t operator/(vec_derived_t lhs, const vec_derived_t& rhs)
 		{
 			lhs /= rhs;
 			return lhs;
 		}
 
-		friend Derived operator/(Derived vec, T scalar)
+		friend vec_derived_t operator/(vec_derived_t vec, T scalar)
 		{
 			vec /= scalar;
 			return vec;
 		}
 
-		friend Derived operator/(T scalar, Derived vec)
+		friend vec_derived_t operator/(T scalar, vec_derived_t vec)
 		{
 			vec /= scalar;
 			return vec;
@@ -163,7 +173,7 @@ namespace nem
 	};
 
 	template <typename T>
-	struct BaseVector2 : public BaseVectorT<BaseVector2<T>, T, 2>
+	struct base_vector_2 : public base_vector_t<base_vector_2<T>, T, 2>
 	{
 		static constexpr size_t N = 2;
 		union
@@ -176,14 +186,14 @@ namespace nem
 			struct { T width, height; };
 		};
 
-		constexpr BaseVector2() : x(T{}), y(T{}) {}
-		constexpr BaseVector2(T _scalar) : x(_scalar), y(_scalar) {}
-		constexpr BaseVector2(T _x, T _y) : x(_x), y(_y) {}
+		constexpr base_vector_2() : x(T{}), y(T{}) {}
+		constexpr base_vector_2(T _scalar) : x(_scalar), y(_scalar) {}
+		constexpr base_vector_2(T _x, T _y) : x(_x), y(_y) {}
 	};
-	TEST_VEC_CLASS(BaseVector2)
+	TEST_VEC_CLASS(base_vector_2)
 
 	template <typename T>
-	struct BaseVector3 : public BaseVectorT<BaseVector3<T>, T, 3>
+	struct base_vector_3 : public base_vector_t<base_vector_3<T>, T, 3>
 	{
 		static constexpr size_t N = 3;
 		union
@@ -193,14 +203,14 @@ namespace nem
 			struct { T r, g, b; };
 		};
 
-		constexpr BaseVector3() : x(T{}), y(T{}), z(T{}) {}
-		constexpr BaseVector3(T _scalar) : x(_scalar), y(_scalar), z(_scalar) {}
-		constexpr BaseVector3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+		constexpr base_vector_3() : x(T{}), y(T{}), z(T{}) {}
+		constexpr base_vector_3(T _scalar) : x(_scalar), y(_scalar), z(_scalar) {}
+		constexpr base_vector_3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
 	};
-	TEST_VEC_CLASS(BaseVector3)
+	TEST_VEC_CLASS(base_vector_3)
 
 	template <typename T>
-	struct BaseVector4 : public BaseVectorT<BaseVector4<T>, T, 4>
+	struct base_vector_4 : public base_vector_t<base_vector_4<T>, T, 4>
 	{
 		static constexpr size_t N = 4;
 		union
@@ -211,19 +221,19 @@ namespace nem
 			struct { T min1, min2, max1, max2; };
 		};
 
-		constexpr BaseVector4() : x(T{}), y(T{}), z(T{}), w(T{}) {}
-		constexpr BaseVector4(T _scalar) : x(_scalar), y(_scalar), z(_scalar), w(_scalar) {}
-		constexpr BaseVector4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
+		constexpr base_vector_4() : x(T{}), y(T{}), z(T{}), w(T{}) {}
+		constexpr base_vector_4(T _scalar) : x(_scalar), y(_scalar), z(_scalar), w(_scalar) {}
+		constexpr base_vector_4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
 	};
-	TEST_VEC_CLASS(BaseVector4)
+	TEST_VEC_CLASS(base_vector_4)
 
 	template <typename T, size_t N>
-	struct BaseVector : public BaseVectorT<BaseVector<T, N>, T, N>
+	struct base_vector : public base_vector_t<base_vector<T, N>, T, N>
 	{
 		T data[N]{ (T)0 };
 
-		constexpr BaseVector() : data{} {}
-		constexpr BaseVector(T _scalar) : data{}
+		constexpr base_vector() : data{} {}
+		constexpr base_vector(T _scalar) : data{}
 		{
 			for (size_t i = 0; i < N; ++i)
 			{
@@ -232,12 +242,12 @@ namespace nem
 		}
 	};
 
-	using int2 = BaseVector2<int>;
-	using int3 = BaseVector3<int>;
-	using int4 = BaseVector4<int>;
-	using float2 = BaseVector2<float>;
-	using float3 = BaseVector3<float>;
-	using float4 = BaseVector4<float>;
+	using int2 = base_vector_2<int>;
+	using int3 = base_vector_3<int>;
+	using int4 = base_vector_4<int>;
+	using float2 = base_vector_2<float>;
+	using float3 = base_vector_3<float>;
+	using float4 = base_vector_4<float>;
 
 	namespace color
 	{

@@ -27,6 +27,9 @@ Project is in development.
 - [ ] Advanced trigonometry (inverse functions, tangents, reciprocals)
 - [ ] Safe-unsafe compile-time execution mode with zero runtime cost
 - [ ] Full support for SIMD backend
+- [ ] Measure units
+- [ ] Random and noises
+- [ ] Hashing
 
 ## Projects using NEM
 
