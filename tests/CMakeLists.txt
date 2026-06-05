@@ -10,6 +10,7 @@ add_executable(tests
     tests_mat.cpp
     tests_ease.cpp
     tests_trig.cpp
+    tests_scalar_power.cpp
 )
 
 target_compile_definitions(tests PRIVATE GLM_FORCE_QUAT_DATA_WXYZ)

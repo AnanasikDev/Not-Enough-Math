@@ -18,26 +18,26 @@ option(ANEM_HIGH_PRECISION  "Use double instead of float" OFF)
 option(ANEM_NO_INLINE "Disable inlining" OFF)
 
 if(ANEM_ERR_THROW)
-    add_compile_definitions(nem INTERFACE NEM_ERR_THROW)
+    target_compile_definitions(nem INTERFACE NEM_ERR_THROW)
 else()
     if(ANEM_ERR_SAFE_FALLBACK)
-        add_compile_definitions(nem INTERFACE NEM_ERR_SAFE_FALLBACK)
+        target_compile_definitions(nem INTERFACE NEM_ERR_SAFE_FALLBACK)
     endif()
     if(ANEM_ERR_USE_NAN)
-        add_compile_definitions(nem INTERFACE NEM_ERR_USE_NAN)
+        target_compile_definitions(nem INTERFACE NEM_ERR_USE_NAN)
     endif()
 endif()
 
 if(ANEM_ERR_LOG)
-    add_compile_definitions(nem INTERFACE NEM_ERR_LOG)
+    target_compile_definitions(nem INTERFACE NEM_ERR_LOG)
 endif()
 
 if(ANEM_HIGH_PRECISION)
-    add_compile_definitions(nem INTERFACE NEM_USE_DOUBLE_PRECISION)
+    target_compile_definitions(nem INTERFACE NEM_USE_DOUBLE_PRECISION)
 endif()
 
 if(ANEM_NO_INLINE)
-    add_compile_definitions(nem INTERFACE NEM_NO_INLINE)
+    target_compile_definitions(nem INTERFACE NEM_NO_INLINE)
 endif()
 
 # warnings

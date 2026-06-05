@@ -7,8 +7,6 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang-cl",
-                "CMAKE_CXX_COMPILER": "clang-cl",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "ANEM_ERR_LOG": "ON",
                 "ANEM_ERR_THROW": "OFF",
@@ -21,8 +19,6 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang-cl",
-                "CMAKE_CXX_COMPILER": "clang-cl",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "ANEM_ERR_LOG": "ON",
                 "ANEM_ERR_THROW": "ON",
@@ -35,8 +31,6 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang-cl",
-                "CMAKE_CXX_COMPILER": "clang-cl",
                 "CMAKE_BUILD_TYPE": "Release",
                 "ANEM_ERR_LOG": "OFF",
                 "ANEM_ERR_THROW": "OFF",
