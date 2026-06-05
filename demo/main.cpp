@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "nem.hpp"
+#include "../nem/include/nem.hpp"
 #include "easing.hpp"
 
 void demo()
@@ -20,11 +20,14 @@ void demo()
 
     std::cout << "Logarithm: " << ::log(nem::E<float>) << " sin: " << nem::sin(0.3f) << std::endl;
 
-    #if defined(_DEBUG)
+#if defined(_DEBUG)
     std::cout << "DEBUG!\n";
-    #elif defined(_RELEASE)
+#elif defined(_RELEASE)
     std::cout << "RELEASE!\n";
-    #endif
+#endif
+
+    std::cout << "Sqrt(1231)" << nem::isqrt(1231) << std::endl;
+    std::cout << "Cbrt(1231)" << nem::icbrt(1231) << std::endl;
 }
 
 int main()

@@ -12,7 +12,7 @@
 // builtins, SIMD instrinsics or standard math inlinement to avoid dependencies.
 // MSVC implementation isn't worked on as much as Clang/GCC are, so issues with it may be overseen. It is tested in
 // CI/CD however.
-// This code was restructured by Anthropic Claude and until fully tested and refactored may contain artifacts.
+// This code was written by me and later restructured by Anthropic Claude and until fully tested and refactored may contain artifacts.
 
 namespace nem
 {

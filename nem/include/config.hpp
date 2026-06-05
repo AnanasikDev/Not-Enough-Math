@@ -53,20 +53,39 @@ namespace nem
 #else
     using real = float;
 #endif
-
-    constexpr float  fEps  = 1e-6f;
-    constexpr double dEps = 1e-9;
-    constexpr long double ldEps = 1e-14;
-
     template <typename T>
     concept scalar_type = std::integral<T> || std::floating_point<T>;
 
     template <nem::scalar_type T>
     constexpr T Eps()
     {
-        if      constexpr (std::is_same_v<T, float>) return T{ nem::fEps };
-        else if constexpr (std::is_same_v<T, double>) return T{ nem::dEps };
-        else if constexpr (std::is_same_v<T, long double>) return T{ nem::ldEps };
+        if      constexpr (std::is_same_v<T, float>) return T{ 1e-6f };
+        else if constexpr (std::is_same_v<T, double>) return T{ 1e-9 };
+        else if constexpr (std::is_same_v<T, long double>) return T{ 1e-14 };
         return (T)0;
+    }
+
+    template <nem::scalar_type T>
+    constexpr T AbsApproxError()
+    {
+        if      constexpr (std::is_same_v<T, float>) return T{ 1.5e-2f }; // absolute 0.015 or 1.5% relative
+        else if constexpr (std::is_same_v<T, double>) return T{ 2e-3 }; // absolute 0.002 or 0.2% relative
+        else if constexpr (std::is_same_v<T, long double>) return T{ 1e-4 }; // absolute 0.001 or 0.01% relative
+        return (T)0;
+    }
+    
+    template <nem::scalar_type T>
+    constexpr T RelApproxError(T x)
+    {
+        if (x < 0)
+            x = -x;
+        if constexpr (std::is_floating_point_v<T>)
+        {
+            return (x + nem::AbsApproxError<T>()) * nem::AbsApproxError<T>();
+        }
+        else
+        {
+            return (T)0;
+        }
     }
 }

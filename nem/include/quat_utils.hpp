@@ -5,6 +5,7 @@
 #include "mat.hpp"
 #include "utils.hpp"
 #include "trig.hpp"
+#include "power.hpp"
 
 namespace nem
 {

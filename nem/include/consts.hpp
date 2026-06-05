@@ -16,4 +16,8 @@ namespace nem
 	template <std::floating_point T> constexpr T PHI =  		(T)1.618033988749894;
 	template <std::floating_point T> constexpr T DEG_TO_RAD =  	   nem::TWO_PI<T> / (T)360.0;
 	template <std::floating_point T> constexpr T RAD_TO_DEG =  	(T)1.0 / nem::DEG_TO_RAD<T>;
+	template <std::floating_point T> constexpr T LN2 =			(T)0.6931471805599453094;
+
+    /// log(2, e)
+	template <std::floating_point T> constexpr T LOG2E =			(T)1.44269504088896340735992;
 }

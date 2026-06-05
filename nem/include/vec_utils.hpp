@@ -3,6 +3,7 @@
 #include "config.hpp"
 #include "utils.hpp"
 #include "vec.hpp"
+#include "power.hpp"
 
 namespace nem
 {

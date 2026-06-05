@@ -4,6 +4,7 @@
 #include "config.hpp"
 #include "utils.hpp"
 #include "trig.hpp"
+#include "power.hpp"
 
 // from my older project
 // https://github.com/AnanasikDev/AEngine/blob/main/AEngine/Core/Mathf.cpp

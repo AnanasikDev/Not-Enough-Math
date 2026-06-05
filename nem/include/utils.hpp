@@ -19,8 +19,8 @@ namespace nem
 	template <std::floating_point T> constexpr T is_infinite(T value) noexcept { return !nem::intr::_nem_isfinite(value); }
 	template <std::floating_point T> constexpr T is_nan(T value) noexcept { return !nem::intr::_nem_isfinite(value); }
 
-	template <std::integral T> constexpr T is_infinite(T value) noexcept { return false; }
-	template <std::integral T> constexpr T is_nan(T value) noexcept { return false; }
+	template <std::integral T> constexpr T is_infinite(T) noexcept { return false; }
+	template <std::integral T> constexpr T is_nan(T) noexcept { return false; }
 
 
 	/// -------------------------------------------
@@ -55,9 +55,9 @@ namespace nem
 	/// </summary>
 	template <nem::scalar_type T> constexpr bool equal(T a, T b) noexcept { return nem::is_zero(a - b); }
 
-	template <nem::scalar_type T> constexpr bool max(T a, T b) noexcept { return (a > b) ? a : b; }
+	template <nem::scalar_type T> constexpr bool get_max(T a, T b) noexcept { return (a > b) ? a : b; }
 
-	template <nem::scalar_type T> constexpr bool min(T a, T b) noexcept { return (a < b) ? a : b; }
+	template <nem::scalar_type T> constexpr bool get_min(T a, T b) noexcept { return (a < b) ? a : b; }
 
 	template <nem::scalar_type T> constexpr bool average(T a, T b) noexcept { return (a + b) / (T)2.0; }
 
@@ -71,9 +71,7 @@ namespace nem
 	template <typename T> constexpr T pow4(T value) noexcept { return T{ value * value * value * value }; }
 	template <typename T> constexpr T sqr (T value) noexcept { return T{ value * value }; }
 	template <typename T> constexpr T cube(T value) noexcept { return T{ value * value * value }; }
-
-	template <nem::scalar_type T> NEM_INLINE T pow(T base, T power) noexcept { return ::pow(base, power); }
-
+	
 	/// --------------------------------------------------------------------------------------
 	/// Float truncation, fractional part, modulo (remainder), rounding, flooring, ceiling
 	/// --------------------------------------------------------------------------------------
@@ -299,101 +297,5 @@ namespace nem
 			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Remapping from length is zero");
 		}
 		return toMin + (toMax - toMin) * ((value - fromMin) / fromLength);
-	}
-
-
-	/// -------------------------------------------
-	/// Logs
-	/// -------------------------------------------
-
-	/// <summary>
-	/// Natural logarithm. Input value is constrained to value > 0
-	/// </summary>
-	template <std::floating_point T> T ln(T value)
-	{
-		if (nem::is_zero_or_neg(value))
-		{
-			return nem::error::invalid_result<T>();
-		}
-		return ::log(value);
-	}
-
-	/// <summary>
-	/// Natural logarithm. Input value is constrained to value > 0
-	/// </summary>
-	template <std::integral T> T ln(T value)
-	{
-		return (T)(ln<double>(static_cast<double>(value)));
-	}
-
-	template <std::floating_point T> T log(T base, T value)
-	{
-		if (nem::is_zero_or_neg(base) || nem::equal(base, (T)1.0))
-		{
-			return nem::error::invalid_result<T>();
-		}
-		if (nem::is_zero_or_neg(value))
-		{
-			return nem::error::invalid_result<T>();
-		}
-		return nem::ln(value) / nem::ln(base);
-	}
-
-	template <std::integral T> T log(T base, T value)
-	{
-		return (T)(log<double>(static_cast<double>(base), static_cast<double>(value)));
-	}
-
-	/// -------------------------------------------
-	/// Roots
-	/// -------------------------------------------
-
-	template <typename T>
-	NEM_INLINE T sqrt(T value)
-	{
-		if (nem::is_zero_or_neg(value))
-		{
-			 value = T{ 0 };
-		}
-		if constexpr (std::is_floating_point_v<T>)
-		{
-			return static_cast<T>(nem::intr::_nem_sqrt(value));
-		}
-		else if constexpr (std::is_integral_v<T>)
-		{
-			return static_cast<T>(nem::intr::_nem_sqrt(static_cast<double>(value)));
-		}
-	}
-
-	template <std::floating_point T, int Precision = 20>
-	constexpr T csqrt(T value)
-	{
-		if (nem::is_zero_or_neg(value))
-		{
-			return (T)0.0;
-		}
-
-		T result = value;
-		for (int i = 0; i < Precision; ++i)
-		{
-			result = 0.5 * (result + value / result);
-		}
-		return result;
-	}
-
-	template <std::integral T, int Precision = 20>
-	constexpr T csqrt(T value)
-	{
-		if (nem::is_zero_or_neg(value))
-		{
-			return (T)0.0;
-		}
-
-		nem::real result = value;
-		for (int i = 0; i < Precision; ++i)
-		{
-			result = (nem::real)0.5 * (result + static_cast<nem::real>(value) / result);
-		}
-		return static_cast<T>(result);
 	}
 }

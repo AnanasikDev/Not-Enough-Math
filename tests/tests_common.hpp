@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include "nem.hpp"
 
-static constexpr float  fEps = nem::Eps<float>();
+static constexpr float fEps = nem::Eps<float>();
 static constexpr double dEps = 1e-9;
 
 static constexpr float FNAN = std::numeric_limits<float>::quiet_NaN();
