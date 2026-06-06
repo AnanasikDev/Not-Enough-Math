@@ -84,7 +84,7 @@ TEST(IsZeroOrNeg, FloatZero)
 
 TEST(IsZeroOrNeg, FloatPositiveBelowAbsEpsilon)
 {
-    const float a = nem::Eps<float>() / 5.0f;
+    const float a = nem::eps<float>() / 5.0f;
     const bool result = nem::is_zero_or_neg(a);
 
     ASSERT_TRUE(result);
@@ -92,7 +92,7 @@ TEST(IsZeroOrNeg, FloatPositiveBelowAbsEpsilon)
 
 TEST(IsZeroOrNeg, FloatNegativeBelowAbsEpsilon)
 {
-    const float a = -nem::Eps<float>() / 5.0f;
+    const float a = -nem::eps<float>() / 5.0f;
     const bool result = nem::is_zero_or_neg(a);
 
     ASSERT_TRUE(result);

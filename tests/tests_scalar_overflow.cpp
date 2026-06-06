@@ -186,7 +186,7 @@ TEST(Round, FloatPositiveMidUp)
 
 TEST(Round, FloatPositiveMidDown)
 {
-    const float result = nem::round(4.5f - nem::Eps<float>());
+    const float result = nem::round(4.5f - nem::eps<float>());
 
     ASSERT_NEAR(result, 4.0f, fEps);
 }
@@ -214,7 +214,7 @@ TEST(Round, FloatNegativeMidUp)
 
 TEST(Round, FloatNegativeMidDown)
 {
-    const float result = nem::round(-4.5f - nem::Eps<float>());
+    const float result = nem::round(-4.5f - nem::eps<float>());
 
     ASSERT_NEAR(result, -5.0f, fEps);
 }

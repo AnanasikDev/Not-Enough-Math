@@ -11,8 +11,8 @@ TEST(Log2, FloatOne)
     const float std_expected = std::log2f(x);
     const float expected = 0.0f;
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
-    ASSERT_NEAR(result, expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
+    ASSERT_NEAR(result, expected, nem::rel_error<float>(x));
 }
 
 TEST(Log2, FloatSmallPositive)
@@ -22,7 +22,7 @@ TEST(Log2, FloatSmallPositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 TEST(Log2, FloatBigPositive)
@@ -32,7 +32,7 @@ TEST(Log2, FloatBigPositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 TEST(Log2, FloatLargePositive)
@@ -42,7 +42,7 @@ TEST(Log2, FloatLargePositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 TEST(Log2, FloatVeryLargePositive)
@@ -52,10 +52,34 @@ TEST(Log2, FloatVeryLargePositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 // Very fast log2 approximation
+
+TEST(FastLog2, FloatVerySmall)
+{
+    const float x = 0.125f;
+
+    const float result = nem::log2(x);
+    const float std_expected = std::log2f(x);
+    const float expected = -3.0f;
+
+    ASSERT_NEAR(result, std_expected, nem::rel_error(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
+}
+
+TEST(FastLog2, FloatSmall)
+{
+    const float x = 0.5f;
+
+    const float result = nem::log2(x);
+    const float std_expected = std::log2f(x);
+    const float expected = -1.0f;
+
+    ASSERT_NEAR(result, std_expected, nem::rel_error(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
+}
 
 TEST(FastLog2, FloatOne)
 {
@@ -65,8 +89,8 @@ TEST(FastLog2, FloatOne)
     const float std_expected = std::log2f(x);
     const float expected = 0.0f;
 
-    ASSERT_NEAR(result, std_expected, nem::AbsApproxError<float>());
-    ASSERT_NEAR(result, expected, nem::AbsApproxError<float>());
+    ASSERT_NEAR(result, std_expected, nem::abs_error<float>());
+    ASSERT_NEAR(result, expected, nem::abs_error<float>());
 }
 
 TEST(FastLog2, FloatSmallPositive)
@@ -76,7 +100,7 @@ TEST(FastLog2, FloatSmallPositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 TEST(FastLog2, FloatBigPositive)
@@ -86,7 +110,7 @@ TEST(FastLog2, FloatBigPositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 TEST(FastLog2, FloatLargePositive)
@@ -96,7 +120,7 @@ TEST(FastLog2, FloatLargePositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 TEST(FastLog2, FloatVeryLargePositive)
@@ -106,7 +130,7 @@ TEST(FastLog2, FloatVeryLargePositive)
     const float result = nem::log2(x);
     const float std_expected = std::log2f(x);
 
-    ASSERT_NEAR(result, std_expected, nem::RelApproxError<float>(x));
+    ASSERT_NEAR(result, std_expected, nem::rel_error<float>(x));
 }
 
 // ===========================================================================
@@ -120,7 +144,7 @@ TEST(ScalarPow, PositiveFloat)
     const float result = nem::pow(value, 2.0f);
     const float expected = 36.0f;
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarPow, ZeroFloat)
@@ -130,7 +154,7 @@ TEST(ScalarPow, ZeroFloat)
     const float result = nem::pow(value, 4.0f);
     const float expected = 0.0f;
 
-    ASSERT_NEAR(result, expected, nem::AbsApproxError<float>());
+    ASSERT_NEAR(result, expected, nem::abs_error<float>());
 }
 
 TEST(ScalarPow, BothSignsFloatEvenPower)
@@ -144,8 +168,8 @@ TEST(ScalarPow, BothSignsFloatEvenPower)
     const float expected1 = 9.0f;
     const float expected2 = 9.0f;
 
-    ASSERT_NEAR(result1, expected1, nem::RelApproxError(expected1));
-    ASSERT_NEAR(result2, expected2, nem::RelApproxError(expected2));
+    ASSERT_NEAR(result1, expected1, nem::rel_error(expected1));
+    ASSERT_NEAR(result2, expected2, nem::rel_error(expected2));
 }
 
 TEST(ScalarPow, BothSignsFloatOddPower)
@@ -159,8 +183,8 @@ TEST(ScalarPow, BothSignsFloatOddPower)
     const float expected1 = -27.0f;
     const float expected2 =  27.0f;
 
-    ASSERT_NEAR(result1, expected1, nem::RelApproxError(expected1));
-    ASSERT_NEAR(result2, expected2, nem::RelApproxError(expected2));
+    ASSERT_NEAR(result1, expected1, nem::rel_error(expected1));
+    ASSERT_NEAR(result2, expected2, nem::rel_error(expected2));
 }
 
 TEST(ScalarPow, ZeroPowerFloat)
@@ -172,8 +196,8 @@ TEST(ScalarPow, ZeroPowerFloat)
     const float result2 = nem::pow(value2, 0.0f);
     const float expected = 1.0f;
 
-    ASSERT_NEAR(result1, expected, nem::RelApproxError(expected));
-    ASSERT_NEAR(result2, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result1, expected, nem::rel_error(expected));
+    ASSERT_NEAR(result2, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarPow, ZeroBaseFloat)
@@ -182,7 +206,7 @@ TEST(ScalarPow, ZeroBaseFloat)
 
     const float result = nem::pow(value, 5.0f);
 
-    ASSERT_NEAR(result, value, nem::AbsApproxError<float>());
+    ASSERT_NEAR(result, value, nem::abs_error<float>());
 }
 
 // ===========================================================================
@@ -327,7 +351,7 @@ TEST(ScalarLog, FloatPositiveBase2)
     const float expected = 2.0f;
     const float result = nem::log(2.0f, 4.0f);
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarLog, FloatPositiveBase10)
@@ -335,7 +359,7 @@ TEST(ScalarLog, FloatPositiveBase10)
     const float expected = 4.0f;
     const float result = nem::log(10.0f, 10000.0f);
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarLog, FloatBaseEqualsInput)
@@ -343,7 +367,7 @@ TEST(ScalarLog, FloatBaseEqualsInput)
     const float expected = 1.0f;
     const float result = nem::log(7.0f, 7.0f);
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarLog, FloatInputNear0Valid)
@@ -354,7 +378,7 @@ TEST(ScalarLog, FloatInputNear0Valid)
     const float result = nem::log(base, input);
     const float expected = power;
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarLog, FloatInputIs0Invalid)
@@ -393,7 +417,7 @@ TEST(ScalarLog, FloatPowLogChain)
     const float result = nem::log(base, input);
     const float expected = power;
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarLog, FloatLnPowChain)
@@ -404,7 +428,7 @@ TEST(ScalarLog, FloatLnPowChain)
     const float result = nem::ln(input);
     const float expected = power;
 
-    ASSERT_NEAR(result, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(result, expected, nem::rel_error(expected));
 }
 
 TEST(ScalarLog, FloatLnSameAsLogE)
@@ -415,5 +439,5 @@ TEST(ScalarLog, FloatLnSameAsLogE)
     const float b = nem::log(base, input);
     const float expected = b;
 
-    ASSERT_NEAR(a, expected, nem::RelApproxError(expected));
+    ASSERT_NEAR(a, expected, nem::rel_error(expected));
 }

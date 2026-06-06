@@ -45,10 +45,10 @@ namespace nem
 	/// <summary>
 	/// Is a nearly 0? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a| < eps
 	/// </summary>
-	template <nem::scalar_type T> constexpr bool is_zero(T a) noexcept { return nem::abs(a) < Eps<T>(); }
+	template <nem::scalar_type T> constexpr bool is_zero(T a) noexcept { return nem::abs(a) < eps<T>(); }
 	template <std::integral T> constexpr bool is_zero(T a) noexcept { return a == 0; }
 	
-	template <nem::scalar_type T> constexpr bool is_zero_or_neg(T a) noexcept { return a <= Eps<T>(); }
+	template <nem::scalar_type T> constexpr bool is_zero_or_neg(T a) noexcept { return a <= eps<T>(); }
 
 	/// <summary>
 	/// Are a and b nearly equal? Given an Epsilon > 0, within each all numbers are considered indistinguisable from 0, |a - b| < eps
@@ -147,7 +147,7 @@ namespace nem
 		const T ceiled = floored + (floored < value); // ceil without extra floor
 		const T neg_dist = value - floored;
 		const T pos_dist = ceiled - value;
-		const bool up = pos_dist < (neg_dist + nem::Eps<T>()); // 0.5 -> up
+		const bool up = pos_dist < (neg_dist + nem::eps<T>()); // 0.5 -> up
 		return ceiled * up + floored * !up; // branchless
 	}
 
@@ -224,7 +224,7 @@ namespace nem
 	/// (v = -4, s = 3) -> -3
 	template <std::integral T> constexpr T round(T value, T step)
 	{
-		return (T)(nem::round<nem::real>(static_cast<nem::real>(value), static_cast<nem::real>(step)) + nem::Eps<nem::real>());
+		return (T)(nem::round<nem::real>(static_cast<nem::real>(value), static_cast<nem::real>(step)) + nem::eps<nem::real>());
 	}
 	
 	/// -------------------------------------------
@@ -297,5 +297,21 @@ namespace nem
 			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Remapping from length is zero");
 		}
 		return toMin + (toMax - toMin) * ((value - fromMin) / fromLength);
+    }
+
+    /// -------------------------------------------
+    /// Properties
+    /// -------------------------------------------
+
+    /// Is a floating point number whole (same as integer)
+    template <std::floating_point T> constexpr T is_whole(T value)
+    {
+        return nem::is_zero(nem::frac(value));
+    }
+	
+    /// Is an integer number whole. Always true, here for compatibility
+    template <std::integral T> constexpr T is_whole(T value)
+    {
+        return true;
 	}
 }

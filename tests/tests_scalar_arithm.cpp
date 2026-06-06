@@ -55,7 +55,7 @@ TEST(Sign, Zero)
 
 TEST(Sign, NearZeroPos)
 {
-    float value = 0.0f + nem::Eps<float>();
+    float value = 0.0f + nem::eps<float>();
 
     float result = nem::sign(value);
 
@@ -64,7 +64,7 @@ TEST(Sign, NearZeroPos)
 
 TEST(Sign, NearZeroNeg)
 {
-    float value = 0.0f - nem::Eps<float>();
+    float value = 0.0f - nem::eps<float>();
 
     float result = nem::sign(value);
 
