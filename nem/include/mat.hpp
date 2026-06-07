@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include "utils.hpp"
+#include "vec.hpp"
 
 namespace nem
 {
@@ -11,7 +12,7 @@ namespace nem
 		static constexpr size_t Size{ R * C };
 		static constexpr size_t Rows = R;
 		static constexpr size_t Columns = C;
-		using Type = T;
+        using Type = T;
 
 		///
 		///            C
@@ -101,7 +102,7 @@ namespace nem
 				}
 			}
 			return result;
-		}
+        }
 
 		constexpr mat& operator+=(const mat& other)
 		{
@@ -139,4 +140,18 @@ namespace nem
 	using mat2 = mat<real, 2, 2>;
 	using mat3 = mat<real, 3, 3>;
 	using mat4 = mat<real, 4, 4>;
+}
+
+template <typename Derived, typename T, size_t N>
+constexpr Derived operator*(const nem::mat<T, N, N>& lhs, const nem::base_vector_t<Derived, T, N>& rhs)
+{
+	Derived result;
+	for (size_t r = 0; r < N; ++r)
+	{
+		for (size_t n = 0; n < N; ++n)
+		{
+			result[r] += lhs.at(r, n) * rhs[n];
+		}
+	}
+	return result;
 }

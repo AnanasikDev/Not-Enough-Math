@@ -1,4 +1,7 @@
 #include "tests_common.hpp"
+#include "glm/glm.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/mat3x3.hpp"
 
 #include <limits>
 
@@ -60,22 +63,87 @@ TEST(MatrixIndex, ChainInitListThenCheckAddress)
     EXPECT_TRUE(&m.at(2, 2) == &m[8]);
 }
 
-TEST(MatrixIndex, ChainInitListThenDoubleIndex)
+TEST(MatrixInit, SameAsGLM3x3)
 {
-    mat3 m({
-            { 0,  1,  4},
-            { 9, 16, 25},
-            {36, 49, 64} });
+    mat3 m({{0, 1, 4}, {9, 16, 25}, {36, 49, 64}});
+    glm::mat3x3 glm_m(0, 1, 4, 9, 16, 25, 36, 49, 64);
 
-    EXPECT_NEAR(m[0], 0, fEps);
-    EXPECT_NEAR(m[1], 1, fEps);
-    EXPECT_NEAR(m[2], 4, fEps);
-    EXPECT_NEAR(m[3], 9, fEps);
+    EXPECT_NEAR(m[0], glm_m[0][0], fEps);
+    EXPECT_NEAR(m[1], glm_m[0][1], fEps);
+    EXPECT_NEAR(m[2], glm_m[0][2], fEps);
+    EXPECT_NEAR(m[3], glm_m[1][0], fEps);
+    EXPECT_NEAR(m[4], glm_m[1][1], fEps);
+    EXPECT_NEAR(m[5], glm_m[1][2], fEps);
+    EXPECT_NEAR(m[6], glm_m[2][0], fEps);
+    EXPECT_NEAR(m[7], glm_m[2][1], fEps);
+    EXPECT_NEAR(m[8], glm_m[2][2], fEps);
+
+    EXPECT_NEAR(m[0], 0 , fEps);
+    EXPECT_NEAR(m[1], 1 , fEps);
+    EXPECT_NEAR(m[2], 4 , fEps);
+    EXPECT_NEAR(m[3], 9 , fEps);
     EXPECT_NEAR(m[4], 16, fEps);
     EXPECT_NEAR(m[5], 25, fEps);
     EXPECT_NEAR(m[6], 36, fEps);
     EXPECT_NEAR(m[7], 49, fEps);
     EXPECT_NEAR(m[8], 64, fEps);
+
+    EXPECT_NEAR(m.at(0, 0), glm_m[0][0], fEps);
+    EXPECT_NEAR(m.at(0, 1), glm_m[0][1], fEps);
+    EXPECT_NEAR(m.at(0, 2), glm_m[0][2], fEps);
+    EXPECT_NEAR(m.at(1, 0), glm_m[1][0], fEps);
+    EXPECT_NEAR(m.at(1, 1), glm_m[1][1], fEps);
+    EXPECT_NEAR(m.at(1, 2), glm_m[1][2], fEps);
+    EXPECT_NEAR(m.at(2, 0), glm_m[2][0], fEps);
+    EXPECT_NEAR(m.at(2, 1), glm_m[2][1], fEps);
+    EXPECT_NEAR(m.at(2, 2), glm_m[2][2], fEps);
+}
+
+TEST(MatrixInit, SameAsGLM4x4)
+{
+    glm::mat4x4 glm_mat = {3, -7, 11, 2,
+                        5, -8, 231, -29, 
+                        16, 33, -91, -72, 
+                        100, 102, -92, 32};
+                        
+    nem::mat4 nem_mat = {3, -7, 11, 2,
+                        5, -8, 231, -29, 
+                        16, 33, -91, -72, 
+                        100, 102, -92, 32};
+
+    EXPECT_NEAR(nem_mat[ 0], glm_mat[0][0], fEps);
+    EXPECT_NEAR(nem_mat[ 1], glm_mat[0][1], fEps);
+    EXPECT_NEAR(nem_mat[ 2], glm_mat[0][2], fEps);
+    EXPECT_NEAR(nem_mat[ 3], glm_mat[0][3], fEps);
+    EXPECT_NEAR(nem_mat[ 4], glm_mat[1][0], fEps);
+    EXPECT_NEAR(nem_mat[ 5], glm_mat[1][1], fEps);
+    EXPECT_NEAR(nem_mat[ 6], glm_mat[1][2], fEps);
+    EXPECT_NEAR(nem_mat[ 7], glm_mat[1][3], fEps);
+    EXPECT_NEAR(nem_mat[ 8], glm_mat[2][0], fEps);
+    EXPECT_NEAR(nem_mat[ 9], glm_mat[2][1], fEps);
+    EXPECT_NEAR(nem_mat[10], glm_mat[2][2], fEps);
+    EXPECT_NEAR(nem_mat[11], glm_mat[2][3], fEps);
+    EXPECT_NEAR(nem_mat[12], glm_mat[3][0], fEps);
+    EXPECT_NEAR(nem_mat[13], glm_mat[3][1], fEps);
+    EXPECT_NEAR(nem_mat[14], glm_mat[3][2], fEps);
+    EXPECT_NEAR(nem_mat[15], glm_mat[3][3], fEps);
+
+    EXPECT_NEAR(nem_mat.at(0, 0), glm_mat[0][0], fEps);
+    EXPECT_NEAR(nem_mat.at(0, 1), glm_mat[0][1], fEps);
+    EXPECT_NEAR(nem_mat.at(0, 2), glm_mat[0][2], fEps);
+    EXPECT_NEAR(nem_mat.at(0, 3), glm_mat[0][3], fEps);
+    EXPECT_NEAR(nem_mat.at(1, 0), glm_mat[1][0], fEps);
+    EXPECT_NEAR(nem_mat.at(1, 1), glm_mat[1][1], fEps);
+    EXPECT_NEAR(nem_mat.at(1, 2), glm_mat[1][2], fEps);
+    EXPECT_NEAR(nem_mat.at(1, 3), glm_mat[1][3], fEps);
+    EXPECT_NEAR(nem_mat.at(2, 0), glm_mat[2][0], fEps);
+    EXPECT_NEAR(nem_mat.at(2, 1), glm_mat[2][1], fEps);
+    EXPECT_NEAR(nem_mat.at(2, 2), glm_mat[2][2], fEps);
+    EXPECT_NEAR(nem_mat.at(2, 3), glm_mat[2][3], fEps);
+    EXPECT_NEAR(nem_mat.at(3, 0), glm_mat[3][0], fEps);
+    EXPECT_NEAR(nem_mat.at(3, 1), glm_mat[3][1], fEps);
+    EXPECT_NEAR(nem_mat.at(3, 2), glm_mat[3][2], fEps);
+    EXPECT_NEAR(nem_mat.at(3, 3), glm_mat[3][3], fEps);
 }
 
 TEST(MatrixUpscale, ChainInitListThen2x2To3x3)
@@ -229,4 +297,28 @@ TEST(MatrixTransform, TRS)
     mat4 result = nem::transform(nem::float3(1, 2, 3), nem::from_axis_angle(nem::float3(1, 1, 1), nem::degrees(45.0f)), nem::float3(1, 1, 1));
 
     std::cout << "TRS: \n" << result << std::endl;
+}
+
+TEST(MatrixVectorMul, SameAsGLM4x4)
+{
+    glm::mat4x4 glm_mat = {3, -7, 11, 2,
+                        5, -8, 231, -29, 
+                        16, 33, -91, -72, 
+                        100, 102, -92, 32};
+    glm_mat = glm::transpose(glm_mat);
+    nem::mat4 nem_mat = {3, -7, 11, 2,
+                        5, -8, 231, -29, 
+                        16, 33, -91, -72, 
+                        100, 102, -92, 32};
+
+    glm::vec4 glm_vec = {5, -2, 7, 12};
+    nem::float4 nem_vec = {5, -2, 7, 12};
+
+    glm::vec4 glm_result = glm_mat * glm_vec;
+    nem::float4 nem_result = nem_mat * nem_vec;
+
+    EXPECT_NEAR(nem_result[0], glm_result[0], fEps);
+    EXPECT_NEAR(nem_result[1], glm_result[1], fEps);
+    EXPECT_NEAR(nem_result[2], glm_result[2], fEps);
+    EXPECT_NEAR(nem_result[3], glm_result[3], fEps);
 }

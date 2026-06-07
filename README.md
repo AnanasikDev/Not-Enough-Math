@@ -38,6 +38,8 @@ Project is in development.
 
 [Documentation](https://ananasikdev.github.io/Not-Enough-Math/)
 
+The library uses column-major notation for vectors and matrices.
+
 ## Roadmap
 
 Ordered (from most to least important):

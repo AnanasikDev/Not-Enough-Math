@@ -240,7 +240,7 @@ namespace nem
 				data[i] = _scalar;
 			}
 		}
-	};
+    };
 
 	using int2 = base_vector_2<int>;
 	using int3 = base_vector_3<int>;
