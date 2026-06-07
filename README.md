@@ -38,7 +38,7 @@ Project is in development.
 
 [Documentation](https://ananasikdev.github.io/Not-Enough-Math/)
 
-The library uses column-major notation for vectors and matrices.
+The library uses row-major notation for vectors and matrices. Soon, it will be changed entirely to be strictly column-major.
 
 ## Roadmap
 

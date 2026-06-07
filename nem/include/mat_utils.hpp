@@ -15,7 +15,7 @@ namespace nem
         {
             for (size_t c = 0; c < C; ++c)
             {
-                m.at_rw(r, c) = func(r, c, m.at_r(r, c));
+                m.at(r, c) = func(r, c, m.at(r, c));
             }
         }
         return m;
@@ -29,7 +29,7 @@ namespace nem
         {
             for (size_t c = 0; c < C; ++c)
             {
-                result.at_rw(c, r) = m.at_r(r, c);
+                result.at(c, r) = m.at(r, c);
             }
         }
         return result;
