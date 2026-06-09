@@ -21,8 +21,8 @@ static bool IS_SAFE_INVALID(float scalar)
 #endif
 }
 
-template<typename vec_derived_t, typename T, size_t N>
-static bool IS_SAFE_INVALID(const nem::base_vector_t<vec_derived_t, T, N>& vec)
+template<typename T, size_t N>
+static bool IS_SAFE_INVALID(const nem::vec<T, N>& vec)
 {
     static_assert(std::is_same_v<T, float>,
         "IS_SAFE_INVALID vector helper only supports floats");

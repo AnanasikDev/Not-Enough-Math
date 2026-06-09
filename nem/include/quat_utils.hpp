@@ -10,7 +10,7 @@
 namespace nem
 {
     template <typename T = nem::real>
-    constexpr T sqrLength(const nem::quat_t<T>& q)
+    constexpr T sqr_length(const nem::quat_t<T>& q)
     {
         return nem::sqr(q.s) + nem::sqr(q.x) + nem::sqr(q.y) + nem::sqr(q.z);
     }
@@ -18,7 +18,7 @@ namespace nem
     template <typename T = nem::real>
     NEM_INLINE T length(const nem::quat_t<T>& q)
     {
-        return nem::sqrt(nem::sqrLength(q));
+        return nem::sqrt(nem::sqr_length(q));
     }
 
     template <typename T = nem::real>
@@ -29,8 +29,8 @@ namespace nem
         return q;
     }
 
-    template<typename vec_derived_t, typename T = nem::real>
-    constexpr nem::quat_t<T> make_quat(const nem::base_vector_t<vec_derived_t, T, 4>& vec4)
+    template<typename T = nem::real>
+    constexpr nem::quat_t<T> make_quat(const nem::vec<T, 4>& vec4)
     {
         return nem::quat_t<T> { vec4.x, vec4.y, vec4.z, vec4.w };
     }
@@ -53,11 +53,11 @@ namespace nem
     template<typename T = nem::real>
     constexpr nem::quat_t<T> inverse(const nem::quat_t<T>& q)
     {
-        return nem::conjugate(q) / nem::sqrLength(q);
+        return nem::conjugate(q) / nem::sqr_length(q);
     }
 
     template<typename T = nem::real>
-    nem::quat_t<T> from_axis_angle(const nem::base_vector_3<T>& axis, T radians)
+    nem::quat_t<T> from_axis_angle(const nem::vec<T, 3>& axis, T radians)
     {
         const nem::sincos a = nem::get_sincos(radians * T{0.5});
         return nem::make_quat<T>(
@@ -81,7 +81,7 @@ namespace nem
     constexpr nem::mat<T, 3, 3> norm_quaterion_to_rotation_matrix(const nem::quat_t<T>& q)
     {
         // implies that q is normalized, hence s^2 + x^2 + y^2 + z^2 = 1, hence different notation
-        if (!nem::equal(nem::sqrLength(q), T{1}))
+        if (!nem::equal(nem::sqr_length(q), T{1}))
         {
             return nem::error::invalid_result<nem::mat<T, 3, 3>>(nem::error::Kind::InvalidArgument, "Quaternion has to be normalized");
         }
@@ -105,8 +105,8 @@ namespace nem
     }
 
     template <typename T>
-    constexpr nem::base_vector_3<T> extract_vector(const nem::quat_t<T>& q)
+    constexpr nem::vec<T, 3> extract_vector(const nem::quat_t<T>& q)
     {
-        return nem::base_vector_3(q.x, q.y, q.z);
+        return nem::vec<T, 3>(q.x, q.y, q.z);
     }
 }

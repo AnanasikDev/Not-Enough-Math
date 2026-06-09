@@ -7,8 +7,8 @@
 
 namespace nem
 {
-    template<typename vec_derived_t, typename T, size_t N>
-    NEM_INLINE bool is_zero(const nem::base_vector_t<vec_derived_t, T, N>& v)
+    template<typename T, size_t N>
+    NEM_INLINE bool is_zero(const nem::vec<T, N>& v)
     {
         for (size_t c = 0; c < N; ++c)
         {
@@ -20,8 +20,8 @@ namespace nem
         return true;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    NEM_INLINE bool is_zero(const nem::base_vector_t<vec_derived_t, T, N>&& v)
+    template<typename T, size_t N>
+    NEM_INLINE bool is_zero(const nem::vec<T, N>&& v)
     {
         for (size_t c = 0; c < N; ++c)
         {
@@ -33,8 +33,8 @@ namespace nem
         return true;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    NEM_INLINE T dot(const nem::base_vector_t<vec_derived_t, T, N>& a, const nem::base_vector_t<vec_derived_t, T, N>& b)
+    template<typename T, size_t N>
+    NEM_INLINE T dot(const nem::vec<T, N>& a, const nem::vec<T, N>& b)
     {
         T result = (T)0.0;
         for (size_t c = 0; c < N; ++c)
@@ -45,17 +45,17 @@ namespace nem
     }
 
     template <typename T>
-    NEM_INLINE nem::base_vector_3<T> cross(const nem::base_vector_3<T>& a, const nem::base_vector_3<T>& b)
+    NEM_INLINE nem::vec<T, 3> cross(const nem::vec<T, 3>& a, const nem::vec<T, 3>& b)
     {
-        return nem::base_vector_3<T>(
+        return nem::vec<T, 3>(
             a.y * b.z - a.z * b.y,
             a.z * b.x - a.x * b.z,
             a.x * b.y - a.y * b.x
         );
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    NEM_INLINE T horizontal_sum(const nem::base_vector_t<vec_derived_t, T, N>& v)
+    template<typename T, size_t N>
+    NEM_INLINE T horizontal_sum(const nem::vec<T, N>& v)
     {
         T result = (T)0.0;
         for (size_t c = 0; c < N; ++c)
@@ -65,8 +65,8 @@ namespace nem
         return result;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    NEM_INLINE T horizontal_mul(const nem::base_vector_t<vec_derived_t, T, N>& v)
+    template<typename T, size_t N>
+    NEM_INLINE T horizontal_mul(const nem::vec<T, N>& v)
     {
         T result = (T)1.0;
         for (size_t c = 0; c < N; ++c)
@@ -76,16 +76,16 @@ namespace nem
         return result;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    NEM_INLINE vec_derived_t reflect(const nem::base_vector_t<vec_derived_t, T, N>& vector, const nem::base_vector_t<vec_derived_t, T, N>& normal)
+    template<typename T, size_t N>
+    NEM_INLINE nem::vec<T, N> reflect(const nem::vec<T, N>& vector, const nem::vec<T, N>& normal)
     {
         return vector - (T)2.0 * nem::dot(vector, normal) * normal;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    static constexpr vec_derived_t lerp(const nem::base_vector_t<vec_derived_t, T, N>& a, const nem::base_vector_t<vec_derived_t, T, N>& b, float t)
+    template<typename T, size_t N>
+    static constexpr nem::vec<T, N> lerp(const nem::vec<T, N>& a, const nem::vec<T, N>& b, float t)
     {
-        vec_derived_t result;
+        nem::vec<T, N> result;
         for (size_t i = 0; i < N; ++i)
         {
             result[i] = (T)nem::lerp(a[i], b[i], t);
@@ -93,8 +93,8 @@ namespace nem
         return result;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    constexpr T sqrLength(const nem::base_vector_t<vec_derived_t, T, N>& vec)
+    template<typename T, size_t N>
+    constexpr T sqr_length(const nem::vec<T, N>& vec)
     {
         T sum{};
         for (size_t i = 0; i < N; ++i)
@@ -104,21 +104,21 @@ namespace nem
         return sum;
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    T length(const nem::base_vector_t<vec_derived_t, T, N>& vec)
+    template<typename T, size_t N>
+    T length(const nem::vec<T, N>& vec)
     {
-        return nem::sqrt(nem::sqrLength(vec));
+        return nem::sqrt(nem::sqr_length(vec));
     }
 
-    template<typename vec_derived_t, typename T, size_t N>
-    vec_derived_t normalize(const nem::base_vector_t<vec_derived_t, T, N>& vec)
+    template<typename T, size_t N>
+    nem::vec<T, N> normalize(const nem::vec<T, N>& vec)
     {
-        vec_derived_t result;
-        T len = nem::length(vec);
+        nem::vec<T, N> result;
+        const T len = nem::length(vec);
 
         if (nem::is_zero(len))
         {
-            return nem::error::invalid_result<vec_derived_t>();
+            return nem::error::invalid_result<nem::vec<T, N>>();
         }
 
         if constexpr (std::is_floating_point_v<T>)
@@ -141,7 +141,7 @@ namespace nem
     }
 
     template<typename T>
-    bool orthogonal_3d_basis(const nem::base_vector_3<T>& vector, nem::base_vector_3<T>& b1, nem::base_vector_3<T>& b2)
+    bool orthogonal_3d_basis(const nem::vec<T, 3>& vector, nem::vec<T, 3>& b1, nem::vec<T, 3>& b2)
     {
         if (nem::is_zero(vector))
         {
@@ -151,11 +151,11 @@ namespace nem
 
         if (nem::abs(vector.z) < 0.999f) // TODO : fix magic precision number
         {
-            b1 = nem::normalize(nem::cross(vector, base_vector_3<T>(0, 0, 1)));
+            b1 = nem::normalize(nem::cross(vector, nem::vec<T, 3>(0, 0, 1)));
         }
         else
         {
-            b1 = nem::normalize(nem::cross(vector, base_vector_3<T>(1, 0, 0)));
+            b1 = nem::normalize(nem::cross(vector, nem::vec<T, 3>(1, 0, 0)));
         }
 
         b2 = nem::cross(vector, b1);

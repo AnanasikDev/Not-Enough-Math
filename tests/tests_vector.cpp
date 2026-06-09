@@ -7,14 +7,14 @@ using nem::float3;
 using nem::float4;
 
 // ===========================================================================
-// sqrLength
+// sqr_length
 // ===========================================================================
 
 TEST(VectorSqrLength, ZeroVectorYieldsZero)
 {
     float3 input;
 
-    float result = nem::sqrLength(input);
+    float result = nem::sqr_length(input);
 
     ASSERT_NEAR(result, 0.f, fEps);
 }
@@ -23,7 +23,7 @@ TEST(VectorSqrLength, NegativeComponentsSquarePositive)
 {
     float3 input(-3.f, -4.f, 0.f);
 
-    float result = nem::sqrLength(input);
+    float result = nem::sqr_length(input);
 
     ASSERT_NEAR(result, 25.f, fEps);
 }
@@ -32,7 +32,7 @@ TEST(VectorSqrLength, SingleAxisX)
 {
     float3 input(7.f, 0.f, 0.f);
 
-    float result = nem::sqrLength(input);
+    float result = nem::sqr_length(input);
 
     ASSERT_NEAR(result, 49.f, fEps);
 }
@@ -41,7 +41,7 @@ TEST(VectorSqrLength, SingleAxisZNegative)
 {
     float3 input(0.f, 0.f, -5.f);
 
-    float result = nem::sqrLength(input);
+    float result = nem::sqr_length(input);
 
     ASSERT_NEAR(result, 25.f, fEps);
 }
@@ -50,7 +50,7 @@ TEST(VectorSqrLength, GeneralThreeComponent)
 {
     float3 input(1.f, 2.f, 1.f);
 
-    float result = nem::sqrLength(input);
+    float result = nem::sqr_length(input);
 
     ASSERT_NEAR(result, 6.f, fEps);
 }
@@ -59,7 +59,7 @@ TEST(VectorSqrLength, MixedSignThreeComponent)
 {
     float3 input(-1.f, 2.f, -1.f);
 
-    float result = nem::sqrLength(input);
+    float result = nem::sqr_length(input);
 
     ASSERT_NEAR(result, 6.f, fEps);
 }
@@ -394,7 +394,7 @@ TEST(VectorDot, SelfEqualsSqrLength)
 
     float result = nem::dot(v, v);
 
-    ASSERT_NEAR(result, nem::sqrLength(v), fEps);
+    ASSERT_NEAR(result, nem::sqr_length(v), fEps);
 }
 
 TEST(VectorDot, WithZeroVectorYieldsZero)

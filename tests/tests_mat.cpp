@@ -312,7 +312,7 @@ TEST(MatrixVectorMul, SameAsGLM4x4)
                         100, 102, -92, 32};
 
     glm::vec4 glm_vec = {5, -2, 7, 12};
-    nem::float4 nem_vec = {5, -2, 7, 12};
+    nem::float4 nem_vec(5.f, -2.f, 7.f, 12.f);
 
     glm::vec4 glm_result = glm_mat * glm_vec;
     nem::float4 nem_result = nem_mat * nem_vec;

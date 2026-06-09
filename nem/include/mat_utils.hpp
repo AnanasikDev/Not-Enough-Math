@@ -118,20 +118,20 @@ namespace nem
                 nem::rotate(nem::sincos(roll_x ));
     }
 
-    template<std::floating_point T, typename vec_derived_t>
-    constexpr nem::mat<T, 3, 3> translate_2D(const nem::base_vector_t<vec_derived_t, T, 2>& value)
+    template<std::floating_point T>
+    constexpr nem::mat<T, 3, 3> translate_2D(const nem::vec<T, 2>& value)
     {
         return nem::mat<T, 3, 3>({{1, 0, value[0]}, {0, 1, value[1]}, {0, 0, 1}});
     }
 
-    template<std::floating_point T, typename vec_derived_t>
-    constexpr nem::mat<T, 4, 4> translate_3D(const nem::base_vector_t<vec_derived_t, T, 3>& value)
+    template<std::floating_point T>
+    constexpr nem::mat<T, 4, 4> translate_3D(const nem::vec<T, 3>& value)
     {
         return nem::mat<T, 4, 4>({{1, 0, 0, value[0]}, {0, 1, 0, value[1]}, {0, 0, 1, value[2]}, {0, 0, 0, 1}});
     }
 
-    template<typename vec_derived_t, std::floating_point T, size_t N>
-    constexpr nem::mat<T, N, N> scale(const nem::base_vector_t<vec_derived_t, T, N>& value)
+    template<std::floating_point T, size_t N>
+    constexpr nem::mat<T, N, N> scale(const nem::vec<T, N>& value)
     {
         nem::mat<T, N, N> result((T)0.0);
         for (size_t i = 0; i < N; ++i)
@@ -142,8 +142,8 @@ namespace nem
     }
 
     template <std::floating_point T>
-    constexpr nem::mat<T, 4, 4> transform(const nem::base_vector_3<T>& translation, const nem::quat_t<T>& rotation,
-                                          const nem::base_vector_3<T> scaler)
+    constexpr nem::mat<T, 4, 4> transform(const nem::vec<T, 3>& translation, const nem::quat_t<T>& rotation,
+                                          const nem::vec<T, 3> scaler)
     {
         return nem::translate_3D(translation) *
                nem::homogenous(nem::norm_quaterion_to_rotation_matrix(nem::normalize(rotation))) *

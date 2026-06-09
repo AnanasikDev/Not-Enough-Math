@@ -101,9 +101,9 @@ namespace nem
         return quat_t{-q.s, -q.x, -q.y, -q.z};
     }
 
-    constexpr friend nem::base_vector_3<T> operator*(const quat_t& q, const nem::base_vector_3<T>& v)
+    constexpr friend nem::vec<T, 3> operator*(const quat_t& q, const nem::vec<T, 3>& v)
     {
-        const nem::base_vector_3<T> w(q.x, q.y, q.z);
+        const nem::vec<T, 3> w(q.x, q.y, q.z);
         const T a = q.s;
         return (v + (T)2.0 * a * nem::cross(w, v) + (T)2.0 * (nem::cross(w, nem::cross(w, v))));
     }

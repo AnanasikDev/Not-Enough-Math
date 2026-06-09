@@ -142,10 +142,11 @@ namespace nem
 	using mat4 = mat<real, 4, 4>;
 }
 
-template <typename Derived, typename T, size_t N>
-constexpr Derived operator*(const nem::mat<T, N, N>& lhs, const nem::base_vector_t<Derived, T, N>& rhs)
+template <typename T, size_t N>
+constexpr nem::vec<T, N> operator*(const nem::mat<T, N, N>& lhs, const nem::vec<T, N>& rhs)
 {
-	Derived result;
+    // TODO: allow for all possible vectors for non-square matrices
+	nem::vec<T, N> result;
 	for (size_t r = 0; r < N; ++r)
 	{
 		for (size_t n = 0; n < N; ++n)

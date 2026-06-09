@@ -2,6 +2,7 @@
 
 // options can be defined here, in CMake, in IDE project settings preprocessor definitions or in building arguments
 
+#include <type_traits>
 #include <concepts>
 #include <cassert>
 
@@ -166,4 +167,15 @@ namespace nem
             return nem::accurate::rel_error<T>(x);
         }
     }
+
+    template <class From, class To>
+    struct is_subset_of
+        : std::integral_constant<bool, (std::is_floating_point_v<To>
+                                            ? std::is_floating_point_v<From> || std::is_integral_v<From>
+                                            : ((std::is_integral_v<To> ? std::is_integral_v<From> : false)))>
+    {
+    };
+
+    template <class From, class To>
+    constexpr bool is_subset_of_v = is_subset_of<From, To>::value;
 }
