@@ -8,7 +8,7 @@
 #include <limits>
 
 #define TEST_VEC_TRAITS(VecType) \
-    static_assert(sizeof(VecType) == sizeof(VecType::item_type) * VecType::items_count, \
+    static_assert(sizeof(VecType) == sizeof(VecType::ITEM_TYPE) * VecType::ITEM_COUNT, \
         #VecType " size mismatch! Possible unexpected padding."); \
     static_assert(std::is_standard_layout_v<VecType>, \
         #VecType " is not Standard Layout. This breaks C-compatibility/offsetof."); \
@@ -18,7 +18,7 @@
     static_assert(std::is_trivially_destructible_v<VecType>, \
         #VecType " has a non-trivial destructor. This prevents it from being in a union."); \
     \
-    static_assert(alignof(VecType) >= alignof(VecType::item_type), \
+    static_assert(alignof(VecType) >= alignof(VecType::ITEM_TYPE), \
         #VecType " alignment is weaker than its scalar component."); \
     \
     static_assert(std::is_default_constructible_v<VecType>, \
@@ -33,55 +33,55 @@ namespace nem
 	template<typename _T, size_t _N>
 	struct storage
     {
-		using item_type = _T;
-		static constexpr size_t items_count = _N; 
+		using ITEM_TYPE = _T;
+		static constexpr size_t ITEM_COUNT = _N; 
         
-		item_type data[items_count];
+		ITEM_TYPE data[ITEM_COUNT];
     };
 
 	template<typename _T>
 	struct storage<_T, 2>
     {
-		using item_type = _T;
-		static constexpr size_t items_count = 2; 
+		using ITEM_TYPE = _T;
+		static constexpr size_t ITEM_COUNT = 2; 
         
         union
         {
-			item_type data[items_count]{ item_type{ 0 } };
-			struct { item_type x, y; };
-			struct { item_type u, v; };
-			struct { item_type s, t; };
-			struct { item_type min, max; };
-			struct { item_type width, height; };
+			ITEM_TYPE data[ITEM_COUNT]{ ITEM_TYPE{ 0 } };
+			struct { ITEM_TYPE x, y; };
+			struct { ITEM_TYPE u, v; };
+			struct { ITEM_TYPE s, t; };
+			struct { ITEM_TYPE min, max; };
+			struct { ITEM_TYPE width, height; };
 		};
     };
 
     template<typename _T>
 	struct storage<_T, 3>
     {
-		using item_type = _T;
-		static constexpr size_t items_count = 3; 	
+		using ITEM_TYPE = _T;
+		static constexpr size_t ITEM_COUNT = 3; 	
         
         union
         {
-			item_type data[items_count]{ item_type{ 0 } };
-			struct { item_type x, y, z; };
-			struct { item_type r, g, b; };
+			ITEM_TYPE data[ITEM_COUNT]{ ITEM_TYPE{ 0 } };
+			struct { ITEM_TYPE x, y, z; };
+			struct { ITEM_TYPE r, g, b; };
 		};
     };
 
     template<typename _T>
 	struct storage<_T, 4>
     {
-		using item_type = _T;
-		static constexpr size_t items_count = 4; 	
+		using ITEM_TYPE = _T;
+		static constexpr size_t ITEM_COUNT = 4; 	
         
         union
         {
-			item_type data[items_count]{ item_type{ 0 } };
-			struct { item_type x, y, z, w; };
-			struct { item_type r, g, b, a; };
-			struct { item_type min1, min2, max1, max2; };
+			ITEM_TYPE data[ITEM_COUNT]{ ITEM_TYPE{ 0 } };
+			struct { ITEM_TYPE x, y, z, w; };
+			struct { ITEM_TYPE r, g, b, a; };
+			struct { ITEM_TYPE min1, min2, max1, max2; };
 		};
     };
 
@@ -89,34 +89,34 @@ namespace nem
     requires (_N > 1)
 	struct vec : storage<_T, _N>
 	{
-		using item_type = _T;
-		static constexpr size_t items_count = _N;
+		using ITEM_TYPE = _T;
+		static constexpr size_t ITEM_COUNT = _N;
 
         vec() = default;
-		vec(item_type scalar)
+		vec(ITEM_TYPE scalar)
 		{
-			for (int i = 0; i < items_count; ++i)
+			for (int i = 0; i < ITEM_COUNT; ++i)
 			{
 				this->data[i] = scalar;
 			}
 		}
 
 		template <typename... Args>
-		requires (sizeof...(Args) == items_count) && ((std::is_same_v<Args, item_type> || nem::is_subset_of_v<Args, item_type>) && ...)
+		requires (sizeof...(Args) == ITEM_COUNT) && ((std::is_same_v<Args, ITEM_TYPE> || nem::is_subset_of_v<Args, ITEM_TYPE>) && ...)
 		vec(Args... args)
 		{
 			int i = 0;
 			((this->data[i++] = args), ...);
         }
 
-        constexpr item_type& operator[](size_t index) { return this->data[index]; }
-		constexpr const item_type& operator[](size_t index) const { return this->data[index]; }
+        constexpr ITEM_TYPE& operator[](size_t index) { return this->data[index]; }
+		constexpr const ITEM_TYPE& operator[](size_t index) const { return this->data[index]; }
 
-        static constexpr vec NaN() { return vec(std::numeric_limits<item_type>::quiet_NaN()); }
+        static constexpr vec NaN() { return vec(std::numeric_limits<ITEM_TYPE>::quiet_NaN()); }
 
 		vec& operator+=(const vec& rhs)
 		{
-			for (size_t i = 0; i < items_count; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
 			{
 				(*this)[i] += rhs[i];
 			}
@@ -125,7 +125,7 @@ namespace nem
 
 		vec& operator-=(const vec& rhs)
 		{
-			for (size_t i = 0; i < items_count; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
 			{
 				(*this)[i] -= rhs[i];
 			}
@@ -134,16 +134,16 @@ namespace nem
 
 		vec& operator*=(const vec& rhs)
 		{
-			for (size_t i = 0; i < items_count; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
 			{
 				(*this)[i] *= rhs[i];
 			}
 			return *this;
 		}
 
-		vec& operator*=(item_type scalar)
+		vec& operator*=(ITEM_TYPE scalar)
 		{
-			for (size_t i = 0; i < items_count; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
 			{
 				(*this)[i] *= scalar;
 			}
@@ -152,26 +152,26 @@ namespace nem
 
 		vec& operator/=(const vec& rhs)
 		{
-			for (size_t i = 0; i < items_count; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
 			{
 				(*this)[i] /= rhs[i];
 			}
 			return *this;
 		}
 
-		vec& operator/=(item_type scalar)
+		vec& operator/=(ITEM_TYPE scalar)
 		{
-			if constexpr (std::is_floating_point_v<item_type>)
+			if constexpr (std::is_floating_point_v<ITEM_TYPE>)
             {
-                const item_type fac = (item_type)1.0 / scalar;
-				for (size_t i = 0; i < items_count; ++i)
+                const ITEM_TYPE fac = (ITEM_TYPE)1.0 / scalar;
+				for (size_t i = 0; i < ITEM_COUNT; ++i)
 				{
 					(*this)[i] *= fac;
 				}
             }
             else
             {
-				for (size_t i = 0; i < items_count; ++i)
+				for (size_t i = 0; i < ITEM_COUNT; ++i)
 				{
 					(*this)[i] /= scalar;
 				}
@@ -197,13 +197,13 @@ namespace nem
 			return lhs;
 		}
 
-		friend vec operator*(vec vec, item_type scalar)
+		friend vec operator*(vec vec, ITEM_TYPE scalar)
 		{
 			vec *= scalar;
 			return vec;
 		}
 
-		friend vec operator*(item_type scalar, vec vec)
+		friend vec operator*(ITEM_TYPE scalar, vec vec)
 		{
 			vec *= scalar;
 			return vec;
@@ -215,15 +215,15 @@ namespace nem
 			return lhs;
 		}
 
-		friend vec operator/(vec vec, item_type scalar)
+		friend vec operator/(vec vec, ITEM_TYPE scalar)
 		{
 			vec /= scalar;
 			return vec;
 		}
 
-		friend vec operator/(item_type scalar, vec vec)
+		friend vec operator/(ITEM_TYPE scalar, vec vec)
 		{
-			for (size_t i = 0; i < items_count; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
             {
                 // TODO: zero division safety
 				vec[i] = scalar / vec[i];
@@ -234,7 +234,7 @@ namespace nem
         // unary minus
         friend vec operator-(vec value)
         {
-            for (size_t i = 0; i < items_count; ++i)
+            for (size_t i = 0; i < ITEM_COUNT; ++i)
             {
 				value[i] = -value[i];
 			}
@@ -244,7 +244,7 @@ namespace nem
         // unary plus
         friend vec operator+(vec value)
         {
-            for (size_t i = 0; i < items_count; ++i)
+            for (size_t i = 0; i < ITEM_COUNT; ++i)
             {
 				value[i] = +value[i];
 			}

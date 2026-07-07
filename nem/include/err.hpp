@@ -6,6 +6,8 @@
 #include "config.hpp"
 #include "nan.hpp"
 
+#define NEM_RUNTIME_ASSERT(condition, message) assert((condition) && (message))
+
 namespace nem
 {
     namespace error

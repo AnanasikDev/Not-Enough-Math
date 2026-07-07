@@ -8,28 +8,28 @@
 
 namespace nem
 {
-    template<typename T, size_t R, size_t C, typename F>
-    nem::mat<T, R, C> transform_items(nem::mat<T, R, C>& m, F&& func)
+    template<typename T, size_t C, size_t R, typename F>
+    constexpr nem::mat<T, C, R> transform_items(nem::mat<T, C, R> m, F&& func)
     {
-        for (size_t r = 0; r < R; ++r)
+        for (size_t c = 0; c < C; ++c)
         {
-            for (size_t c = 0; c < C; ++c)
+            for (size_t r = 0; r < R; ++r)
             {
-                m.at(r, c) = func(r, c, m.at(r, c));
+                m[c][r] = func(r, c, m[c][r]);
             }
         }
         return m;
     }
 
-    template<typename T, size_t R, size_t C>
-    constexpr nem::mat<T, C, R> transpose(const nem::mat<T, R, C>& m)
+    template<typename T, size_t C, size_t R>
+    constexpr nem::mat<T, R, C> transpose(const nem::mat<T, C, R>& m)
     {
-        nem::mat<T, C, R> result;
-        for (size_t r = 0; r < R; ++r)
+        nem::mat<T, R, C> result;
+        for (size_t c = 0; c < C; ++c)
         {
-            for (size_t c = 0; c < C; ++c)
+            for (size_t r = 0; r < R; ++r)
             {
-                result.at(c, r) = m.at(r, c);
+                result[r][c] = m[c][r];
             }
         }
         return result;
@@ -41,29 +41,31 @@ namespace nem
         nem::mat<T, N, N> result((T)0.0);
         for (size_t i = 0; i < N; ++i)
         {
-            result[i * N + i] = T{ 1 };
+            result[i][i] = T{ 1 };
         }
         return result;
     }
 
     template<typename M>
-    constexpr nem::mat<typename M::Type, M::Rows, M::Columns> identity()
+    constexpr nem::mat<typename M::ITEM_TYPE, M::COLUMNS, M::ROWS> identity()
     {
-        constexpr size_t N = M::Rows;
-        using T = typename M::Type;
-        return nem::identity<T, N>();
+        static_assert(M::ROWS == M::COLUMNS && "Identity matrix must be square");
+        return nem::identity<typename M::ITEM_TYPE, M::ROWS>();
     }
 
-    template<typename T, size_t R1, size_t C1, size_t R2, size_t C2>
-    constexpr nem::mat<T, R2, C2> upscale(const nem::mat<T, R1, C1>& m)
+    template<typename T, size_t C1, size_t R1, size_t C2, size_t R2>
+    constexpr nem::mat<T, C2, R2> upscale(const nem::mat<T, C1, R1>& m)
     {
         static_assert(R2 > R1 && "Error NEM: Matrix upscaling is only allowed for R2 > R1");
         static_assert(C2 > C1 && "Error NEM: Matrix upscaling is only allowed for C2 > C1");
 
-        nem::mat<T, R2, C2> result;
-        for (size_t r = 0; r < R1; ++r)
+        nem::mat<T, C2, R2> result;
+        for (size_t c = 0; c < C1; ++c)
         {
-            memcpy(result.row(r), m.row(r), C1 * sizeof(T));
+            for (size_t r = 0; r < R1; ++r)
+            {
+                result[c][r] = m[c][r];
+            }
         }
         return result;
     }
@@ -72,9 +74,12 @@ namespace nem
     constexpr nem::mat<T, N + 1, N + 1> homogenous(const nem::mat<T, N, N>& m)
     {
         nem::mat<T, N + 1, N + 1> result = nem::identity<T, N + 1>();
-        for (size_t r = 0; r < N; ++r)
+        for (size_t c = 0; c < N; ++c)
         {
-            memcpy(result.row(r), m.row(r), N * sizeof(T));
+            for (size_t r = 0; r < N; ++r)
+            {
+                result[c][r] = m[c][r];
+            }
         }
         return result;
     }
@@ -82,7 +87,7 @@ namespace nem
     template<typename T>
     constexpr T determinant(const nem::mat<T, 2, 2>& m)
     {
-        return m[0] * m[3] - m[1] * m[2];
+        return m[0][0] * m[1][1] - m[1][0] * m[0][1];
     }
 
     template<std::floating_point T>
@@ -113,9 +118,9 @@ namespace nem
     template<std::floating_point T>
     constexpr nem::mat<T, 3, 3> rotate(T yaw_z, T pitch_y, T roll_x)
     {
-        return  nem::rotate(nem::sincos(yaw_z  )) * 
-                nem::rotate(nem::sincos(pitch_y)) * 
-                nem::rotate(nem::sincos(roll_x ));
+        return  nem::rotate_z(nem::get_sincos(yaw_z  )) *
+                nem::rotate_y(nem::get_sincos(pitch_y)) *
+                nem::rotate_x(nem::get_sincos(roll_x ));
     }
 
     template<std::floating_point T>
@@ -136,7 +141,7 @@ namespace nem
         nem::mat<T, N, N> result((T)0.0);
         for (size_t i = 0; i < N; ++i)
         {
-            result.data[i * N + i] = value[i];
+            result[i][i] = value[i];
         }
         return result;
     }

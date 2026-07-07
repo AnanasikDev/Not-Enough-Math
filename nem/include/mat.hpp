@@ -6,13 +6,15 @@
 
 namespace nem
 {
-	template <typename T, size_t R, size_t C>
+	template <nem::scalar_type _T, size_t _C, size_t _R>
 	struct mat
 	{
-		static constexpr size_t Size{ R * C };
-		static constexpr size_t Rows = R;
-		static constexpr size_t Columns = C;
-        using Type = T;
+		static constexpr size_t COLUMNS = _C;
+		static constexpr size_t ROWS = _R;
+        static constexpr size_t ITEM_COUNT = ROWS * COLUMNS;
+        using ITEM_TYPE = _T;
+        using COLUMN_TYPE = nem::vec<ITEM_TYPE, ROWS>;
+        using ROW_TYPE = nem::vec<ITEM_TYPE, COLUMNS>;
 
 		///
 		///            C
@@ -22,93 +24,87 @@ namespace nem
 		/// R | m20 m21 m22 m23   Row 2
 		///   | m30 m31 m32 m33   Row 3
 		///   | m40 m41 m42 m43   Row 4
-		/// 
+		///
 		///	    Cl0 Cl1 Cl2 Cl3
 		///
+        /// Storage is column-major: columns[c] is contiguous in memory, and columns[c][r]
+        /// is the element at row r, column c. operator[] indexes a column first (GLM-style);
+        /// at(row, col) indexes by mathematical (row, column) notation instead.
 
-		T data[Size] = { 0 };
+        union
+        {
+			ITEM_TYPE data[ITEM_COUNT] = { 0 };
+            COLUMN_TYPE columns[COLUMNS];
+		};
+
+        constexpr COLUMN_TYPE& column(size_t index) { return columns[index]; }
+        constexpr const COLUMN_TYPE& column(size_t index) const { return columns[index]; }
+
+		constexpr COLUMN_TYPE& operator[](size_t col) { return columns[col]; }
+		constexpr const COLUMN_TYPE& operator[](size_t col) const { return columns[col]; }
+
+        constexpr ITEM_TYPE& at(size_t row, size_t col) { return columns[col][row]; }
+        constexpr const ITEM_TYPE& at(size_t row, size_t col) const { return columns[col][row]; }
+
+        constexpr ITEM_TYPE item(size_t i) const { return data[i]; }
+        constexpr const ITEM_TYPE* item_ptr(size_t i) const { return &data[i]; }
+        constexpr ITEM_TYPE* item_ptr(size_t i) { return &data[i]; }
 
 		constexpr mat() : data{} {};
-		constexpr mat(T _scalar) : data{}
+		constexpr mat(ITEM_TYPE scalar) : data{}
 		{
-			for (size_t i = 0; i < Size; ++i)
+			for (size_t i = 0; i < ITEM_COUNT; ++i)
 			{
-				data[i] = _scalar;
+				data[i] = scalar;
 			}
-		}
+        }
 
-		constexpr mat(std::initializer_list<T> list) : data{}
-        {
-            if (list.size() == 0)
-            {
-                return;
-            }
-            
-			assert(list.size() == Size && "Matrix must be initialized with exactly R * C elements");
-
-			size_t i = 0;
-			for (const auto& val : list)
-			{
-				if (i < R * C) data[i++] = val;
-			}
-		}
-
-		constexpr mat(std::initializer_list<std::initializer_list<T>> rows) : data{}
+        /// Takes ROWS lists of COLUMNS values each, matching how a matrix reads on paper,
+        /// and scatters them into the column-major storage.
+		constexpr mat(std::initializer_list<std::initializer_list<ITEM_TYPE>> rows) : data{}
 		{
-			assert(rows.size() == R && "Matrix row count mismatch!");
+			// TODO: NEM_RUNTIME_ASSERT
+			NEM_RUNTIME_ASSERT(rows.size() == ROWS, "Matrix row count mismatch!");
 
 			size_t r = 0;
 			for (const auto& row_list : rows)
 			{
-				assert(row_list.size() == C && "Matrix column count mismatch!");
+				NEM_RUNTIME_ASSERT(row_list.size() == COLUMNS, "Matrix column count mismatch!");
 
 				size_t c = 0;
 				for (const auto& val : row_list)
 				{
-					data[r * C + c] = static_cast<T>(val);
+					columns[c][r] = static_cast<ITEM_TYPE>(val);
 					c++;
 				}
 				r++;
 			}
 		}
-		
-		T& operator[](size_t element) { return data[element]; }
-		const T& operator[](size_t element) const { return data[element]; }
 
-		constexpr size_t index(size_t row, size_t column) const { return row * C + column; }
-
-		constexpr T& at(size_t row, size_t column) { return data[index(row, column)]; }
-        constexpr const T& at(size_t row, size_t column) const { return data[index(row, column)]; }
-
-        constexpr T* row(size_t index) { return &data[this->index(index, 0)]; }
-        constexpr const T* row(size_t index) const { return &data[this->index(index, 0)]; }
-
-		//static constexpr mat NaN() { mat(std::numeric_limits<T>::quiet_NaN()); }
-
-		template <size_t R1, size_t C1>
-		constexpr friend mat<T, R, C1> operator*(const mat<T, R, C>& lhs, const mat<T, R1, C1>& rhs)
+        template <size_t OTHER_COLUMNS>
+		constexpr friend mat<ITEM_TYPE, OTHER_COLUMNS, ROWS> operator*(const mat& lhs, const mat<ITEM_TYPE, OTHER_COLUMNS, COLUMNS>& rhs)
 		{
-			static_assert((C == R1) && "Matrix multiplication is only defined for matrices with C0 == R1");
-			constexpr size_t N = C;
-			mat<T, R, C1> result;
-			for (size_t r = 0; r < R; ++r)
+			mat<ITEM_TYPE, OTHER_COLUMNS, ROWS> result;
+			for (size_t r = 0; r < ROWS; ++r)
 			{
-				for (size_t c = 0; c < C1; ++c)
+				for (size_t c = 0; c < OTHER_COLUMNS; ++c)
 				{
-					for (size_t n = 0; n < N; ++n)
+					for (size_t n = 0; n < COLUMNS; ++n)
 					{
-						result.at(r, c) += lhs.at(r, n) * rhs.at(n, c);
+						result[c][r] += lhs[n][r] * rhs[c][n];
 					}
 				}
 			}
 			return result;
         }
 
+        static constexpr mat NaN() { return mat(std::numeric_limits<ITEM_TYPE>::quiet_NaN()); }
+
 		constexpr mat& operator+=(const mat& other)
 		{
-			for (size_t i = 0; i < Size; ++i)
+			for (size_t c = 0; c < COLUMNS; ++c)
 			{
-				(*this)[i] += other[i];
+				(*this)[c] += other[c];
 			}
 			return *this;
 		}
@@ -117,13 +113,13 @@ namespace nem
 		{
 			lhs += rhs;
 			return lhs;
-		}
+        }
 
 		constexpr friend bool operator==(const mat& lhs, const mat& rhs)
 		{
-			for (size_t i = 0; i < lhs.Size; ++i)
+			for (size_t i = 0; i < lhs.ITEM_COUNT; ++i)
 			{
-				if (!nem::is_zero(lhs.data[i] - rhs.data[i]))
+				if (!nem::equal(lhs.item(i), rhs.item(i)))
 				{
 					return false;
 				}
@@ -135,24 +131,22 @@ namespace nem
 		{
 			return !(lhs == rhs);
 		}
-	};
+
+		constexpr friend nem::vec<ITEM_TYPE, ROWS> operator*(const mat& lhs, const nem::vec<ITEM_TYPE, COLUMNS>& rhs)
+		{
+			nem::vec<ITEM_TYPE, ROWS> result;
+			for (size_t c = 0; c < COLUMNS; ++c)
+			{
+				for (size_t r = 0; r < ROWS; ++r)
+				{
+					result[r] += lhs[c][r] * rhs[c];
+				}
+			}
+			return result;
+		}
+    };
 
 	using mat2 = mat<real, 2, 2>;
 	using mat3 = mat<real, 3, 3>;
 	using mat4 = mat<real, 4, 4>;
-}
-
-template <typename T, size_t N>
-constexpr nem::vec<T, N> operator*(const nem::mat<T, N, N>& lhs, const nem::vec<T, N>& rhs)
-{
-    // TODO: allow for all possible vectors for non-square matrices
-	nem::vec<T, N> result;
-	for (size_t r = 0; r < N; ++r)
-	{
-		for (size_t n = 0; n < N; ++n)
-		{
-			result[r] += lhs.at(r, n) * rhs[n];
-		}
-	}
-	return result;
 }

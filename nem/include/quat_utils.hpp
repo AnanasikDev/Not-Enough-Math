@@ -87,21 +87,12 @@ namespace nem
         }
 
         // https://www.johndcook.com/blog/2025/05/07/quaternions-and-rotation-matrices/
-        nem::mat<T, 3, 3> result((T)0.0);
         auto q0 = q.s, q1 = q.x, q2 = q.y, q3 = q.z;
-        result[0] = 2 * (q0 * q0 + q1 * q1) - 1;
-        result[1] = 2 * (q1 * q2 - q0 * q3);
-        result[2] = 2 * (q1 * q3 + q0 * q2);
-
-        result[3] = 2 * (q1 * q2 + q0 * q3);
-        result[4] = 2 * (q0 * q0 + q2 * q2) - 1;
-        result[5] = 2 * (q2 * q3 - q0 * q1);
-
-        result[6] = 2 * (q1 * q3 - q0 * q2);
-        result[7] = 2 * (q2 * q3 + q0 * q1);
-        result[8] = 2 * (q0 * q0 + q3 * q3) - 1;
-
-        return result;
+        return nem::mat<T, 3, 3>({
+            { 2 * (q0 * q0 + q1 * q1) - 1, 2 * (q1 * q2 - q0 * q3),     2 * (q1 * q3 + q0 * q2)     },
+            { 2 * (q1 * q2 + q0 * q3),     2 * (q0 * q0 + q2 * q2) - 1, 2 * (q2 * q3 - q0 * q1)     },
+            { 2 * (q1 * q3 - q0 * q2),     2 * (q2 * q3 + q0 * q1),     2 * (q0 * q0 + q3 * q3) - 1 }
+        });
     }
 
     template <typename T>
