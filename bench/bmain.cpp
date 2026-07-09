@@ -190,6 +190,89 @@ static void f32_nem_cos_p1(bm::State& state)
 }
 BENCHMARK(f32_nem_cos_p1);
 
+static void f32_nem_sincos_naive_p1(bm::State& state)
+{
+    float argument = std::rand();
+    nem::sincos<float> result{};
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result.sin = nem::sin<float, 1>(argument);
+        result.cos = nem::cos<float, 1>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sincos_naive_p1);
+
+static void f32_nem_sincos_optimized_p1(bm::State& state)
+{
+    float argument = std::rand();
+    nem::sincos<float> result{};
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result = nem::get_sincos<float, 1>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sincos_optimized_p1);
+
+static void f32_nem_sincos_naive_p2(bm::State& state)
+{
+    float argument = std::rand();
+    nem::sincos<float> result{};
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result.sin = nem::sin<float, 2>(argument);
+        result.cos = nem::cos<float, 2>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sincos_naive_p2);
+
+static void f32_nem_sincos_optimized_p2(bm::State& state)
+{
+    float argument = std::rand();
+    nem::sincos<float> result{};
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result = nem::get_sincos<float, 2>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sincos_optimized_p2);
+
+static void f32_nem_sincos_naive_p3(bm::State& state)
+{
+    float argument = std::rand();
+    nem::sincos<float> result{};
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result.sin = nem::sin<float, 3>(argument);
+        result.cos = nem::cos<float, 3>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sincos_naive_p3);
+
+static void f32_nem_sincos_optimized_p3(bm::State& state)
+{
+    float argument = std::rand();
+    nem::sincos<float> result{};
+    for (auto _ : state)
+    {
+        argument += 1.0f;
+        result = nem::get_sincos<float, 3>(argument);
+        bm::DoNotOptimize(result);
+    }
+}
+BENCHMARK(f32_nem_sincos_optimized_p3);
+
+
+
 static void f32_std_log2(bm::State& state)
 {
     float argument = std::rand(), result = 0;
@@ -208,7 +291,7 @@ static void f32_nem_log2(bm::State& state)
     for (auto _ : state)
     {
         argument += 1.0;
-        result = nem::log2(argument);
+        result = nem::accurate::log2(argument);
         bm::DoNotOptimize(result);
     }
 }
@@ -220,7 +303,7 @@ static void f32_nem_fast_log2(bm::State& state)
     for (auto _ : state)
     {
         argument += 1.0;
-        result = nem::log2_fast(argument);
+        result = nem::fast::log2(argument);
         bm::DoNotOptimize(result);
     }
 }

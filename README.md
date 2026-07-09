@@ -46,14 +46,14 @@ Ordered (from most to least important):
 
 Core:
 
-- [ ] **Basic scalar utils**
+- [X] **Basic scalar utils**
     - [X] **Comparisons, overflow, signs, lerping**
     - [X] **Sin, cos**
-    - [ ] **Powers, logarithms, roots**
+    - [X] **Powers, logarithms, roots**
 - [ ] **Full matrix & quaternion feature set for graphics**
 - [ ] **Test scalars against std**
-- [ ] **Test linear algebra against glm**
-- [ ] Advanced trigonometry (inverse functions, tangents, reciprocals)
+- [X] **Test linear algebra against glm**
+- [X] Advanced trigonometry (inverse functions, tangents, reciprocals)
 - [X] Easing
 - [ ] Random and noises
     - [ ] **ND White noise**
@@ -103,6 +103,8 @@ Low-level speed extensions:
 [SIF - Substantial Instruction Format](https://github.com/AnanasikDev/Lightweight-image-workshop)
 
 ## Sources, inspiration
+
+The core part was written by me (AnanaSeek4Jam) and later carefully extended majorly using Claude Code.
 
 Unordered:
 

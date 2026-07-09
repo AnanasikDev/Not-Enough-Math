@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include "utils.hpp"
+#include "power.hpp"
 #include <concepts>
 #include "intrinsics.hpp"
 
@@ -20,7 +21,21 @@ namespace nem
 	};
 
 	static constexpr int DEFAULT_TRIG_PRECISION = 1;
-	static constexpr float DEFAULT_TRIG_EPSILON = 0.01f;
+    static constexpr float DEFAULT_TRIG_EPSILON = 0.01f;
+
+    /// Converts degrees to radians. Used to make units explicit.
+	template <nem::scalar_type T>
+	constexpr T degrees(T degrees) noexcept
+	{
+		return nem::DEG_TO_RAD<T> * degrees;
+	}
+
+	/// Converts radians to radians (passes the argument unchanged). Used to make units explicit.
+	template <nem::scalar_type T>
+	constexpr T radians(T radians) noexcept
+	{
+		return radians;
+	}
 
 #if defined(NEM_FAST_TRIG)
 
@@ -97,24 +112,32 @@ namespace nem
 		NEM_UNREACHABLE();
 	}
 
+	/// Computes sin and cos together in a single range reduction pass, instead of paying for it
+	/// twice (once per nem::sin/nem::cos call). Both quadrant-1 polynomials still have to be
+	/// evaluated once each (they're different polynomials), but the division + rounding + multiply-subtract
+	/// range reduction and the sign/abs extraction only happen once.
 	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
 	constexpr nem::sincos<T> get_sincos(T radians)
 	{
-		return nem::sincos<T> { nem::sin(radians), nem::cos(radians) };
-	}
+		const T s = nem::sign(radians);
+		const T absx = radians * s;
+		const int k = static_cast<int>(absx / nem::HALF_PI<T> + (T)0.5);
+		const T r = absx - static_cast<T>(k) * nem::HALF_PI<T>;
 
-	/// Converts degrees to radians. Used to make units explicit.
-	template <nem::scalar_type T>
-	constexpr T degrees(T degrees) noexcept
-	{
-		return nem::DEG_TO_RAD<T> * degrees;
-	}
+		const T sin_q1 = ft_sin_q1<T, P>(r);
+		const T cos_q1 = ft_cos_q1<T, P>(r);
 
-	/// Converts radians to radians (passes the argument unchanged). Used to make units explicit.
-	template <nem::scalar_type T>
-	constexpr T radians(T radians) noexcept
-	{
-		return radians;
+		T sin_r, cos_r;
+		switch (k % 4)
+		{
+			case 0: sin_r =  sin_q1; cos_r =  cos_q1; break;
+			case 1: sin_r =  cos_q1; cos_r = -sin_q1; break;
+			case 2: sin_r = -sin_q1; cos_r = -cos_q1; break;
+			case 3: sin_r = -cos_q1; cos_r =  sin_q1; break;
+			default: NEM_UNREACHABLE();
+		}
+
+		return nem::sincos<T> { s * sin_r, cos_r };
 	}
 
 #else
@@ -128,5 +151,156 @@ namespace nem
 	{
 		return ::cosf(x);
 	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	nem::sincos<T> get_sincos(T radians)
+	{
+		return nem::sincos<T> { nem::sin(radians), nem::cos(radians) };
+	}
+
 #endif
+
+	/// -------------------------------------------
+	/// Tangent, cotangent, secant, cosecant
+	/// -------------------------------------------
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T tan(T x)
+	{
+		const nem::sincos<T> sc = nem::get_sincos<T, P>(x);
+		if (nem::is_zero(sc.cos))
+		{
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Tangent is undefined here (cosine is zero)");
+		}
+		return sc.sin / sc.cos;
+	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T ctg(T x)
+	{
+		const nem::sincos<T> sc = nem::get_sincos<T, P>(x);
+		if (nem::is_zero(sc.sin))
+		{
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Cotangent is undefined here (sine is zero)");
+		}
+		return sc.cos / sc.sin;
+	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T sec(T x)
+	{
+		const T c = nem::cos<T, P>(x);
+		if (nem::is_zero(c))
+		{
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Secant is undefined here (cosine is zero)");
+		}
+		return (T)1.0 / c;
+	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T csc(T x)
+	{
+		const T s = nem::sin<T, P>(x);
+		if (nem::is_zero(s))
+		{
+			return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "Cosecant is undefined here (sine is zero)");
+		}
+		return (T)1.0 / s;
+	}
+
+	/// -------------------------------------------
+	/// Inverse trigonometric functions
+	/// -------------------------------------------
+
+	/// Core polynomial approximation of atan(x), valid on [-1, 1]. nem::atan reduces any other
+	/// argument into this range first via atan(x) = sign(x) * HALF_PI - atan(1 / x).
+	/// Minimax coefficients fitted for P = 1, 2, 3 (max error roughly 5e-3, 6e-4, 8e-5).
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T ft_atan_q1(T x)
+	{
+		const T x2 = x * x;
+		if constexpr (P == 1)
+		{
+			// minimax (Remez) fit
+			return x * (0.97239411 - 0.19194795 * x2);
+		}
+		else if constexpr (P == 2)
+		{
+			// minimax (Remez) fit
+			return x * (0.99535796 + x2 * (-0.28869025 + 0.07933904 * x2));
+		}
+		else if constexpr (P >= 3)
+		{
+			// minimax (Remez) fit
+			return x * (0.99921385 + x2 * (-0.32117487 + x2 * (0.14626402 - 0.0389862 * x2)));
+		}
+	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T atan(T x)
+	{
+		const T s = nem::sign(x);
+		const T absx = s * x;
+		if (absx <= (T)1.0)
+		{
+			return s * ft_atan_q1<T, P>(absx);
+		}
+		return s * (nem::HALF_PI<T> - ft_atan_q1<T, P>((T)1.0 / absx));
+	}
+
+	/// Two-argument arctangent: the angle of the point (x, y), in (-PI, PI], resolved using the
+	/// sign of both arguments instead of just their ratio.
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T atan2(T y, T x)
+	{
+		if (nem::is_zero(x))
+		{
+			if (nem::is_zero(y))
+			{
+				return nem::error::invalid_result<T>(nem::error::Kind::DivisionByZero, "atan2 is undefined at the origin");
+			}
+			return nem::sign(y) * nem::HALF_PI<T>;
+		}
+
+		const T base = nem::atan<T, P>(y / x);
+		return (x > (T)0.0) ? base : base + nem::sign(y) * nem::PI<T>;
+	}
+
+	/// Minimax polynomial approximation of acos, valid on [-1, 1], with a max error of roughly 6.7e-5.
+	/// A widely used public-domain approximation (see e.g. "Efficient approximations for the arc cosine
+	/// function", Lee, 2008, and countless graphics-programming write-ups building on it).
+	template <std::floating_point T>
+	constexpr T acos(T x)
+	{
+		const T negate = T(x < 0);
+		const T ax = nem::abs(x);
+
+		T ret = (T)-0.0187293;
+		ret = ret * ax + (T)0.0742610;
+		ret = ret * ax - (T)0.2121144;
+		ret = ret * ax + (T)1.5707288;
+		ret = ret * nem::sqrt((T)1.0 - ax);
+		ret = ret - (T)2.0 * negate * ret;
+		return negate * nem::PI<T> + ret;
+	}
+
+	template <std::floating_point T>
+	constexpr T asin(T x)
+	{
+		return nem::HALF_PI<T> - nem::acos(x);
+	}
+
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T actg(T x)
+	{
+		return nem::HALF_PI<T> - nem::atan<T, P>(x);
+	}
+
+	/// Two-argument arc-cotangent: the angle whose cotangent is x / y, equivalent to nem::atan2
+	/// with the arguments given in x/y order instead of y/x.
+	template <std::floating_point T, int P = DEFAULT_TRIG_PRECISION>
+	constexpr T actg2(T x, T y)
+	{
+		return nem::atan2<T, P>(x, y);
+	}
 }

@@ -55,11 +55,11 @@ namespace nem
 	/// </summary>
 	template <nem::scalar_type T> constexpr bool equal(T a, T b) noexcept { return nem::is_zero(a - b); }
 
-	template <nem::scalar_type T> constexpr bool get_max(T a, T b) noexcept { return (a > b) ? a : b; }
+	template <nem::scalar_type T> constexpr T get_max(T a, T b) noexcept { return (a > b) ? a : b; }
 
-	template <nem::scalar_type T> constexpr bool get_min(T a, T b) noexcept { return (a < b) ? a : b; }
+	template <nem::scalar_type T> constexpr T get_min(T a, T b) noexcept { return (a < b) ? a : b; }
 
-	template <nem::scalar_type T> constexpr bool average(T a, T b) noexcept { return (a + b) / (T)2.0; }
+	template <nem::scalar_type T> constexpr T average(T a, T b) noexcept { return (a + b) / (T)2.0; }
 
 
 	/// -------------------------------------------
